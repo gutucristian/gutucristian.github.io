@@ -1,6 +1,6 @@
  Allocate memory (in heap) for 2D array in C using pointers.
- 
- ```c
+
+{% highlight c linenos %}
 int main(void) {
   int **rows; // a pointer whose value is the address of another pointer
   int m = 2;
@@ -16,5 +16,4 @@ int main(void) {
 
   return 0;
 }
-
-```
+{% endhighlight %}
