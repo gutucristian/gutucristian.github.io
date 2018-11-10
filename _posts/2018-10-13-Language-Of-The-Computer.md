@@ -10,3 +10,5 @@ Why are they all similar you ask? Good question! It is because:
 2. there are basic operations that all computers must provide
 
 Another vocabulary word I wanted to include is the **stored program concepts**: the idea that instructions and data of many types can be stored in memory as numbers!
+
+More coming soon... (too many exams, so I don't have time to post all my notes).
