@@ -1,4 +1,4 @@
-In this sweet post, I will go over the language of the computer! To proceed with our analogy, the words of a computer's language are called _instructions_ and its vocabulary is called the **instruction set**. So:
+In this post, I will go over the language of the computer! To proceed with our analogy, the words of a computer's language are called _instructions_ and its vocabulary is called the **instruction set**. So:
 
 **instuction set**: the vocabulary of commands understood by a given architechture
 
