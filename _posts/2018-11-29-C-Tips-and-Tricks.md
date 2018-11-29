@@ -1,6 +1,6 @@
 A compilation of useful IO commands.
 
-*Opening and closing file*
+Opening and closing file
 {% highlight c linenos %}
   FILE *fp;
   fp = fopen("data.txt", "r"); // reading mode
@@ -36,12 +36,13 @@ Write to file char by char:
   fclose(fp);
 {% endhighlight %}
 
-*Method signatures for convenience*
-Write one (ASCII) character (8-bits) at a time (slow for large files):
+**Method signatures for convenience**
 `int fgetc( FILE *stream);`
-Returns EOF when at the end of file or on error.
+- Read one (ASCII) character (8-bits) at a time (slow for large files):
+- Returns EOF when at the end of file or on error.
+- **Note**: to read from a file pass a file pointer, to read from `stdin` pass `stdin`
 
-Read one (ASCII) character (8-bits) at a time (slow for large files):
 `int fputc(int c, FILE *stream);`
-Returns EOF on error
-
+- Write one (ASCII) character (8-bits) at a time (slow for large files):
+- Returns EOF on error.
+- **Note**: to write to a file pass a file pointer, to write to `stdout` pass `stdout`
