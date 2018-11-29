@@ -36,6 +36,16 @@ Write to file char by char:
   fclose(fp);
 {% endhighlight %}
 
+Read from file line by line:
+{% highlight c linenos %}
+  FILE *fp; 
+  fp = fopen("data.txt", "r");
+  while (fgets(buffer, BUFFERSIZE, fp) != NULL) {
+    printf("%s", buffer);
+  }
+  fclose(fp);
+{% endhighlight %}
+
 **Method signatures for convenience**
 
 `int fgetc( FILE *stream);`
@@ -47,3 +57,12 @@ Write to file char by char:
 - Write one (ASCII) character (8-bits) at a time (slow for large files):
 - Returns EOF on error.
 - **Note**: to write to a file pass a file pointer, to write to `stdout` pass `stdout`
+
+`char *fgets(char *buf, int size, FILE *in);`
+- Reads the next line from `in` into buffer `buf`
+- Halts at `\n` or at `size-1` and adds `\0` (the C string termination character called NUL)
+- Returns pointer to buf if successful or NULL
+
+`int fputs(const char *str, FILE *out);`
+- Writes `str` to `out` stopping at `\0`
+- Returns number of characters written or `EOF`
