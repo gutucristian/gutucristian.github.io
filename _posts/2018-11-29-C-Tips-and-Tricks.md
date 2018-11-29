@@ -37,6 +37,7 @@ Write to file char by char:
 {% endhighlight %}
 
 **Method signatures for convenience**
+
 `int fgetc( FILE *stream);`
 - Read one (ASCII) character (8-bits) at a time (slow for large files):
 - Returns EOF when at the end of file or on error.
