@@ -48,9 +48,9 @@ Read from file line by line:
 
 **Method signatures for convenience**
 
-`int fgetc( FILE *stream);`
+`int fgetc(FILE *stream);`
 - Read one (ASCII) character (8-bits) at a time (slow for large files):
-- Returns EOF when at the end of file or on error.
+- Returns `EOF` when at the end of file or on error.
 - **Note**: to read from a file pass a file pointer, to read from `stdin` pass `stdin`
 
 `int fputc(int c, FILE *stream);`
@@ -66,3 +66,31 @@ Read from file line by line:
 `int fputs(const char *str, FILE *out);`
 - Writes `str` to `out` stopping at `\0`
 - Returns number of characters written or `EOF`
+
+Another option is `fread` and `fwrite`:
+{% highlight c linenos %}
+#include <string.h>
+#include <stdio.h>
+
+#define BUFFERSIZE 100
+
+int main(int argc, char *argv[]) {
+  FILE *fp;
+  char buffer[BUFFERSIZE];
+  char c[] = "this is cibureh";
+  
+  fp = fopen("data.txt", "w+");
+  
+  fwrite(c, strlen(c)+1, sizeof(char), fp);
+ 
+  fseek(fp, 0L, SEEK_SET); // set file pointer to beggining of file
+ 
+  fread(buffer, BUFFERSIZE, sizeof(char), fp);
+  
+  printf("%s\n", buffer);
+  
+  fclose(fp);
+ 
+  return 0;
+ }
+{% endhighlight %}
