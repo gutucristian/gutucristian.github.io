@@ -3,11 +3,11 @@ layout: page
 title: About
 permalink: /about/
 ---
-My name is Cristian Gutu and I am a Computer Science major at the University of Connecticut. Currently, I am learning more about machine learning and data science in general.
+Hey there, thanks for vising my blog! My name is Cristian Gutu and I am a junior at the University of Connecticut majoring in Computer Science. Currently, I am learning more about C programming and practicing to get better at algorithms and data structures! I also enjoy skate skiing in the winter, running in the summer, and calisthenics all year round :) 
 
 ### More Information
 
-See my [resume](https://drive.google.com/file/d/1zTtX78W6idnaLayCVXPoTKGcfsNcH1DL/view?usp=sharing) to learn more about my work and what I did in the past.
+Check out my [resume](https://drive.google.com/file/d/1zTtX78W6idnaLayCVXPoTKGcfsNcH1DL/view?usp=sharing) to learn more about me.
 
 ### Contact me
 
