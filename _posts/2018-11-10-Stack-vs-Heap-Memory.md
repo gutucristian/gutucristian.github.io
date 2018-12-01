@@ -3,7 +3,7 @@ layout: post
 title: Stack vs. Heap Memory
 ---
 
-In this fabulous post, I will explain stack vs. heap memory and more! So, I suggest you grab some hot chocolat and learn a thing or two. Anyways, let's get to the point homeboy.
+In this fabulous post, I will explain stack vs. heap memory and more! So, I suggest you grab some hot chocolat and learn a thing or two.
 
 But, before we get into the meat and potatoes of this post (or tofu and potatoes if you're vegetarian) we shall mention the various types of memory and how they are organized.
 
