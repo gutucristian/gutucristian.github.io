@@ -20,8 +20,8 @@ typedef struct {
 
 void *thread_main(void *p_arg) {
 	thread_arg_t *p = p_arg;
-
-	sleep(1 + 5*((*p).thread_num % 2));
+  
+  sleep(1 + 5*((*p).thread_num % 2));
 
 	(*p).len = strlen((*p).message);
 
@@ -64,6 +64,6 @@ int main(int argc, char *argv[]) {
 		assert(status == 0);
 	}
 
-	pthread_exit(NULL);
+  pthread_exit(NULL);
 }
 {% endhighlight %}
