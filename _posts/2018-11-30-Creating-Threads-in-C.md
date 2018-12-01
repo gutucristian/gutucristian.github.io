@@ -13,9 +13,9 @@ Use `pthread_create` to create threads and pass data using a `struct`:
 #define NUM_THREADS 8
 
 typedef struct {
-	int thread_num;
-	char *message;
-	int len;
+  int thread_num;
+  char *message;
+  int len;
 } thread_arg_t;
 
 void *thread_main(void *p_arg) {
