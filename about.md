@@ -7,7 +7,7 @@ Hey there, thanks for vising my blog! My name is Cristian Gutu and I am a junior
 
 ### More Information
 
-Check out my [resume](https://drive.google.com/file/d/1zTtX78W6idnaLayCVXPoTKGcfsNcH1DL/view?usp=sharing) to learn more about me.
+Check out my [resume](https://drive.google.com/file/d/1qa_J9OhAFboldarJEI02VKwsbGUQ-cVG/view?usp=sharing) to learn more about me.
 
 ### Contact me
 
