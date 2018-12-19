@@ -1,6 +1,6 @@
 The longest increasing subsequence problem is
 
-
+{% highlight python linenos %}
 s1 = "asdf"
 s2 = "df"
 def LCS(s1, s2, i, j):  
@@ -11,3 +11,4 @@ def LCS(s1, s2, i, j):
   else:
     return max(LCS(s1, s2, i-1, j), 
 print(LCS(s1, s2, len(s1), len(s2)))
+{% endhighlight %}
