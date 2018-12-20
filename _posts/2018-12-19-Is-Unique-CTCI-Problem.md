@@ -2,7 +2,7 @@ Is Unique: Implement an algorithm to determine if a string has all unique charac
 
 There are a few ways to solve this problem.
 
-1. If we assume an ASCII string then we know the alphabet has 128 characters (or 256 for extended ACII). In this case we can use a buffer of length 128 to indicate whether or not the character at index `i` is in the string. The second time we see this character we can immediatly return false.
+**1.** If we assume an ASCII string then we know the alphabet has 128 characters (or 256 for extended ACII). In this case we can use a buffer of length 128 to indicate whether or not the character at index `i` is in the string. The second time we see this character we can immediatly return false.
 
 {% highlight python linenos %}
   def is_unique(s1):  
@@ -21,7 +21,7 @@ There are a few ways to solve this problem.
 
 The time complexity for this is `O(n)` where n is the length of the string. The space complexity is `O(1)` because we use a fixed size buffer.
 
-2. We can take the original string and remove all duplicates (if any). If the length of the set after removing duplicates is equal to the length of the original string, then the string must be unique.
+**2.** We can take the original string and remove all duplicates (if any). If the length of the set after removing duplicates is equal to the length of the original string, then the string must be unique.
 
 {% highlight python linenos %}
   def is_unique(s1):  
