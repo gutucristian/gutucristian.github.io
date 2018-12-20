@@ -67,13 +67,13 @@ Do this with a bitwise OR (denoted as '|' in Python):
 Repeat this process for every character in the input string.
 
 {% highlight python linenos %}
-def is_unique(s1):  
+def is_unique(s1):
   checker = 0
-  for i in range(0, len(s1)):
-    val = ord(s1[i]) - ord('a')        
-    if ((checker & (1 << val)) > 0):
-      return False    
-    checker |= (1 << val)    
+  for char in s1:
+    val = ord(char) - ord('a')
+    if (checker * (1 << val) > 0):
+      return False
+    checker = checker | (1 << val)
   return True
 {% endhighlight %}
 
