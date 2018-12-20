@@ -43,4 +43,42 @@ def is_unique(s1):
 
 The time complexity in this case is `O(nlogn + n)` which is just `O(nlogn)` (where `n` is the length of `s1`). The `O(nlogn)` comes from the `sorted()` function call which uses Timsort. The `O(n)` comes from the fact that we iterate through `s1`. Space complexity is `O(n)` because the length of the returned (sorted) list `s1_sorted` depends on the size of `s1` which we call `n`.
 
-**4.** 
+**4.** And, finally, my favorite solution: we assume the string only contains characters 'a' through 'z'. Note:
+- Python integer is 4 bytes = 32 bits
+- English alphabet size is 26 characters
+- Thus, we can fit each character into the integer representaion of 32 bits. Namely, each bit position 0-25 indicates a character. If the value at a bit position `i` is 0 then we say the character is **not** present, otherwise, if the value is 1, then we say it is present in the input string.
+
+We can get the bit position of a character by using `ord()` which returns the Unicode code for a character. Since `ord('z') - ord('a')` equals 25 we know we have more than enough space using an integer which is 32 bits.
+
+Our bit vector is an integer called `checker = 0`.
+
+So, we get the bit position of some character (say 'j') by doing `ord('j') - ord('a')` which is `9`. Next, we need to switch bit 9 in our temporary bit vector from `0` to `1`. Do this with bit shifting 1 nine times to the left: `1 << 9`.
+
+To check if bit 9 was already 1 in our bit vector `checker` we simply perform a bitwise AND with the temporary bit vector. If the result is > 0 then we know that bit position 9 was already switched to a 1 because:
+
+10010 &
+00010 =
+-----
+00010
+
+which is greater than 0.
+
+If this is true, then return `False`. Else switch bit position 9 in `checker` to 1. Do this with a bitwise OR:
+
+10000 |
+00010 =
+-----
+10010
+
+Repeat this process for every character in the input string.
+
+{% highlight python linenos %}
+def is_unique(s1):  
+  checker = 0
+  for i in range(0, len(s1)):
+    val = ord(s1[i]) - ord('a')        
+    if ((checker & (1 << val)) > 0):
+      return False    
+    checker |= (1 << val)    
+  return True
+{% endhighlight %}
