@@ -60,7 +60,7 @@ To check if bit 9 was already 1 in our bit vector `checker` we simply perform a 
 which is greater than 0.
 
 If this is true, then return `False`. Else switch bit position 9 in `checker` to 1. 
-Do this with a bitwise OR (denoted as '|' in python):
+Do this with a bitwise OR (denoted as '|' in Python):
 
 10000 OR 00010 = 10010
 
