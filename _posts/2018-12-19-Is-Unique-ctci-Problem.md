@@ -6,8 +6,7 @@ There are a few ways to solve this problem.
 
 {% highlight python linenos %}
 def is_unique(s1):  
-  # string cannot be unique if its length is greater than the total alphabet size (128 for ASCII string)
-  if len(s1) > 128:
+  if len(s1) > 128: # string cannot be unique if its length is greater than the total alphabet size (128 for ASCII string)
     return False
 
   lst = [None] * 128
@@ -24,7 +23,7 @@ The time complexity for this is `O(n)` where n is the length of the string. The 
 **2.** We can take the original string and remove all duplicates (if any). If the length of the set after removing duplicates is equal to the length of the original string, then the string must be unique.
 
 {% highlight python linenos %}
-def is_unique(s1):  
+def is_unique(s1):
   return len(set(s1)) == len(s1)
 {% endhighlight %}
 
@@ -58,7 +57,7 @@ To check if bit 9 was already 1 in our bit vector `checker` we simply perform a 
 
 10010 &
 00010 =
------
+
 00010
 
 which is greater than 0.
@@ -67,7 +66,7 @@ If this is true, then return `False`. Else switch bit position 9 in `checker` to
 
 10000 |
 00010 =
------
+
 10010
 
 Repeat this process for every character in the input string.
