@@ -49,25 +49,19 @@ The time complexity in this case is `O(nlogn + n)` which is just `O(nlogn)` (whe
 
 We can get the bit position of a character by using `ord()` which returns the Unicode code for a character. Since `ord('z') - ord('a')` equals 25 we know we have more than enough space using an integer which is 32 bits.
 
-Our bit vector is an integer called `checker = 0`.
+Our bit vector is an integer called `checker` which we will set to 0: `checker = 0`.
 
 So, we get the bit position of some character (say 'j') by doing `ord('j') - ord('a')` which is `9`. Next, we need to switch bit 9 in our temporary bit vector from `0` to `1`. Do this with bit shifting 1 nine times to the left: `1 << 9`.
 
 To check if bit 9 was already 1 in our bit vector `checker` we simply perform a bitwise AND with the temporary bit vector. If the result is > 0 then we know that bit position 9 was already switched to a 1 because:
 
-10010 &
-00010 =
-
-00010
+10010 & 00010 = 00010
 
 which is greater than 0.
 
 If this is true, then return `False`. Else switch bit position 9 in `checker` to 1. Do this with a bitwise OR:
 
-10000 |
-00010 =
-
-10010
+10000 | 00010 = 10010
 
 Repeat this process for every character in the input string.
 
