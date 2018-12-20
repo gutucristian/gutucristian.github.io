@@ -76,3 +76,5 @@ def is_unique(s1):
     checker |= (1 << val)    
   return True
 {% endhighlight %}
+
+See another explanation of approach #4 [here](https://stackoverflow.com/questions/25847191/new-to-java-trying-to-understand-checker-1-val).
