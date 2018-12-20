@@ -59,9 +59,9 @@ To check if bit 9 was already 1 in our bit vector `checker` we simply perform a 
 
 which is greater than 0.
 
-If this is true, then return `False`. Else switch bit position 9 in `checker` to 1. Do this with a bitwise OR:
+If this is true, then return `False`. Else switch bit position 9 in `checker` to 1. Do this with a bitwise OR (denoted as '|' in python):
 
-10000 | 00010 = 10010
+10000 OR 00010 = 10010
 
 Repeat this process for every character in the input string.
 
