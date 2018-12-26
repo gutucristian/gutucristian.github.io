@@ -71,7 +71,7 @@ def is_unique(s1):
   checker = 0
   for char in s1:
     val = ord(char) - ord('a')
-    if (checker * (1 << val) > 0):
+    if (checker & (1 << val) > 0):
       return False
     checker = checker | (1 << val)
   return True
