@@ -42,3 +42,45 @@ def is_palindrome(s1):
 This, however, does not change the time complexity which is still `O(n)` where n = the length of `s1`.
 
 4. Finally, a solution using a bit vector.
+
+{% highlight python linenos %}
+def is_palindrome_permutation(s1):
+  bit_vector = create_bit_vector(s1) # assume ASCII string
+  return bit_vector == 0 or check_exactly_one_bit_is_set(bit_vector)
+
+def create_bit_vector(s1):
+  bit_vector = 0
+  for char in s1:
+    x = get_char_number(char)
+    bit_vector = toggle(bit_vector, x)
+  return bit_vector
+
+def check_exactly_one_bit_is_set(bit_vector):
+  return (bit_vector & (bit_vector - 1)) == 0
+
+def toggle(bit_vector, index):
+  if index < 0:
+    return bit_vector
+
+  mask = 1 << index
+
+  if ((bit_vector & mask) == 0):
+    bit_vector = bit_vector | mask # set bit at "index" to 1
+  else:
+    bit_vector = bit_vector & (~mask) # toggle bit at "index" to 0 if 1 or 1 if 0
+
+  return bit_vector
+
+def get_char_number(char):
+  a = ord('a')
+  z = ord('z')
+  val = ord(char)
+
+  if ((val >= a) and (val <= z)):
+    return val - a
+
+  return -1
+
+s1 = "tacocat"
+print(is_palindrome_permutation(s1))
+{% endhighlight %}
