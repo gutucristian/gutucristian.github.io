@@ -84,3 +84,5 @@ def get_char_number(char):
 s1 = "tacocat"
 print(is_palindrome_permutation(s1))
 {% endhighlight %}
+
+Check out more useful (information)[https://stackoverflow.com/questions/31575691/what-is-a-bitmask-and-a-mask] regarding bitmasking.
