@@ -1,4 +1,4 @@
-Palindrome Permutation: Given a string write a function to check is a string is a permutation of a palindrome.
+Palindrome Permutation: Given a string write a function to check if a string is a permutation of a palindrome.
 
 Observer that in order for a word to be a palindrome at most one character can have an odd count all the other characters must have even counts. Knowing this there are various solutions to this problem.
 
