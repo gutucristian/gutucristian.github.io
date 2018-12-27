@@ -65,9 +65,9 @@ def toggle(bit_vector, index):
   mask = 1 << index
 
   if ((bit_vector & mask) == 0):
-    bit_vector = bit_vector | mask # set bit at "index" to 1
+    bit_vector = bit_vector | mask # OR: set bit at "index" to 1
   else:
-    bit_vector = bit_vector & (~mask) # toggle bit at "index" to 0 if 1 or 1 if 0
+    bit_vector = bit_vector & (~mask) # XOR: toggle bit at "index" to 0 if 1 or 1 if 0
 
   return bit_vector
 
