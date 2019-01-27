@@ -3,7 +3,7 @@ layout: page
 title: About
 permalink: /about/
 ---
-Hey there, thanks for vising my blog! My name is Cristian Gutu and I am a junior at the University of Connecticut majoring in Computer Science. Currently, I am learning more about C programming and practicing to get better at algorithms and data structures! I also enjoy skate skiing in the winter, running in the summer, and calisthenics all year round :) 
+Hey there, thanks for visiting my blog! My name is Cristian Gutu and I am a junior at the University of Connecticut majoring in Computer Science. Currently, I am learning more about C programming and practicing to get better at algorithms and data structures! I also enjoy skate skiing in the winter, running in the summer, and calisthenics all year round :) 
 
 ### More Information
 
