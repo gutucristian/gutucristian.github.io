@@ -1,6 +1,6 @@
 Palindrome Permutation: Given a string write a function to check if a string is a permutation of a palindrome.
 
-Observer that in order for a word to be a palindrome at most one character can have an odd count all the other characters must have even counts. Knowing this there are various solutions to this problem.
+Observe that in order for a word to be a palindrome at most one character can have an odd count. All the other characters must have even counts. Knowing this, there are various solutions to this problem.
 
 **1.** The first and most obvious solution is to count the frequencies of each character and make sure that the above property is satisfied.
 
