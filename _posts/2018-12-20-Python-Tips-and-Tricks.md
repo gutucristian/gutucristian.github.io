@@ -1,4 +1,4 @@
-My personal compilation of Python tips and tricks.
+My personal (unfinished) compilation of Python tips and tricks.
 
 # Sorting
 
@@ -8,5 +8,6 @@ My personal compilation of Python tips and tricks.
 
 # Miscellaneous
 
-isinstance(c1, c2) returns True if c1 is an instance of c2 as well as if c1 is a subclass of c2
-type(c1, c2) only returns True if c1 is an instance of c2 
+`isinstance(c1, c2)` returns `True` if `c1` is an instance of `c2` as well as if `c1` is a subclass of `c2`
+
+`type(c1, c2)` only returns `True` if `c1` is an instance of `c2` 
