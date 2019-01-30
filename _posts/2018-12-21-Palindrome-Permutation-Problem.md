@@ -22,7 +22,7 @@ Observe that in order for a word to be a palindrome at most one character can ha
   print(is_palindrome("tacocat"))
 {% endhighlight %}
 
-**3.** A small "improvement" to the solution above is to simple maintain the number of odd character frequencies as we go and return True or False depending on the number of odd character frequencies without having to use `reduce()` at the end of the function.
+**3.** A small "improvement" to the solution above is to simply maintain the number of odd character frequencies as we go and return True or False depending on the number of odd character frequencies without having to use `reduce()` at the end of the function.
 
 {% highlight python linenos %}
   def is_palindrome(s1):
