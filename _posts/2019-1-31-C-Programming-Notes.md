@@ -16,7 +16,7 @@ For example, if you compile with `cc -Wall file.c` then compiler messages will b
 # Makefile
 
 Sample Makefile:
-```
+{% highlight Makefile linenos %}
 #define more variables so it is easier to make changes
 CC=gcc
 CFLAGS=-g -Wall -std=c99
@@ -35,7 +35,7 @@ seq: seq.c
 
 clean:
 	rm -rf *.o *~ $(TARGETS)
-```
+{% endhighlight %}
 
 `$@` is a special macro whose value is the file name of the target.
 
@@ -61,7 +61,7 @@ The maximum value of an unsigned integer is `2^n - 1` and not `2^n` because inte
 __Escape character:__ in computing an escape character is a character which invokes an alternate interpretation of subsequent character(s). For example the backslash ("\") is used as a marker to tell the compiler/interpreter that the following character has some special meaning. In C, "\n" means new line and "\t" means tab. The word "escape" refers to temporarily escaping out of parsing the text and into another mode where the subsequent character is treated differently.
 
 | Type | Size | Notes |
-| --- | --- | --- |
+| :---: | :---: | :---: |
 | `int` | 4 bytes | `int` is signed by defaut, so its range is limited because of the sign bit |
 | `long` | 8 bytes |
 | `unsigned int` | 4 bytes | `unsigned int` has increased range because it does not need a sign bit |
