@@ -45,6 +45,8 @@ XOR: One or the other, but not both
 
 OR: One, or the other, or both
 
+Information on how to set, clear, and toggle bits can be found [here](https://stackoverflow.com/questions/47981/how-do-you-set-clear-and-toggle-a-single-bit).
+
 # Misc
 
 __Escape character:__ in computing an escape character is a character which invokes an alternate interpretation of subsequent character(s). For example the backslash ("\") is used as a marker to tell the compiler/interpreter that the following character has some special meaning. In C, "\n" means new line and "\t" means tab. The word "escape" refers to temporarily escaping out of parsing the text and into another mode where the subsequent character is treated differently.
