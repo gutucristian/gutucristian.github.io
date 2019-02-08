@@ -53,7 +53,10 @@ __Two's Complement__: one of many ways to represent negative integers with bit p
 1. Perform 1s complement (flip all 1s and 0s)
 2. Add 1
 3. Result is the value of the original bit sequence `* -1`
+
 More [here](https://chortle.ccsu.edu/AssemblyTutorial/Chapter-08/ass08_17.html).
+
+The maximum value of an unsigned integer is `2^n - 1` and not `2^n` because integers start at 0, but our counting starts at 1. So, `2^32-1` is the maximum value for a 32-bit unsigned integer (32 binary digits). `2^32` is the number of possible values.
 
 __Escape character:__ in computing an escape character is a character which invokes an alternate interpretation of subsequent character(s). For example the backslash ("\") is used as a marker to tell the compiler/interpreter that the following character has some special meaning. In C, "\n" means new line and "\t" means tab. The word "escape" refers to temporarily escaping out of parsing the text and into another mode where the subsequent character is treated differently.
 
