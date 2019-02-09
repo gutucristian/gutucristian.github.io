@@ -75,8 +75,13 @@ The size of these data types is dependent on the underlying computer architectur
 
 A common question I hear is: "why is `sizeof(int)` 4 bytes if I have a 64-bit machine?" The answer to this is simple: 64-bit machine can mean many things. Usually, though, this means that the CPU has registers this big. The __size of the data types__, however, __is determined by the compiler__. That said, the size of a pointer on a 64-bit machine has to be 8 bytes (1 byte = 8 bits). The reason for this is that it needs to be able to access the entire main memory address space which is 64 bits ([source](https://stackoverflow.com/questions/10197242/what-should-be-the-sizeofint-on-a-64-bit-machine/10197311)). Remember main memory is actually your random access memory (a.k.a., RAM). If you are wondering how we can use an 8 byte pointer to access volatile memory (e.g., HDD) which expands beyond `2^64` number of bytes read [here](https://superuser.com/questions/487076/why-is-it-so-that-32-bit-is-limited-to-4-gb-ram-but-it-can-easily-support-1-tb-h/487079).
 
-| Priority apples | Second priority | Third priority |
-|-------|--------|---------|
-| ambrosia | gala | red delicious |
-| pink lady | jazz | macintosh |
-| honeycrisp | granny smith | fuji |
+<div class="datatable-begin"></div>
+
+Food    | Description                           | Category | Sample type
+------- | ------------------------------------- | -------- | -----------
+Apples  | A small, somewhat round ...           | Fruit    | Fuji
+Bananas | A long and curved, often-yellow ...   | Fruit    | Snow
+Kiwis   | A small, hairy-skinned sweet ...      | Fruit    | Golden
+Oranges | A spherical, orange-colored sweet ... | Fruit    | Navel
+
+<div class="datatable-end"></div>
