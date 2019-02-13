@@ -9,7 +9,10 @@ There are [four steps](https://www.calleerlandsson.com/the-four-stages-of-compil
 4. Linking
 
 When compiling, there are various command line arguments you can pass depending on what you wish to do. A few useful arguments are:
-- `-Wall`
+- `-Wall` - prints all warnings to `stdout`
+- `-std=c99` - specifies which standard to use to compile, in this case `c99`
+- `-g` - includes debug information in executable, this helps when using gdb
+- `-o` - gives executable a custom name instead of generic `a.out`
 
 For example, if you compile with `cc -Wall file.c` then compiler messages will be generated and printed to `stdout`. More [here](https://www.rapidtables.com/code/linux/gcc/gcc-wall.html).
 
