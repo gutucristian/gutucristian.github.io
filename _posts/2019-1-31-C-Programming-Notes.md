@@ -37,7 +37,7 @@ Sample Makefile:
     rm -rf *.o *~ $(TARGETS)
 {% endhighlight %}
 
-`$@` is a special macro whose value is the file name of the target.
+`$@` is a special macro whose value is the file name of the target. More [here](https://stackoverflow.com/questions/3220277/what-do-the-makefile-symbols-and-mean).
 
 # Bit Manipulation and Boolean Logic
 
