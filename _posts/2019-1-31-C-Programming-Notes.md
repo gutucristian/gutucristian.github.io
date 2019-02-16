@@ -91,3 +91,11 @@ Upon finishing execution programs must return an "exit code" which is a value be
 - `255\*` - Exit status out of range
 
 To check the status code first run your program and then execute: `echo $?`. More [here](https://shapeshed.com/unix-exit-codes/).
+
+# Real vs. User. vs System time
+
+- **Real** time is wall clock time (time from start to finish). This is all elapsed time including time slices used by other processes (due to CPU time sharing) and time the process spends blocked (for example if it is waiting for I/O to complete).
+- **User** time is the amount of CPU time spent in _user-mode code_ (outside the kernel) on behalf of this process. Other processes and time spent blocked are not included towards this figure.
+- **System** time is the amount of time spent in the _kernel_ on behalf of this process. This refers to CPU time spent on system calls within the kernel, as opposed to library code, which is still running in user-space.
+
+`usr + sys` time will tell you how much _CPU time_ your process used. Note that this is across all CPUs, so if the process has multiple threads and this process is running on a machine with more than one processor it could exceed the the wall clock time reported by `real`. For instance, the process may take only `16` seconds to run but it could have been using four threads each of which ran `8` seconds in parallel. In this case the user + system time will count the time for each thread (so `8 * 4 = 24` seconds) plus the additional `8` seconds for the main thread. So in total `user + sys` time will be `32` seconds while real time is `16` seconds. Another potential issue could be I/O: if your application spends a good deal of time waiting to receive a file or stream, then obviously the real time would greatly exceed the user/sys time because no CPU time is used while waiting to get access to a file or something similar. Read more [here](https://stackoverflow.com/questions/556405/what-do-real-user-and-sys-mean-in-the-output-of-time1).
