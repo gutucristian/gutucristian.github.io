@@ -13,6 +13,7 @@ When compiling, there are various command line arguments you can pass depending 
 - `-std=c99` - specifies which standard to use to compile, in this case `c99`
 - `-g` - includes debug information in executable, this helps when using gdb
 - `-o` - gives executable a custom name instead of generic `a.out`
+- `-S` - saves assembler output (does not link abd executable is not produced)
 
 For example, if you compile with `cc -Wall file.c` then compiler messages will be generated and printed to `stdout`. More [here](https://www.rapidtables.com/code/linux/gcc/gcc-wall.html).
 
