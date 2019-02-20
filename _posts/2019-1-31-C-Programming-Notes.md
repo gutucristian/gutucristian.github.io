@@ -100,3 +100,39 @@ To check the status code first run your program and then execute: `echo $?`. Mor
 - **System** time is the amount of time spent in the _kernel_ on behalf of this process. This refers to CPU time spent on system calls within the kernel, as opposed to library code, which is still running in user-space.
 
 `usr + sys` time will tell you how much _CPU time_ your process used. Note that this is across all CPUs, so if the process has multiple threads and this process is running on a machine with more than one processor it could exceed the the wall clock time reported by `real`. For instance, the process may take only `16` seconds to run but it could have been using four threads each of which ran `8` seconds in parallel. In this case the user + system time will count the time for each thread (so `8 * 4 = 24` seconds) plus the additional `8` seconds for the main thread. So in total `user + sys` time will be `32` seconds while real time is `16` seconds. Another potential issue could be I/O: if your application spends a good deal of time waiting to receive a file or stream, then obviously the real time would greatly exceed the user/sys time because no CPU time is used while waiting to get access to a file or something similar. Read more [here](https://stackoverflow.com/questions/556405/what-do-real-user-and-sys-mean-in-the-output-of-time1).
+
+# Struct
+An array is a continuous structure in memory that allows you to store data of the same type. In C, a **structure** is a user defined data type that allows the combination of data items of different types. 
+
+{% highlight C linenos %}
+  struct Book {
+    char title[50];
+    char author[50];
+    char subject[100];
+    int book_id;
+  };
+
+  int main(void) {
+    struct Book book1;
+    strcpy(book.title, "Shrek");
+    strcpy(book1.author, "Andrew Adamson, Vicky Jenson");
+    strcpy(book.subject, "An ogre named Shrek.");
+    book1.book_id = 27;
+    return 0;
+  }
+{% endhighlight %}
+
+Structs are commonly used with **typedef** which are used to give a type a new name.
+
+{% highlight C linenos %}
+  typedef struct Books {
+    char title[50];
+    char author[50];
+    char subject[100];
+    int book_id;
+  } book;
+{% endhighlight %}
+
+Another example: `typedef unsigned char BYTE;`
+
+A `char` takes up one byte of memory, so we can rename an `unsigned char` to a `BYTE`.
