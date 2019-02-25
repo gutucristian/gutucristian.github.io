@@ -9,11 +9,12 @@ There are [four steps](https://www.calleerlandsson.com/the-four-stages-of-compil
 4. Linking
 
 When compiling, there are various command line arguments you can pass depending on what you wish to do. A few useful arguments are:
-- `-Wall` - prints all warnings to `stdout` More [here](https://www.rapidtables.com/code/linux/gcc/gcc-wall.html).
-- `-std=c99` - specifies which standard to use to compile, in this case `c99`
-- `-g` - includes debug information in executable, this helps when using gdb
-- `-o` - gives executable a custom name instead of generic `a.out`
-- `-S` - saves assembler output (does not link abd executable is not produced)
+- `-Wall`: prints all warnings to `stdout`. More [here](https://www.rapidtables.com/code/linux/gcc/gcc-wall.html).
+- `-std=c99`: specifies which standard to use to compile, in this case `c99`
+- `-g`: includes debug information in executable, this helps when using gdb
+- `-o`: gives executable a custom name instead of generic `a.out`
+- `-S`: saves assembler output (does not link and executable is not produced)
+- `c`: only compiles. The output is an object file with a `.o` extension that contains machine code. **Note** the file is not yet executable as it was not _linked_ yet
 
 # Makefile
 
