@@ -14,7 +14,7 @@ When compiling, there are various command line arguments you can pass depending 
 - `-g`: includes debug information in executable, this helps when using gdb
 - `-o`: gives executable a custom name instead of generic `a.out`
 - `-S`: saves assembler output (does not link and executable is not produced)
-- `c`: only compiles. The output is an object file with a `.o` extension that contains machine code. **Note** the file is not yet executable as it was not _linked_ yet
+- `-c`: only compiles. The output is an object file with a `.o` extension that contains machine code. **Note** the file is not yet executable as it was not _linked_ yet
 
 # Makefile
 
