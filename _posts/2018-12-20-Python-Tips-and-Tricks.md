@@ -1,4 +1,4 @@
-My personal (unfinished) compilation of Python tips and tricks.
+My personal (unfinished) list of Python tips and tricks.
 
 # Sorting
 
