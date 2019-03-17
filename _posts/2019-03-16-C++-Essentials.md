@@ -1,6 +1,4 @@
-Study materials to rock your next coding interview.
-
-__Note__: the following content is a work in progress.
+C++ and object oriented programing (OOP)
 
 ## Object Oriented Programmin (OOP)
 
