@@ -8,7 +8,9 @@ Templates allow us to define a blueprint (or formula) for creating a generic cla
 
 For example, in the STL, there is a single definition of the `vector` container, but we can define many different kinds of vectors: `vector<int>`, `vector<float>`, `vector<string>`, and `vector<T>` where `T` is any type.
 
-In C++ we can write functions this can be achieved using Generic formal parameter are the way C++ enables
+Generic programming depends on the ability for classes, methods, and functions to accept generic parameters. In C++ this is achieved via _template parameters_. A template parameter is a special kind of parameter that can be used to pass a type as an argument. Just like regular function parameters allow us to pass values to a function, template parameters allow us to pass types to a function. Templates can use these parameters as if they where any regular type.
+
+Below is a function template that returns the greater of object `a` and `b`:
 
 {% highlight c++ linenos %}
   template <class myType>
@@ -16,6 +18,10 @@ In C++ we can write functions this can be achieved using Generic formal paramete
     return (a>b?a:b);
   }
 {% endhighlight %}
+  
+Here I created a template with myType as the template parameter. The template parameter represents a type that has not been specified yet, but can be used in the tamplate function as though it were a regular type.
+
+For example to ...
 
 ## Container
 
@@ -64,3 +70,7 @@ Class variable(s): also known as static member variables and there is only one c
 - array
 - trees
 - linked list
+
+## Misc
+
+A formal parameter is a variable which is part of the method signature. An argument is the variable being passed in to the function or method.
