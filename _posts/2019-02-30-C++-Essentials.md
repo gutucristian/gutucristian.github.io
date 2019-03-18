@@ -1,5 +1,7 @@
 C++ and object oriented programing (OOP)
 
+__Note:__ this post is a work in progress
+
 ## Template
 
 Templates are the foundation of generic programming, which involves writing code in a way that is independent of any particular type.
@@ -20,8 +22,6 @@ Below is a function template that returns the greater of object `a` and `b`:
 {% endhighlight %}
   
 Here I created a template with myType as the template parameter. The template parameter represents a type that has not been specified yet, but can be used in the tamplate function as though it were a regular type.
-
-For example to ...
 
 ## Container
 
@@ -58,18 +58,6 @@ Object: a specific instance of that class
 Instance variable(s): belong to a specific instance of a class
 
 Class variable(s): also known as static member variables and there is only one copy of these variables that is shared with all instances of that class
-
-## Algorithms
-- sorting (mergesort, quicksort, heapsort, radix sort)
-
-## Data Structures
-- heap (min heap, max heap)
-- queue (using array, using linked list)
-- stack (using array, using linked list)
-- hashtable (a.k.a., map or dictionary)
-- array
-- trees
-- linked list
 
 ## Misc
 
