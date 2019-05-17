@@ -26,7 +26,7 @@ A basic requirement of most hash functions is that it should provide a **uniform
 A critical statistic for a hash table is the **load factor** defined as:
 
 {% highlight java linenos %}
-load factor = n / k
+  load factor = n / k
 {% endhighlight %}
 
 where
