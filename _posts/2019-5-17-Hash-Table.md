@@ -35,7 +35,7 @@ where
 
 `k` = number of buckets
 
-The larger the load factor the slower the hash table becomes. Namely, the expected constant time property of the hash table assumes that the load factor is kept below some bound. If we have a fixed number of buckets, the time for a lookup grows with the number of entries added. In Java 10, the default load factor is set to `.75`. However, the load factor alone is not indicative enough of the spread of data in the hash table. For example, assume we have two table that have `1,000` entries and `1,000` buckets. One table has exactly one entry in each bucket, the other has all entries in the same bucket. Clearly, the hash function for the second table is not working properly. Thus, **variance** is also an important parameter to consider when analyzing the efficiency of a hash table and its hash function. Lastly, a load factor is not always beneficial. In fact, as the load factor approaches `0`, the proportion of unused aread in the hash table increases, but there is not any reduction in search cost. Evidently, this results in wasted memory. Ultimately, we conclude that (as always) balance is key!
+The larger the load factor the slower the hash table becomes. Namely, the expected constant time property of the hash table assumes that the load factor is kept below some bound. If we have a fixed number of buckets, the time for a lookup grows with the number of entries added. In Java 10, the default load factor is set to `.75`. However, the load factor alone is not indicative enough of the spread of data in the hash table. For example, assume we have two tables that have `1,000` entries and `1,000` buckets. One table has exactly one entry in each bucket, the other has all entries in the same bucket. Clearly, the hash function for the second table is not working properly. Thus, **variance** is also an important parameter to consider when analyzing the efficiency of a hash table and its hash function. Lastly, a load factor is not always beneficial. In fact, as the load factor approaches `0`, the proportion of unused area in the hash table increases, but there is not any reduction in search cost. Evidently, this results in wasted memory. Ultimately, we conclude that (as always) balance is key!
 
 ## Collision resolution
 
@@ -44,6 +44,14 @@ There are various ways to deal with collisions:
 
 With this approach (which is the most common), the hash table's array maps to a linked list of items. We just add items to this linked list. As long as number of collisions is small, this is quite efficient. In the worst case, lookup is `O(n)`, where `n` is the number of elements in the hash table. This would only happen with either very strange data or a poor hash function or both. It is also worth that this approach inherits the disadvantages of linked lists. Namely, when storing small keys and values, the space overhead of the `next` pointer can be a significant overhead. Additionally, traversing linked lists had poor cache performance, making the processor cache(s) (e.g., L1, L2, L3 cache) ineffective.
 
-2. Chaining with binary search trees
+2. Chaining with binary search trees:
+
+Instead of storing collisions in a list, we can use any other data structure that supports the required operations (i.e., write, read). In this case, we use a **binary search tree (BST)** which reduces the worst-case runtime to `O(log(n))`. In practice, however, we rarely implement this approach unless we expect a nonuniform distribution. The reason for this is that maintaining the BST introduces extra complexity and may cause even worse performance for small hash tables where the time spent inserting into and balancing the tree is greater thatn the time needed to perform a linear scan.
+
 3. Open addressing with linear probing
+
+In this approach, when a collision occurs, we move on to the next index in the array until we find an open spot. If the number of collisions is low, this is a fast and space efficient solution. One drawback, however, is that the total number of entries in the hash table is limited by the size of the array.
+
 4. Quadratic probing and double hashing
+
+The distance between probes need not be linear. We can, for instance, increase the probe distance quadratically or we could use a second hash function to determing the probe distance. Ultimately, the possibilities are endless. The key is to perform the same steps when you are reading the hash table.
