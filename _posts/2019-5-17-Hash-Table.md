@@ -4,14 +4,16 @@ In computer science, a hash table is a **data structure** that implements an **a
 
 The idea of hashing is to distribute the entries (key-value pairs) across an array of buckets. Given a key, the hash function computes an **index** that suggests in what bucket the entry can be found:
 
-`index = f(key, arraySize)`
+{% highlight java linenos %}
+index = f(key, arraySize)
+{% endhighlight %}
 
 Often this is done in two steps:
 
-```
+{% highlight java linenos %}
 hash = hashfunc(key)
 index = hash % arraySize
-```
+{% endhighlight %}
 
 In this method, the hash is independent of the array size and is then _reduced_ (a number between `0` and `arraySize - 1`) to an index using the modulo operator (`%`).
 
@@ -23,7 +25,9 @@ A basic requirement of most hash functions is that it should provide a **uniform
 
 A critical statistic for a hash table is the **load factor** defined as:
 
-`load factor = n / k`
+{% highlight java linenos %}
+load factor = n / k
+{% endhighlight %}
 
 where
 
