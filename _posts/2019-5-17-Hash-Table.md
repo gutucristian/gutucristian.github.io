@@ -5,14 +5,14 @@ In computer science, a hash table is a **data structure** that implements an **a
 The idea of hashing is to distribute the entries (key-value pairs) across an array of buckets. Given a key, the hash function computes an **index** that suggests in what bucket the entry can be found:
 
 {% highlight java linenos %}
-index = f(key, arraySize)
+  index = f(key, arraySize)
 {% endhighlight %}
 
 Often this is done in two steps:
 
 {% highlight java linenos %}
-hash = hashfunc(key)
-index = hash % arraySize
+  hash = hashfunc(key)
+  index = hash % arraySize
 {% endhighlight %}
 
 In this method, the hash is independent of the array size and is then _reduced_ (a number between `0` and `arraySize - 1`) to an index using the modulo operator (`%`).
@@ -39,3 +39,8 @@ The larger the load factor the slower the hash table becomes. Namely, the expect
 
 ## Collision resolution
 
+There are various ways to deal with collisions:
+1. Chaining with linked lists
+2. Chaining with binary search trees
+3. Open addressing with linear probing
+4. Quadratic probing and double hashing
