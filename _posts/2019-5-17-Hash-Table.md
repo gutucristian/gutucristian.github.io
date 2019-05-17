@@ -40,19 +40,20 @@ The larger the load factor the slower the hash table becomes. Namely, the expect
 ## Collision resolution
 
 There are various ways to deal with collisions:
-(1) Chaining with linked lists:
+
+**(1)** Chaining with linked lists:
 
 With this approach (which is the most common), the hash table's array maps to a linked list of items. We just add items to this linked list. As long as number of collisions is small, this is quite efficient. In the worst case, lookup is `O(n)`, where `n` is the number of elements in the hash table. This would only happen with either very strange data or a poor hash function or both. It is also worth that this approach inherits the disadvantages of linked lists. Namely, when storing small keys and values, the space overhead of the `next` pointer can be a significant overhead. Additionally, traversing linked lists had poor cache performance, making the processor cache(s) (e.g., L1, L2, L3 cache) ineffective.
 
-(2) Chaining with binary search trees:
+**(2)** Chaining with binary search trees:
 
 Instead of storing collisions in a list, we can use any other data structure that supports the required operations (i.e., write, read). In this case, we use a **binary search tree (BST)** which reduces the worst-case runtime to `O(log(n))`. In practice, however, we rarely implement this approach unless we expect a nonuniform distribution. The reason for this is that maintaining the BST introduces extra complexity and may cause even worse performance for small hash tables where the time spent inserting into and balancing the tree is greater thatn the time needed to perform a linear scan.
 
-(3) Open addressing with linear probing
+**(3)** Open addressing with linear probing
 
 In this approach, when a collision occurs, we move on to the next index in the array until we find an open spot. If the number of collisions is low, this is a fast and space efficient solution. One drawback, however, is that the total number of entries in the hash table is limited by the size of the array.
 
-(4) Quadratic probing and double hashing
+**(4)** Quadratic probing and double hashing
 
 The distance between probes need not be linear. We can, for instance, increase the probe distance quadratically or we could use a second hash function to determing the probe distance. Ultimately, the possibilities are endless. The key is to perform the same steps when you are reading the hash table.
 
@@ -60,9 +61,9 @@ ________________________________________________________________________________
 
 **Data structure:** a data structure is a collection of values, the relationship among them, and the functions or operations that can be applied to the data.
 
-**Abstract data type (ADT):** is a way of looking at a data structure. Namely, we focus on what it does and ignoring how it does its job.
+**Abstract data type (ADT):** is a way of looking at a data structure. Namely, we focus on what it does and ignore how it does its job.
 
-A nice way to think of ADTs vs data structures:
+A nice way to think of abstract data types vs data structures:
 
 > ADT is to an interface (what it does) what a data structure is to a class (how it does it).
 
