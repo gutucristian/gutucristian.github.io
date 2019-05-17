@@ -30,3 +30,8 @@ where
 `n` = number of entries (key-value pairs) in the hash table, and
 
 `k` = number of buckets
+
+The larger the load factor the slower the hash table becomes. Namely, the expected constant time property of the hash table assumes that the load factor is kept below some bound. If we have a fixed number of buckets, the time for a lookup grows with the number of entries added. In Java 10, the default load factor is set to `.75`. However, the load factor alone is not indicative enough of the spread of data in the hash table. For example, assume we have two table that have `1,000` entries and `1,000` buckets. One table has exactly one entry in each bucket, the other has all entries in the same bucket. Clearly, the hash function for the second table is not working properly. Thus, **variance** is also an important parameter to consider when analyzing the efficiency of a hash table and its hash function. Lastly, a load factor is not always beneficial. In fact, as the load factor approaches `0`, the proportion of unused aread in the hash table increases, but there is not any reduction in search cost. Evidently, this results in wasted memory. Ultimately, we conclude that (as always) balance is key!
+
+## Collision resolution
+
