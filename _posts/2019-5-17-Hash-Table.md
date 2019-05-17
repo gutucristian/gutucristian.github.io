@@ -41,7 +41,9 @@ The larger the load factor the slower the hash table becomes. Namely, the expect
 
 There are various ways to deal with collisions:
 1. Chaining with linked lists:
+
 With this approach (which is the most common), the hash table's array maps to a linked list of items. We just add items to this linked list. As long as number of collisions is small, this is quite efficient. In the worst case, lookup is `O(n)`, where `n` is the number of elements in the hash table. This would only happen with either very strange data or a poor hash function or both. It is also worth that this approach inherits the disadvantages of linked lists. Namely, when storing small keys and values, the space overhead of the `next` pointer can be a significant overhead. Additionally, traversing linked lists had poor cache performance, making the processor cache(s) (e.g., L1, L2, L3 cache) ineffective.
+
 2. Chaining with binary search trees
 3. Open addressing with linear probing
 4. Quadratic probing and double hashing
