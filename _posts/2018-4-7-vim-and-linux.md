@@ -30,13 +30,13 @@ ____________________________________________________________
 
 GNU `tar` is an archiving program designed to store multiple files in a single file (an archive) and to manipulate such files. File compression tools (like gzip and bzip2) compress single files (not groups of files). So, we use `tar` to group files into one monolithic file and then use a file compression tool like `gzip` to compress the file and save memory. In Windows, this is equivalent to `WinRAR` and `WinZip`. Read more [here](https://stackoverflow.com/questions/295860/why-do-people-use-tarballs).
 
-To unpack a tarball:
+To unpack a tarball (unpacks tar files compressed with gzip as denoted by `.tar.gz` file extension):
 
-`tar -xvf filename`
+`tar -xvzf filename`
 
-To make a new tarball `fred.tar.gz` from a directory `fred`:
+To make a new tarball `fred.tar.gz` from a directory `fred` (creates a `.tar.gz` file):
 
-`tar -zcvf fred.tar.gz fred`
+`tar -cvzf fred.tar.gz fred`
 
 `tar` option parameter meanings:
 
@@ -46,7 +46,7 @@ To make a new tarball `fred.tar.gz` from a directory `fred`:
 - **x**	 extract from an archive
 - **z**	 put the archive through gzip
 
-Read more [here](http://computing.help.inf.ed.ac.uk/FAQ/whats-tarball-or-how-do-i-unpack-or-create-tgz-or-targz-file).
+Read more [here](http://computing.help.inf.ed.ac.uk/FAQ/whats-tarball-or-how-do-i-unpack-or-create-tgz-or-targz-file) and [here](http://wiki.linuxquestions.org/wiki/Packing_and_Unpacking_Files).
 
 ____________________________________________________________
 
@@ -82,4 +82,23 @@ Most of the time you don’t want to maintain two separate config files for logi
 
 Good [read](http://mywiki.wooledge.org/DotFiles) on configuring your login sessions with for file.
 
+More on choosing between `.bashrc`, `.profile`, `.bash_profile` [here](https://superuser.com/questions/789448/choosing-between-bashrc-profile-bash-profile-etc).
+
 To reload `~/.bashrc` without logging out and back in run `source ~/.bashrc` or `. ~/.bashrc`.
+
+____________________________________________________________
+
+Understanding the job control commands in Linux. A job is a process that the shell manages. Each job is assigned a seuqential id. Beacuse a job is a process, each job has an associarted process id (PID) which is given out by the OS. There are three type of job statuses:
+1. **Foreground**: when you enter a command in the terminal the command blocks (i.e., occupies) that terminal window until it complestes.
+2. **Backgorund**: when you enter an ampersand (&) symbol at the end of a command line, the command runs without blocking the terminal window. The shell prompt is displayed immediately adter you press the return key.
+3. **Stopped**: if you press`Ctrl+Z` for a foreground job, the job stops running. Note: it does not terminate, instead it pauses exectution.
+
+Commands:
+
+- `jobs`: lists all jobs
+
+- `bg %n`: sends current or specified job to background where `n` is the job id (not PID!)
+
+- `fg %n`: brings current or specified job to foreground where `n` is the job id
+
+- `Ctrl+Z`: stops foreground job and places it in the background as a _stoped_ job.
