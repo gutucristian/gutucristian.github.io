@@ -29,3 +29,13 @@ A python generator function returns values on a per need basis. This is useful f
  for value in fibonacci(20):
    print(value)
 {% endhighlight %}
+
+# OOP
+
+Four pillars to OOP:
+1. Abstraction
+2. Encapsulation
+3. Inheritance
+4. Polymorphism
+
+__Polymorphism__ is the ability to leverage the same interface for different underlying forms such as data types or classes [source](https://www.digitalocean.com/community/tutorials/how-to-apply-polymorphism-to-classes-in-python-3). This permits functions to use entities of different types at different times.
