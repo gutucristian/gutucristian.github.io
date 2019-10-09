@@ -3,11 +3,11 @@ layout: page
 title: About
 permalink: /about/
 ---
-Hey there, my name is Cristian Gutu and I am a junior at the University of Connecticut majoring in Computer Science. Currently, I am a teaching assistant for a systems programming class. In my free time I enjoy learning more about C programming, algorithms, and data structures! I also enjoy skate skiing in the winter, running in the summer, and calisthenics all year round :) 
+Hey there, my name is Cristian Gutu and I am a senior at the University of Connecticut majoring in Computer Science with a concentration in Software Engineering. I am largely interested in full stack development, DevOps, and machine learning with internship experience in all of these areas. Primarily I work with Python, Node.js, and JavaScript, but I've also had exposure to C, Java, and C++ in an academic setting. Technology wise, I have experience with React.js, Docker, Jenkins, GitHub, BitBucket, and AWS (Lambda, Redshift, Dynamo, S3, API Gateway). I am further developing my experience with AWS as part of my senior design project with Lockheed Martin. 
 
 ### More Information
 
-Check out my [resume](https://drive.google.com/file/d/1iDJ8Q8042qowMKm3wbqb_DWiHsd1X2sM/view?usp=sharing) to learn more about me.
+See my [resume](https://docs.google.com/document/d/1pEbZluY3q7cV-g2ByGuHqiM-l4PWSKM5soD0-XVGMt0/edit?usp=sharing) to learn more about me.
 
 ### Contact me
 
