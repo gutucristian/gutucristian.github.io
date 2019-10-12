@@ -4,4 +4,4 @@ Solution is to traverse BST tree in-order. This guarantees that we will visit el
 
 Why do we swap prev with cur when we find two places where the invariant is broken?
 
-Because we traverse tree in-order we know that prev node of first tuple is most likely in the left half of the tree or (sub-tree). So, by definition, prev 
+Because prev in first tuple is greater than cur in first tuple. The second tuple is found somewhere in the right part of the tree or subtree where the values are greater. Because of this, prev must have come from that side and cur from second tuple (which is smaller than prev in second tuple) must have come from left side. So we swap prev from first tuple with cur from second tuple. 
