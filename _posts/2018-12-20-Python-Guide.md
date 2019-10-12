@@ -12,6 +12,8 @@ My personal (unfinished) list of Python tips and tricks.
 
 `type(c1, c2)` only returns `True` if `c1` is an instance of `c2` 
 
+Given a list `lst = [1, 2, 3]` the syntax `l[::-1]` will return a new list with the elements in reversed order. Compare this with `lst.reverse()` which will reverse the list **in-place**. 
+
 # Generators
 
 A python generator function returns values on a per need basis. This is useful for situations where we work with infinite sequences that may not be calculated and stores at once (e.g., the 2,000,000 th fibonacci number). When a function includes the `yield` keyword it automatically becomes a generator. Everytime the function is called we receive the next number in the sequence (as such generators store their state).
