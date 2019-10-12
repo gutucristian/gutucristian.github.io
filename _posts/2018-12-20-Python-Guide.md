@@ -12,7 +12,7 @@ My personal (unfinished) list of Python tips and tricks.
 
 `type(c1, c2)` only returns `True` if `c1` is an instance of `c2` 
 
-Given a list `lst = [1, 2, 3]` the syntax `l[::-1]` will return a new list with the elements in reversed order. Compare this with `lst.reverse()` which will reverse the list **in-place**. 
+Given a list `lst = [1, 2, 3]` the syntax `lst[::-1]` will return a new list with the elements in reversed order. Compare this with `lst.reverse()` which will reverse the list **in-place**. 
 
 # Generators
 
