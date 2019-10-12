@@ -1,1 +1,7 @@
 Problem description is [here](https://leetcode.com/problems/recover-binary-search-tree/).
+
+Solution is to traverse BST tree in-order. This guarantees that we will visit elements in ascending order. As we traverse the tree we need to keep track of the previous node and the current element. If we observe that the value of the current node is smaller than the value of the previous node, then we identified a situation where the BST invariant is broken. Specifically, we identified a situation where the value of a parent node is greater than the value of one of its child nodes. So we want to keep a record of this as we traverse the rest of the BST. Namely, we will store a tuple of (prev, cur) nodes. If we find another such occurence, then we record this again as a tuple (prev, cur). To recover the BST we need to swap prev of first tuple with cur of second tuple. If we only record one such tuple then simple swap prev with cur.
+
+Why do we swap prev with cur when we find two places where the invariant is broken?
+
+Because we traverse tree in-order we know that prev node of first tuple is most likely in the left half of the tree or (sub-tree). So, by definition, prev 
