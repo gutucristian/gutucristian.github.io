@@ -7,7 +7,7 @@ Hey there, my name is Cristian Gutu and I am a senior at the University of Conne
 
 ### More Information
 
-See my [resume](https://docs.google.com/document/d/1pEbZluY3q7cV-g2ByGuHqiM-l4PWSKM5soD0-XVGMt0/edit?usp=sharing) to learn more about me.
+See my [resume](https://drive.google.com/file/d/1b8tihcsW4E9WXlXhqIwv3_fGHd-KfkMC/view?usp=sharing) to learn more about me.
 
 ### Contact me
 
