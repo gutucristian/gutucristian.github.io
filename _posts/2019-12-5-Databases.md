@@ -28,4 +28,22 @@ A prime attribute is an attribute that is a member of some candidate key.
 
 A nonprime attribute is not a prime attribute and is not a member of any candidate key.
 
-In relational databases we want to normalize our data
+In relational databases we want to normalize our data. The degree of normalization depends in what normal form out data is.
+
+First normal form: 1NF
+A relational schem R is in first normal form if all of its underlying domains contain atomic values only.
+
+Second Normal Form: 2NF         
+A relation schema is in second normal form if every non-prime attribute A in R is not partially dependent on a key. For example, consider the functional dependencies:
+
+FDs = {AB -> C, B -> C}
+
+This is not in 2NF because C is only partially dependent on the key AB. It is only partially dependent on AB because we can still identify C only knowing B which is only part of the key.
+
+Consider another example. Say we have a table SCORE with the domain `(score_id, student_id, subject_id, score, teacher)`. In this table we can set our primary key to be `(student_id, subject_id)` (this is also known as a composite primary key). Evidently, we can use this primary key to uniquely identify a score for a student in some subject. However, the attribute `teacher` can be uniquely identified only using `subject_id`. Thus, `teacher` is partially dependent on our key which is made up of the attributes `(student_id, subject_id)`. Hence, this is not following 2NF.
+
+Third Normal Form: 3NF
+A relation schema is in third normal form if it is in 2NF and 1NF and every non-prime attribute A in R is non-transitively dependent on key. To be in 3NF whenever a FD X -> A holds in R, either (a) X is a superkey of R or (b) A is a prime attribute of R.
+
+BCNF:
+A relation is in Boyce-Codd Normal Form if for every X->A in R X is a superkey of R.
