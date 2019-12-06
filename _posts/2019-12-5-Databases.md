@@ -47,3 +47,16 @@ A relation schema is in third normal form if it is in 2NF and 1NF and every non-
 
 BCNF:
 A relation is in Boyce-Codd Normal Form if for every X->A in R X is a superkey of R.
+
+__Closure F+ of F:__ given a set of FDs F, the closure F+ of F is the set of all the dependencies that can be infered from F.
+
+__F covers G:__ F coverd G if every FD in G can be inferred from F (i.e., if G+ is a subset of F+).
+
+__F covers G:__ F coverd G if every FD in G can be inferred from F (i.e., if G+ is a subset of F+).
+
+__Dependency preservation property of a decomposition:__ all functional dependencies (FDs) are included in the decompostion.
+
+__To be lossless decomposition the following conditons have to be met:__
+1. Union of Attributes of R1 and R2 must be equal to attribute of R. Each attribute of R must be either in R1 or in R2.
+2. Intersection of Attributes of R1 and R2 must not be NULL
+3. Common attribute must be a key for at least one relation (R1 or R2)
