@@ -102,3 +102,5 @@ Commands:
 - `fg %n`: brings current or specified job to foreground where `n` is the job id
 
 - `Ctrl+Z`: stops foreground job and places it in the background as a _stoped_ job.
+
+To open a terminal session in vim type `:term`. To switch between the vim and terminal session press `Ctrl+W` ([see](https://stackoverflow.com/questions/1236563/how-do-i-run-a-terminal-inside-of-vim)).
