@@ -10,22 +10,20 @@ This will install a tarball in your `~/Downloads` folder with a name approximate
 
 1. Unpack and decompress `node-v12.14.1-linux-x64.tar.xz`:
 
-`tar xf node-v12.14.1-linux-x64.tar.xz`
+    `tar xf node-v12.14.1-linux-x64.tar.xz`
 
-2. Now you will see `node-v12.14.1-linux-x64` in your current directory
+2. Now you will see `node-v12.14.1-linux-x64` in your current directory. Navigate to `/usr/local/lib/` and make `nodejs` directory:
 
-Navigate to `/usr/local/lib/` and make `nodejs` directory:
-
-`cd /usr/local/lib/ && mkdir nodejs`
+    `cd /usr/local/lib/ && mkdir nodejs`
 
 3. Move `node-v12.14.1-linux-x64` to `/usr/local/lib/`:
 
-`mv ~/Downloads/node-v12.14.1-linux-x64 .`
+    `mv ~/Downloads/node-v12.14.1-linux-x64 .`
 
 4. Export `/usr/local/lib/nodejs/bin` which contains `node` executable to `$PATH` in `~/.bashrc`:
 
-Append `export PATH=$PATH:/usr/local/lib/nodejs/node-v12.14.1-linux-x64/bin` to `~/.bash_rc`
+    append `export PATH=$PATH:/usr/local/lib/nodejs/node-v12.14.1-linux-x64/bin` to `~/.bash_rc`
 
-Note 1: it is recommended to append after existing `$PATH`.
+**Note 1:** it is recommended to append after existing `$PATH`.
 
-Note 2: `~/.bash_rc` is executed by `bash` on **non-login** shells.
+**Note 2:** `~/.bash_rc` is executed by `bash` on **non-login** shells.
