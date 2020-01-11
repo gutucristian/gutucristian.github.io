@@ -1,5 +1,9 @@
 A collection of my JavaScript notes, examples, and guides.
 
+First, a list of my favorite resource:
+- https://github.com/yangshun/front-end-interview-handbook/blob/master/questions/javascript-questions.md
+- https://github.com/getify/You-Dont-Know-JS
+
 # About placing `script` tag
 
 The **modern approach** is to use either `async` or `defer` attributes on `script` tag and place the tag in the `head` of the `html` document. `async` tells the browser it is safe to continue parsing while the script is being downloaded. If we have multiple scripts with the `async` attribute they are downloaded "asynchronously" (i.e., in parallel). Note, the browser is not blocked while the scripts are being downloaded, so the `DOM` construction is not disturbed. `defer` also downloads the scripts asynchronously but _one at a time_ and in the order that they are placed (i.e., first `script` 1 then `script` 2).
