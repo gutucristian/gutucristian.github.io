@@ -86,6 +86,10 @@ More on choosing between `.bashrc`, `.profile`, `.bash_profile` [here](https://s
 
 To reload `~/.bashrc` without logging out and back in run `source ~/.bashrc` or `. ~/.bashrc`.
 
+Sources:
+- https://www.gnu.org/software/bash/manual/html_node/Bash-Startup-Files.html
+- https://askubuntu.com/questions/60218/how-to-add-a-directory-to-the-path
+
 ____________________________________________________________
 
 Understanding the job control commands in Linux. A job is a process that the shell manages. Each job is assigned a seuqential id. Beacuse a job is a process, each job has an associarted process id (PID) which is given out by the OS. There are three type of job statuses:
