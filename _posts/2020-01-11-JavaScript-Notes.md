@@ -12,7 +12,7 @@ The **old approach** is to place the `script` either in the `head` section or at
 
 See [source](https://stackoverflow.com/questions/436411/where-should-i-put-script-tags-in-html-markup).
 
-# Do you need "text/javascript" specified in your `script` tags?
+# Do you need `"text/javascript"` specified in your `script` tags?
 
 This attribute is optional. Since Netscape 2, the default programming language in all browsers has been `JavaScript`. HTML5 doesn't need the `type="text/javascript"` (it's the default).
 
@@ -22,7 +22,7 @@ The term polyfill itself refers to some code that "allows you to have some speci
 
 For example, the `sessionstorage` property, which stores data for a given user session, is something that’s new in `HTML5`. Let’s say that we want to check to see if that property is available “natively” (which means built into) in the browser. So, we can write some JavaScript code like this to check to see if the `sessionstorage` property is defined:
 
-```
+{% highlight javascript linenos %}
 /*
   we define the isThereSessionStorage variable
   which will store either true or false
@@ -39,7 +39,7 @@ var isThereSessionStorage = (function() {
 if(!isThereSessionStorage) {
   // our polyfill code goes here.... 
 }
-```
+{% endhighlight %}
 
 Sources:
 1. https://stackoverflow.com/questions/7087331/what-is-the-meaning-of-polyfills-in-html5
