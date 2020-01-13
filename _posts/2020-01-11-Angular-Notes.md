@@ -27,3 +27,13 @@ This will install a tarball in your `~/Downloads` folder with a name approximate
 **Note 1:** it is recommended to append after existing `$PATH`.
 
 **Note 2:** `~/.bash_rc` is executed by `bash` on **non-login** shells.
+
+# Directives
+
+Directives are instructions in the DOM (document object model). For example, `<p appTurnGreen>Receives a green backgorund!</p>`. Directives are usually added with an attribute selector. Interestingly, Angular components are directives!
+
+A directive has to be defined (unless it is provided by Angular).
+
+#### `*ngIf`
+
+`*ngIf` is prefixed with `*` because it is a _structural directive_ which means that it changes the structure of the `DOM`. The purpose of `*ngIf` is to dynamically add or not add something to the `DOM`. If the element is not there, it is not hidden, it's just not there. E.g.: `<p *ngIf="serverCreated">Server {{ serverName }} was created }}</p>` will display the name of the server that was created when it was created. The expression between the `""` in `*ngIf` needs to be an expression that evaluates to `True` or `False`. It could be a variable, a function, or some inline code.
