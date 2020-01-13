@@ -37,3 +37,14 @@ A directive has to be defined (unless it is provided by Angular).
 #### `*ngIf`
 
 `*ngIf` is prefixed with `*` because it is a _structural directive_ which means that it changes the structure of the `DOM`. The purpose of `*ngIf` is to dynamically add or not add something to the `DOM`. If the element is not there, it is not hidden, it's just not there. E.g.: `<p *ngIf="serverCreated">Server {{ serverName }} was created }}</p>` will display the name of the server that was created when it was created. The expression between the `""` in `*ngIf` needs to be an expression that evaluates to `True` or `False`. It could be a variable, a function, or some inline code.
+
+#### `*ngIf` with `else`
+
+The easiest way to construct an `*ngIf` with an `else` is to use the regular `*ngIf` and negate the conditional expression. For example, `<p *ngIf="!serverCreated">No server created.</p>`. An alternative is to use an `ng-template` with local reference (marked with the prefix `#`) and then refer to it in the `else` section of the `*ngIf` directive. For example:
+
+{% highlight html linenos %}
+  <p *ngIf="serverCreated; else noServer">Server {{ serverName }} was created }}</p>
+  <ng-template #noServer>
+    <p>No server was created!</p>
+  </ng-template>
+{% endhighlight %}
