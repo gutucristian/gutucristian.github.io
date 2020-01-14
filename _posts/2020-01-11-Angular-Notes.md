@@ -30,7 +30,7 @@ This will install a tarball in your `~/Downloads` folder with a name approximate
 
 # Directives
 
-Directives are instructions in the DOM (document object model). For example, `<p appTurnGreen>Receives a green backgorund!</p>`. Directives are usually added with an attribute selector. Interestingly, Angular components are directives!
+Directives are instructions in the DOM (document object model). For example, `<p appTurnGreen>Receives a green background!</p>`. Directives are usually added with an attribute selector. Interestingly, Angular components are directives!
 
 A directive has to be defined (unless it is provided by Angular).
 
