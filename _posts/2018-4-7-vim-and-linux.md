@@ -70,13 +70,13 @@ ____________________________________________________________
 
 When bash is invoked as an interactive login shell (e.g., connecting to machine via ssh) it first reads and executes commands from the file `/etc/profile`, if that file exists. After reading that file, it looks for `~/.bash_profile`, `~/.bash_login`, and `~/.profile`, in that order, and reads and executes commands from the **first** one that exists and is readable. 
 
-When an interactive shell that is not a login shell (e.g., terminal, xterm) is started, bash reads and executes commands from `~/.bashrc`, if that file exists.
+When an interactive shell that is not a login shell (e.g., terminal, xterm) is started, bash reads and executes commands from `~/.bashrc`, if that file exists (on MacOS with zsh this is `.zshrc`)
 
 `~/.profile` is the place to put stuff that aplies to your whole session, such as programs you want to start when you log in and environmnent variable definitions.
 
 `~/.bashrc` is the place to put stuff that applies only to bash itself, such as alias and function definitions, shell options, and prompt settings.
 
-`~/.bash_profile` can be used instead of `~/.profile`, but it is read by bash only, not by any other shell ([1](https://superuser.com/questions/183870/difference-between-bashrc-and-bash-profile))
+`~/.bash_profile` can be used instead of `~/.profile`, but it is read by bash only, not by any other shell (on MacOS with zsh this is `.zprofile`) ([1](https://superuser.com/questions/183870/difference-between-bashrc-and-bash-profile))
 
 Most of the time you don’t want to maintain two separate config files for login and non-login shells — when you set a PATH, you want it to apply to both. A common practice is to source `~/.bashrc` from `~/.profile`. This way you can put `PATH` and common settings in `.bashrc` once and source them wherever you need ([1](http://www.joshstaiger.org/archives/2005/07/bash_profile_vs.html), [2](https://askubuntu.com/questions/432508/why-does-ubuntus-default-profile-source-bashrc), [3](https://askubuntu.com/questions/121073/why-bash-profile-is-not-getting-sourced-when-opening-a-terminal)).
 
@@ -89,6 +89,7 @@ To reload `~/.bashrc` without logging out and back in run `source ~/.bashrc` or 
 Sources:
 - https://www.gnu.org/software/bash/manual/html_node/Bash-Startup-Files.html
 - https://askubuntu.com/questions/60218/how-to-add-a-directory-to-the-path
+- https://stackoverflow.com/questions/56784894/macos-catalina-10-15beta-why-is-bash-profile-not-sourced-by-my-shell
 
 ____________________________________________________________
 
