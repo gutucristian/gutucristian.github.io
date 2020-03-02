@@ -18,6 +18,8 @@ See [source](https://stackoverflow.com/questions/436411/where-should-i-put-scrip
 
 This attribute is optional. Since Netscape 2, the default programming language in all browsers has been `JavaScript`. HTML5 doesn't need the `type="text/javascript"` (it's the default).
 
+## Safe Navigation Operator
+
 ## What is a polyfill?
 
 The term polyfill itself refers to some code that "allows you to have some specific functionality that you expect in current or “modern” browsers to also work in other browsers that do not have the support for that functionality built in.
