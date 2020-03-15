@@ -1,0 +1,21 @@
+`git` notes
+
+#### branch off of current branch
+
+`git checkout -b <sub-branch> branch`
+
+1. name of branch to be created: `api-cristian`
+2. name of branch from which to branch off of: `api`
+
+`git checkout -b api-cristian api`
+
+#### add all modified files
+
+`git add -u`
+
+#### merge
+
+to merge branch `foo` into `bar`:
+1. `git checkout bar`
+2. `git merge foo`
+3. resolve conflicts if any
