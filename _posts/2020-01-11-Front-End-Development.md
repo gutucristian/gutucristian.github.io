@@ -18,7 +18,8 @@ See [source](https://stackoverflow.com/questions/436411/where-should-i-put-scrip
 
 This attribute is optional. Since Netscape 2, the default programming language in all browsers has been `JavaScript`. HTML5 doesn't need the `type="text/javascript"` (it's the default).
 
-## Safe Navigation Operator
+## Safe Navigation Operator (i.e., "Elvis Operator")
+Allows you to safely access properties of objects without getting a `Uncaught TypeError`. For example `null?.firstName` will return `undefined`. _It will __not__ raise an error!_
 
 ## What is a polyfill?
 
