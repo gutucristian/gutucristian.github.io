@@ -21,8 +21,26 @@ This attribute is optional. Since Netscape 2, the default programming language i
 ## Safe Navigation Operator (i.e., "Elvis Operator")
 Allows you to safely access properties of objects without getting a `Uncaught TypeError`. For example `null?.firstName` will return `undefined`. _It will __not__ raise an error!_
 
-## What is a polyfill?
+## Destructuring JavaScript Objects
+{% highlight javascript linenos %}
+const person = {
+  first: 'Wes',
+  last: 'Bos',
+  country: 'Canada',
+  city: 'Hamilton',
+  twitter: '@wesbos'
+};
+const { first, last } = person; 
+{% endhighlight %}
 
+Instead of the annoying:
+
+{% highlight javascript linenos %}
+const first = person.first;
+const last = person.last;
+{% endhighlight %}
+
+## What is a polyfill?
 The term polyfill itself refers to some code that "allows you to have some specific functionality that you expect in current or “modern” browsers to also work in other browsers that do not have the support for that functionality built in.
 
 For example, the `sessionstorage` property, which stores data for a given user session, is something that’s new in `HTML5`. Let’s say that we want to check to see if that property is available “natively” (which means built into) in the browser. So, we can write some JavaScript code like this to check to see if the `sessionstorage` property is defined:
