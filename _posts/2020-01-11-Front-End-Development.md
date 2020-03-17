@@ -114,9 +114,9 @@ A directive has to be defined (unless it is provided by Angular).
 
 The easiest way to construct an `*ngIf` with an `else` is to use the regular `*ngIf` and negate the conditional expression. For example, `<p *ngIf="!serverCreated">No server created.</p>`. An alternative is to use an `ng-template` with local reference (marked with the prefix `#`) and then refer to it in the `else` section of the `*ngIf` directive. For example:
 
-{% highlight html linenos %}
+```
   <p *ngIf="serverCreated; else noServer">Server {{ serverName }} was created }}</p>
   <ng-template #noServer>
     <p>No server was created!</p>
   </ng-template>
-{% endhighlight %}
+```
