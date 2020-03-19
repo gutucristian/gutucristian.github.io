@@ -95,7 +95,7 @@ ____________________________________________________________
 
 Understanding the job control commands in Linux. A job is a process that the shell manages. Each job is assigned a seuqential id. Beacuse a job is a process, each job has an associarted process id (PID) which is given out by the OS. There are three type of job statuses:
 1. **Foreground**: when you enter a command in the terminal the command blocks (i.e., occupies) that terminal window until it complestes.
-2. **Backgorund**: when you enter an ampersand (&) symbol at the end of a command line, the command runs without blocking the terminal window. The shell prompt is displayed immediately adter you press the return key.
+2. **Background**: when you enter an ampersand (&) symbol at the end of a command line, the command runs without blocking the terminal window. The shell prompt is displayed immediately adter you press the return key.
 3. **Stopped**: if you press`Ctrl+Z` for a foreground job, the job stops running. Note: it does not terminate, instead it pauses exectution.
 
 Commands:
