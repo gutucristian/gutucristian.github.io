@@ -120,3 +120,8 @@ The easiest way to construct an `*ngIf` with an `else` is to use the regular `*n
     <p>No server was created!</p>
   </ng-template>
 ```
+
+# CSS
+
+- `class` selector is defined by full stop “.”
+- `id` selector is a defined by the name of the id preceded by the pound symbol (“#”)
