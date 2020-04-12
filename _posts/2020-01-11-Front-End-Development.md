@@ -8,9 +8,17 @@ First, a list of resource:
 
 ## About placing `script` tag
 
-The **modern approach** is to use either `async` or `defer` attributes on `script` tag and place the tag in the `head` of the `html` document. `async` tells the browser it is safe to continue parsing while the script is being downloaded. If we have multiple scripts with the `async` attribute they are downloaded "asynchronously" (i.e., in parallel). Note, the browser is not blocked while the scripts are being downloaded, so the `DOM` construction is not disturbed. `defer` also downloads the scripts asynchronously but _one at a time_ and in the order that they are placed (i.e., first `script` 1 then `script` 2).
+The **modern approach** is to use either `async` or `defer` attributes on `script` tag and place the tag in the `head` of the `html` document. 
 
-The **old approach** is to place the `script` either in the `head` section or at the end of the `body` section. The reasoning for placing it in the `head` is to have all the scripts download before the `DOM` is built. This way, the `script` may insert its own `HTML` in the `DOM` before it is built. The reasoning for placing it at the end of the `body` section is that the DOM is build before the browser blocks to first download the script. A long script may take some time to download leaving the page looking static with the impression that nothing is happening. This would create a bad UX and may lead the user to leave.
+Async vs Defer
+
+With `async`, the file gets **downloaded asynchronously** and then **executed as soon as it’s downloaded**. `async` tells the browser it is safe to continue parsing while the script is being downloaded. If we have multiple scripts with the `async` attribute they are downloaded "asynchronously" (i.e., in parallel). Note, the browser is not blocked while the scripts are being downloaded, so the `DOM` construction is not disturbed.
+
+With `defer`, the file gets downloaded **asynchronously**, but **executed only when the document parsing is completed**. With `defer`, scripts will **execute in the same order as they are called**. This makes `defer` the attribute of choice when a script depends on another script. For example, if you’re using `jQuery` as well as other scripts that depend on it, you’d use defer on them (`jQuery` included), making sure to call `jQuery` before the dependent scripts.
+
+The **old approach** is to place the `script` tag either in the `head` section or at the end of the `body` section. 
+
+The reasoning for placing it in the `head` is to have all the scripts download **before** the `DOM` is built. This way, the `script` may insert its own `HTML` in the `DOM` __before__ it is built. The reasoning for placing it at the end of the `body` section is that the DOM is built before the browser blocks to first download the script. A long script may take some time to download leaving the page looking static with the impression that nothing is happening. This would create a bad UX and may lead the user to leave.
 
 See [source](https://stackoverflow.com/questions/436411/where-should-i-put-script-tags-in-html-markup).
 
