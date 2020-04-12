@@ -10,10 +10,10 @@ First, a list of resource:
 
 The **modern approach** is to use either `async` or `defer` attributes on `script` tag and place the tag in the `head` of the `html` document. 
 
-Async vs Defer
-
+Async:
 With `async`, the file gets **downloaded asynchronously** and then **executed as soon as it’s downloaded**. `async` tells the browser it is safe to continue parsing while the script is being downloaded. If we have multiple scripts with the `async` attribute they are downloaded "asynchronously" (i.e., in parallel). Note, the browser is not blocked while the scripts are being downloaded, so the `DOM` construction is not disturbed.
 
+Defer:
 With `defer`, the file gets downloaded **asynchronously**, but **executed only when the document parsing is completed**. With `defer`, scripts will **execute in the same order as they are called**. This makes `defer` the attribute of choice when a script depends on another script. For example, if you’re using `jQuery` as well as other scripts that depend on it, you’d use defer on them (`jQuery` included), making sure to call `jQuery` before the dependent scripts.
 
 The **old approach** is to place the `script` tag either in the `head` section or at the end of the `body` section. 
