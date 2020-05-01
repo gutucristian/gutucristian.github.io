@@ -135,3 +135,7 @@ The easiest way to construct an `*ngIf` with an `else` is to use the regular `*n
 
 - `class` selector is defined by full stop “.”
 - `id` selector is a defined by the name of the id preceded by the pound symbol (“#”)
+
+# HTML
+
+HTML structures the webpage, identifying its elements such as paragraphs, headings, and lists.
