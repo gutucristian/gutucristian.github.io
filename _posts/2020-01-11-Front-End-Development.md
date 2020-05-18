@@ -78,6 +78,14 @@ Sources:
 1. https://stackoverflow.com/questions/7087331/what-is-the-meaning-of-polyfills-in-html5
 2. https://www.programmerinterview.com/html5/html5-polyfill/
 
+**null vs undefined**
+
+`undefined`: used when a variable has been declared but has not yet been assigned a value
+
+`null`: null is an assignment value -- it can be assigned to a variable as a representation of no value.
+
+`undefined` is a type itself (`undefined`) and `null` is an object. Unassigned variables are initialized by JavaScript with a default value of `undefined`. JavaScript never sets a value to `null`. That must be done programmatically [source](https://blog.ajaymatharu.com/javascript-difference-between-undefined-and-null/).
+
 # Angular 8
 
 Below is my personal notes regarding the Angular Web framework (namely, Angular 8).
@@ -139,3 +147,19 @@ The easiest way to construct an `*ngIf` with an `else` is to use the regular `*n
 # HTML
 
 HTML structures the webpage, identifying its elements such as paragraphs, headings, and lists.
+
+## `section` tag
+
+`<section>` means that the content inside is grouped (i.e. relates to a single theme), and should appear as an entry in an outline of the page.
+
+`<div>`, on the other hand, does not convey any meaning, aside from any found in its class, lang and title attributes. A `div` is a generic container for flow content, which does not inherently represent anything. It can be used to group elements for styling purposes
+
+In that vein, a div is relevant only from a pure CSS or DOM perspective, whereas a section is relevant also for semantics and, in a near future, for indexing by search engines.
+
+Source: https://stackoverflow.com/questions/6939864/what-is-the-difference-between-section-and-div
+
+## `template` tag
+
+The HTML Content Template `<template>` element is a mechanism for holding `HTML` that is not to be rendered immediately when a page is loaded but **may be instantiated subsequently during runtime using JavaScript.**
+
+Think of templates as a content fragment that is being stored for subsequent use in the document. We use JavaScript to populate this template with data and eventually insert it dynamically at runtime into some container. Fundamentally, templates allow us to define the general structure of something we may want to insert into the DOM and we only need to use JavaScript to copy this template (using `template.content.cloneNode`), populate it with real data, and inject it into the DOM (hence why it is not rendered by default). This is easier than building the template HTML structure manually using JavaScript in addition to the other steps we have to take to add it into the DOM. Read more on MDN [here](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template).
