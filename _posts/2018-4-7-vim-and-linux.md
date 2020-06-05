@@ -1,8 +1,8 @@
 My vim dotfile notes! Below are options and commands I personally found useful through experience. Of course, this list is only getting started and will constantly be updated as time goes on.
 
-Use `set tabstop = 2` to set tabs to 2 spaces.
-
-Use `set shiftwidth=2` to set shift width or indent amount to 2 spaces.
+In `~/.vimrc` file:
+- use `set tabstop = 2` to set tabs to 2 spaces.
+- use `set shiftwidth=2` to set shift width or indent amount to 2 spaces.
 
 **To indent/un-indent code bock:** first select your desired code block using `Shift-V`. This activates visual mode and selects entire line(s). Use `Up` or `Down` arrow to make you selection and then type `Shift->` (that is `Shift` followed by `>`) to indent and `Shift-<` to unindent code block.
 
@@ -49,6 +49,19 @@ To make a new tarball `fred.tar.gz` from a directory `fred` (creates a `.tar.gz`
 Read more [here](http://computing.help.inf.ed.ac.uk/FAQ/whats-tarball-or-how-do-i-unpack-or-create-tgz-or-targz-file) and [here](http://wiki.linuxquestions.org/wiki/Packing_and_Unpacking_Files).
 
 ____________________________________________________________
+
+## Updating system `PATH` variable
+
+### On MacOS
+
+In `~/.zprofile` add additional paths you would like to be in your system `$PATH`. Example
+
+```
+export PATH="/usr/local/mysql/bin:$PATH"
+export PATH="/usr/local/kafka_2.12-2.5.0/bin:$PATH"
+```
+
+### On Linux
 
 Often I have issues setting up environment variables and/or updating path variables. As a general rule, when adding some directory to `$PATH` it's good idea not to overwrite previous value, just append desired directory (e.g., `$HOME/bin`), in your `~/.bashrc` add at the end line: 
 
