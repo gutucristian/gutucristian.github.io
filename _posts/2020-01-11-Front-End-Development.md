@@ -163,3 +163,27 @@ Source: https://stackoverflow.com/questions/6939864/what-is-the-difference-betwe
 The HTML Content Template `<template>` element is a mechanism for holding `HTML` that is not to be rendered immediately when a page is loaded but **may be instantiated subsequently during runtime using JavaScript.**
 
 Think of templates as a content fragment that is being stored for subsequent use in the document. We use JavaScript to populate this template with data and eventually insert it dynamically at runtime into some container. Fundamentally, templates allow us to define the general structure of something we may want to insert into the DOM and we only need to use JavaScript to copy this template (using `template.content.cloneNode`), populate it with real data, and inject it into the DOM (hence why it is not rendered by default). This is easier than building the template HTML structure manually using JavaScript in addition to the other steps we have to take to add it into the DOM. Read more on MDN [here](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template).
+
+## `UTF-8` in `HTTP` Headers
+
+HTTP is a well-known hypertext protocol for data transfer. HTTP messages are encoded with ISO-8859-1 (which can be nominally considered as an enhanced ASCII version, containing umlauts, diacritic and other characters of West European languages). At the same time, the message body can use another encoding assigned in `Content-Type` header.
+
+Nowadays, Unicode – a universal character set, defining all the characters necessary to write the majority of languages – has become a standard, no matter what platform, device, application or language you’re targeting. UTF-8 is one of the Unicode encodings and the one that should be used for Web content according to the W3C.
+
+The easiest ways to specify a charset in an `HTML` page is to put in a `<meta>` tag in the `<head>` element:
+
+`<meta charset="utf-8">`
+
+Declaring a character set this way requires certain constraints to be respected, one of them being that the element containing the character encoding declaration must be serialized completely within the first `1024` bytes of the document, to ensure that the browser will receive the information with the first IP packets transiting through the network and can use it to decode the rest of the document. As the charset `<meta>` tag is the only one with this kind of requirement, the most common tip is to place it directly after the element opening tag:
+
+```
+<html …>
+  <head …>
+    <meta charset="utf-8">
+```
+
+Alternatively, the `Content-Type` entity header is used to indicate the media type of the resource.
+
+In **responses**, a `Content-Type` header tells the client what the content type of the returned content actually is. Browsers will do `MIME` sniffing in some cases and will not necessarily follow the value of this header; to prevent this behavior, the header `X-Content-Type-Options` can be set to `nosniff`.
+
+In **requests**, (such as `POST` or `PUT`), the client tells the server what type of data is actually sent.
