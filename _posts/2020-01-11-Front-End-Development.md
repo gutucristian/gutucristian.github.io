@@ -187,3 +187,23 @@ Alternatively, the `Content-Type` entity header is used to indicate the media ty
 In **responses**, a `Content-Type` header tells the client what the content type of the returned content actually is. Browsers will do `MIME` sniffing in some cases and will not necessarily follow the value of this header; to prevent this behavior, the header `X-Content-Type-Options` can be set to `nosniff`.
 
 In **requests**, (such as `POST` or `PUT`), the client tells the server what type of data is actually sent.
+
+`UTF-8 `and `UTF-16` are methods to encode Unicode strings to byte sequences.
+
+`Base64` is a method to encode a byte sequence to a string.
+
+When you have some binary data that you want to ship across a network, you generally don't do it by just streaming the bits and bytes over the wire in a raw format. Why? because some media are made for streaming text. You never know -- some protocols may interpret your binary data as control characters (like a modem), or your binary data could be screwed up because the underlying protocol might think that you've entered a special character combination (like how FTP translates line endings).
+
+So to get around this, people encode the binary data into characters. `Base64` is one of these types of encodings.
+
+`UTF-8` is like the other `UTF` encodings a character encoding to encode characters of the Unicode character set UCS.
+
+`Base64` is an encoding to represent any byte sequence by a sequence of printable characters (i.e. A–Z, a–z, 0–9, +, and /).
+
+See: The Absolute Minimum Every Software Developer Absolutely, Positively Must Know About Unicode and Character Sets (No Excuses!)
+
+Sources: 
+1. https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/
+2. https://stackoverflow.com/questions/3866316/whats-the-difference-between-utf8-utf16-and-base64-in-terms-of-encoding
+3. https://dzone.com/articles/utf-8-in-http-headers
+4. https://stackoverflow.com/questions/3866316/whats-the-difference-between-utf8-utf16-and-base64-in-terms-of-encoding
