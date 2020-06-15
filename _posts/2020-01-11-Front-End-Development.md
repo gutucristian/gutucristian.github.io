@@ -86,6 +86,10 @@ Sources:
 
 `undefined` is a type itself (`undefined`) and `null` is an object. Unassigned variables are initialized by JavaScript with a default value of `undefined`. JavaScript never sets a value to `null`. That must be done programmatically [source](https://blog.ajaymatharu.com/javascript-difference-between-undefined-and-null/).
 
+## Converting numbers between different bases
+
+- https://stackoverflow.com/questions/1337419/how-do-you-convert-numbers-between-different-bases-in-javascript
+
 # Angular 8
 
 Below is my personal notes regarding the Angular Web framework (namely, Angular 8).
@@ -177,11 +181,21 @@ Content-Type: text/html; charset=UTF-8
 Content-Type: multipart/form-data; boundary=something
 ```
 
+Read: https://blog.dareboost.com/en/2018/11/content-encoding-meta-charset-content-type-header/
+
 Sometimes the browser will perform "`MIME` sniffing" to guess the `Content-Type` if it is not present or it _may_ not follow the value of the header; to prevent this behavior, the header `X-Content-Type-Options` can be set to `nosniff` ([source](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Type)).
+
+## Charset detection
+
+Character encoding detection, charset detection, or code page detection is the process of heuristically guessing the character encoding of a series of bytes that represent text. The technique is recognised to be unreliable and is only used when specific metadata, such as a HTTP Content-Type: header is either not available, or is assumed to be untrustworthy.
+
+This algorithm usually involves statistical analysis of byte patterns, like frequency distribution of trigraphs of various languages encoded in each code page that will be detected; such statistical analysis can also be used to perform language detection. This process is not foolproof because it depends on statistical data.
+
+Source: https://en.wikipedia.org/wiki/Charset_detection#:~:text=Character%20encoding%20detection%2C%20charset%20detection,of%20bytes%20that%20represent%20text.&text=However%2C%20badly%20written%20charset%20detection,8%20is%20some%20other%20encoding.
 
 ## How does the browser know which decoding standard to use?
 
-Nowadays, Unicode – a universal character set, defining all the characters necessary to write the majority of languages – has become a standard, no matter what platform, device, application or language you’re targeting. `UTF-8` is one of the Unicode encodings and the one that should be used for web content according to the World Wide Web Committee (W3C).
+Nowadays, (Unicode)[https://www.w3.org/International/articles/definitions-characters/#httpheader] – a universal character set, defining all the characters necessary to write the majority of languages – has become a standard, no matter what platform, device, application or language you’re targeting. `UTF-8` is one of the Unicode encodings and the one that should be used for web content according to the World Wide Web Committee (W3C).
 
 If the response is an `HTML` document, then there are atleast two ways to specify its encoding and, thus, how it should be decoded.
 
@@ -209,6 +223,16 @@ What happens if `Content-Type` and `<meta>` tag with `charset` is missing?
 
 - If there's no BOM either, then it will read some amount of the HTML code from the page and then try to guess the encoding. If it cannot figure it out then it will default to the browser's default character set. Depending on the browser it will often be something like Windows-1252 (a superset of Latin-1 also called ISO 8859-1) or UTF-8 ([source](https://stackoverflow.com/questions/18794465/how-does-a-browser-interpret-a-page-with-no-charset-in-the-response-header-or-me)).
 
+Note however that, since the HTTP header has a higher precedence than the in-document meta declarations, content authors should always take into account whether the character encoding is already declared in the HTTP header. If it is, the meta element must be set to declare the same encoding ([source](w3.org/International/questions/qa-html-encoding-declarations)).
+
+## Base64
+
+- https://stackoverflow.com/questions/47973487/how-is-encoded-data-sent-over-a-network
+- https://stackoverflow.com/questions/201479/what-is-base-64-encoding-used-for
+- https://stackoverflow.com/questions/3538021/why-do-we-use-base64
+- https://medium.com/swlh/powering-the-internet-with-base64-d823ec5df747
+- https://stackoverflow.com/questions/41315553/why-use-base64
+
 `Base64` is a method to encode a byte sequence to a string.
 
 When you have some binary data that you want to ship across a network, you generally don't do it by just streaming the bits and bytes over the wire in a raw format. Why? because some media are made for streaming text. You never know -- some protocols may interpret your binary data as control characters (like a modem), or your binary data could be screwed up because the underlying protocol might think that you've entered a special character combination (like how FTP translates line endings).
@@ -229,6 +253,8 @@ One example usecase involves encoding image binaries as Base64 so that it can be
         9TXL0Y4OHwAAAABJRU5ErkJggg==" alt="Red dot" />
 </div>
 ```
+
+https://stackoverflow.com/questions/11736159/advantages-and-disadvantages-of-using-base64-encoded-images
 
 `Base64` is an encoding to represent any byte sequence by a sequence of printable characters (i.e. A–Z, a–z, 0–9, +, and /).
 
@@ -259,3 +285,7 @@ The `Content-Type` entity header is used to indicate the media type of the resou
 In **responses**, a `Content-Type` header tells the client what the content type of the returned content actually is. Browsers will do `MIME` sniffing in some cases and will not necessarily follow the value of this header; to prevent this behavior, the header `X-Content-Type-Options` can be set to `nosniff`.
 
 In **requests**, (such as `POST` or `PUT`), the client tells the server what type of data is actually sent.
+
+## UTF-8 vs Unicode
+
+https://stackoverflow.com/questions/643694/what-is-the-difference-between-utf-8-and-unicode
