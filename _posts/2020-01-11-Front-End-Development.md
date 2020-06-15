@@ -164,17 +164,32 @@ The HTML Content Template `<template>` element is a mechanism for holding `HTML`
 
 Think of templates as a content fragment that is being stored for subsequent use in the document. We use JavaScript to populate this template with data and eventually insert it dynamically at runtime into some container. Fundamentally, templates allow us to define the general structure of something we may want to insert into the DOM and we only need to use JavaScript to copy this template (using `template.content.cloneNode`), populate it with real data, and inject it into the DOM (hence why it is not rendered by default). This is easier than building the template HTML structure manually using JavaScript in addition to the other steps we have to take to add it into the DOM. Read more on MDN [here](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template).
 
-## `UTF-8` in `HTTP` Headers
+## `HTTP` Request & Response Encoding
 
-HTTP is a well-known hypertext protocol for data transfer. HTTP messages are encoded with ISO-8859-1 (which can be nominally considered as an enhanced ASCII version, containing umlauts, diacritic and other characters of West European languages). At the same time, the message body can use another encoding assigned in `Content-Type` header.
+`HTTP` is a protocol for data transfer used by the World Wide Web. 
 
-Nowadays, Unicode – a universal character set, defining all the characters necessary to write the majority of languages – has become a standard, no matter what platform, device, application or language you’re targeting. UTF-8 is one of the Unicode encodings and the one that should be used for Web content according to the W3C.
+`HTTP` [headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers) must be encode encoded with `ISO-8859-1` (which can be nominally considered as an enhanced `ASCII` version, containing umlauts, diacritic and other characters of West European languages). This allows browsers to know, ahead of time, how to decode an incoming request's headers which (among other things) specifies the request `Content-Type`.
 
-The easiest ways to specify a charset in an `HTML` page is to put in a `<meta>` tag in the `<head>` element:
+`Content-Type` is an `HTTP` request header that is used to indicate the media type of the resource -- the browser needs this in order to know how to parse the data. Example:
+
+```
+Content-Type: text/html; charset=UTF-8
+Content-Type: multipart/form-data; boundary=something
+```
+
+Sometimes the browser will perform "`MIME` sniffing" to guess the `Content-Type` if it is not present or it _may_ not follow the value of the header; to prevent this behavior, the header `X-Content-Type-Options` can be set to `nosniff` ([source](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Type)).
+
+## How does the browser know which decoding standard to use?
+
+Nowadays, Unicode – a universal character set, defining all the characters necessary to write the majority of languages – has become a standard, no matter what platform, device, application or language you’re targeting. `UTF-8` is one of the Unicode encodings and the one that should be used for web content according to the World Wide Web Committee (W3C).
+
+If the response is an `HTML` document, then there are atleast two ways to specify its encoding and, thus, how it should be decoded.
+
+First, and probably easiest, it to specify a `charset` in the `HTML` page itself in the `<meta>` tag in the `<head>` element:
 
 `<meta charset="utf-8">`
 
-Declaring a character set this way requires certain constraints to be respected, one of them being that the element containing the character encoding declaration must be serialized completely within the first `1024` bytes of the document, to ensure that the browser will receive the information with the first IP packets transiting through the network and can use it to decode the rest of the document. As the charset `<meta>` tag is the only one with this kind of requirement, the most common tip is to place it directly after the element opening tag:
+However, declaring a character set this way requires certain constraints to be respected. One constratint is that the element containing the character encoding declaration must be serialized completely within the first `1024` bytes of the document, to ensure that the browser will receive the information with the first packet transiting through the network. This is crucial, so that the browser knows how to decode the rest of the document (which may contain characters encoded using some specific standard). As the charset `<meta>` tag is the only one with this kind of requirement, the most common tip is to place it directly after the element opening tag:
 
 ```
 <html …>
@@ -182,9 +197,17 @@ Declaring a character set this way requires certain constraints to be respected,
     <meta charset="utf-8">
 ```
 
-Alternatively, the `Content-Type` entity header is used to indicate the media type of the resource.
+This works because up to the first `1024` bytes the browser will decode assuming `ASCII`. 
 
-`UTF-8 `and `UTF-16` are methods to encode Unicode strings to byte sequences.
+A second more general way to specify the encoding is via the `Content-Type` `HTTP`.
+
+Values for this header may include `UTF-8 `and `UTF-16` encoding standards (among others). Both are methods to encode Unicode strings to byte sequences.
+
+What happens if `Content-Type` and `<meta>` tag with `charset` is missing?
+
+- If the page starts with a UTF-8 or UTF-16 Byte order mark (BOM), then the encoding is taken from that. This happens before and in preference to looking at the HTTP header and the <meta> elements ([source](https://stackoverflow.com/questions/18794465/how-does-a-browser-interpret-a-page-with-no-charset-in-the-response-header-or-me)).
+
+- If there's no BOM either, then it will read some amount of the HTML code from the page and then try to guess the encoding. If it cannot figure it out then it will default to the browser's default character set. Depending on the browser it will often be something like Windows-1252 (a superset of Latin-1 also called ISO 8859-1) or UTF-8 ([source](https://stackoverflow.com/questions/18794465/how-does-a-browser-interpret-a-page-with-no-charset-in-the-response-header-or-me)).
 
 `Base64` is a method to encode a byte sequence to a string.
 
