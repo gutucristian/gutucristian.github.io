@@ -46,8 +46,8 @@ Allows you to safely access properties of objects without getting a `Uncaught Ty
 Instead of the annoying:
 
 {% highlight javascript linenos %}
-const first = person.first;
-const last = person.last;
+  const first = person.first;
+  const last = person.last;
 {% endhighlight %}
 
 ## What is a polyfill?
@@ -206,9 +206,9 @@ First, and probably easiest, it to specify a `charset` in the `HTML` page itself
 However, declaring a character set this way requires certain constraints to be respected. One constratint is that the element containing the character encoding declaration must be serialized completely within the first `1024` bytes of the document, to ensure that the browser will receive the information with the first packet transiting through the network. This is crucial, so that the browser knows how to decode the rest of the document (which may contain characters encoded using some specific standard). As the charset `<meta>` tag is the only one with this kind of requirement, the most common tip is to place it directly after the element opening tag:
 
 {% highlight html linenos %}
-<html …>
-  <head …>
-    <meta charset="utf-8">
+  <html …>
+    <head …>
+      <meta charset="utf-8">
 {% endhighlight %}
 
 This works because up to the first `1024` bytes the browser will decode assuming `ASCII`. 
@@ -246,12 +246,12 @@ So, people use `Base64` for "binary-to-text" encoding.
 One example usecase involves encoding image binaries as Base64 so that it can be embedded within the HTML document itself. Example:
 
 {% highlight html linenos %}
-<div>
-  <p>Image encoded in HTML as Base64</p>
-  <img src="data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAAAUA
-    AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
-        9TXL0Y4OHwAAAABJRU5ErkJggg==" alt="Red dot" />
-</div>
+  <div>
+    <p>Image encoded in HTML as Base64</p>
+    <img src="data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAAAUA
+      AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
+          9TXL0Y4OHwAAAABJRU5ErkJggg==" alt="Red dot" />
+  </div>
 {% endhighlight %}
 
 https://stackoverflow.com/questions/11736159/advantages-and-disadvantages-of-using-base64-encoded-images
