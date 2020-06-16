@@ -177,8 +177,8 @@ Think of templates as a content fragment that is being stored for subsequent use
 `Content-Type` is an `HTTP` request header that is used to indicate the media type of the resource -- the browser needs this in order to know how to parse the data. Example:
 
 {% highlight html linenos %}
-Content-Type: text/html; charset=UTF-8
-Content-Type: multipart/form-data; boundary=something
+  Content-Type: text/html; charset=UTF-8
+  Content-Type: multipart/form-data; boundary=something
 {% endhighlight %}
 
 Read: https://blog.dareboost.com/en/2018/11/content-encoding-meta-charset-content-type-header/
