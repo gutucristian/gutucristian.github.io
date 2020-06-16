@@ -33,14 +33,14 @@ Allows you to safely access properties of objects without getting a `Uncaught Ty
 
 ## Destructuring JavaScript Objects
 {% highlight javascript linenos %}
-const person = {
-  first: 'Wes',
-  last: 'Bos',
-  country: 'Canada',
-  city: 'Hamilton',
-  twitter: '@wesbos'
-};
-const { first, last } = person; 
+  const person = {
+    first: 'Wes',
+    last: 'Bos',
+    country: 'Canada',
+    city: 'Hamilton',
+    twitter: '@wesbos'
+  };
+  const { first, last } = person; 
 {% endhighlight %}
 
 Instead of the annoying:
@@ -56,22 +56,22 @@ The term polyfill itself refers to some code that "allows you to have some speci
 For example, the `sessionstorage` property, which stores data for a given user session, is something that’s new in `HTML5`. Let’s say that we want to check to see if that property is available “natively” (which means built into) in the browser. So, we can write some JavaScript code like this to check to see if the `sessionstorage` property is defined:
 
 {% highlight javascript linenos %}
-/*
-  we define the isThereSessionStorage variable
-  which will store either true or false
-*/
+  /*
+    we define the isThereSessionStorage variable
+    which will store either true or false
+  */
 
-var isThereSessionStorage = (function() {
-  try {
-    return typeof window.sessionStorage !== 'undefined';
-  } catch (e) {
-    return false;
+  var isThereSessionStorage = (function() {
+    try {
+      return typeof window.sessionStorage !== 'undefined';
+    } catch (e) {
+      return false;
+    }
+  })(); 
+
+  if(!isThereSessionStorage) {
+    // our polyfill code goes here.... 
   }
-})(); 
-
-if(!isThereSessionStorage) {
-  // our polyfill code goes here.... 
-}
 {% endhighlight %}
 
 Sources:
@@ -136,12 +136,12 @@ A directive has to be defined (unless it is provided by Angular).
 
 The easiest way to construct an `*ngIf` with an `else` is to use the regular `*ngIf` and negate the conditional expression. For example, `<p *ngIf="!serverCreated">No server created.</p>`. An alternative is to use an `ng-template` with local reference (marked with the prefix `#`) and then refer to it in the `else` section of the `*ngIf` directive. For example:
 
-```
+{% highlight html linenos %}
   <p *ngIf="serverCreated; else noServer">Server {{ serverName }} was created }}</p>
   <ng-template #noServer>
     <p>No server was created!</p>
   </ng-template>
-```
+{% endhighlight %}
 
 # CSS
 
@@ -176,10 +176,10 @@ Think of templates as a content fragment that is being stored for subsequent use
 
 `Content-Type` is an `HTTP` request header that is used to indicate the media type of the resource -- the browser needs this in order to know how to parse the data. Example:
 
-```
+{% highlight html linenos %}
 Content-Type: text/html; charset=UTF-8
 Content-Type: multipart/form-data; boundary=something
-```
+{% endhighlight %}
 
 Read: https://blog.dareboost.com/en/2018/11/content-encoding-meta-charset-content-type-header/
 
@@ -205,11 +205,11 @@ First, and probably easiest, it to specify a `charset` in the `HTML` page itself
 
 However, declaring a character set this way requires certain constraints to be respected. One constratint is that the element containing the character encoding declaration must be serialized completely within the first `1024` bytes of the document, to ensure that the browser will receive the information with the first packet transiting through the network. This is crucial, so that the browser knows how to decode the rest of the document (which may contain characters encoded using some specific standard). As the charset `<meta>` tag is the only one with this kind of requirement, the most common tip is to place it directly after the element opening tag:
 
-```
+{% highlight html linenos %}
 <html …>
   <head …>
     <meta charset="utf-8">
-```
+{% endhighlight %}
 
 This works because up to the first `1024` bytes the browser will decode assuming `ASCII`. 
 
@@ -245,14 +245,14 @@ So, people use `Base64` for "binary-to-text" encoding.
 
 One example usecase involves encoding image binaries as Base64 so that it can be embedded within the HTML document itself. Example:
 
-```
+{% highlight html linenos %}
 <div>
   <p>Image encoded in HTML as Base64</p>
   <img src="data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAAAUA
     AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
         9TXL0Y4OHwAAAABJRU5ErkJggg==" alt="Red dot" />
 </div>
-```
+{% endhighlight %}
 
 https://stackoverflow.com/questions/11736159/advantages-and-disadvantages-of-using-base64-encoded-images
 
