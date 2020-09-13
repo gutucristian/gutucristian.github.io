@@ -37,7 +37,7 @@ Because security is a top priority for all applications, making calls to AWS req
 
 At a high level, IAM has:
 - Users: usually a person (e.g., a developer) that needs access to certain AWS services. This person will get an account in IAM (which is **not** the root account)
-- Groups: contains users that are grouped together. For example, groups can be established by function (e.g., admin, devops, etc..) and teams (engineering, design, etc..). This way permissions can be applied to groups and users inherit these permissions when they are added to a group
+- Groups: contains users that are grouped together. For example, groups can be established by function (e.g., admin, devops, etc..) and teams (engineering, design, etc..). This allows permissions to be applied to groups and for users to inherit these permissions when they are added to a group
 - Roles: for internal usage within the AWS resources and services. Roles is what is given to machines to define access
 - Policies: JSON documents which define what Users, Groups, and Roles can and cannot do
 
