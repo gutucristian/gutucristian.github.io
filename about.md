@@ -7,7 +7,7 @@ Hello world!
 
 My name is Cristian Gutu and I am recent Computer Science graduate from the __University of Connecticut__. 
 
-Currently I work as a Software Engineer on Prudential’s Platform Integrations Team.
+Currently I work as a __Software Engineer__ on __Prudential’s Platform Integrations Team__.
 
 I am primarily responsible for designing and implementing strategic, high-performance data pipelines supporting the flow of millions of records between producer and consumer systems across the organization. By leveraging a micro-services based pub-sub architecture, each pipeline is designed to move away from traditional monolithic point-to-point integrations to a more resilient micro-services based event streaming pattern enabling real-time analytics, event based notifications, and data feed subscriptions.
 
