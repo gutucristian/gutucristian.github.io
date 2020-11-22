@@ -15,7 +15,7 @@ I am interested in full stack development, DevOps, AWS, and distributed systems 
 
 Primarily I work with __Java__, __Python__, __Node.js__, and __JavaScript__, but I've also had exposure to __C__ and __C++__ in an academic setting. 
 
-Technology wise, I have experience with __Kafka__, __Angular 9__, __Vue__, __React.js__, __Docker__, __Jenkins__, __GitHub__, __BitBucket__, and __AWS__ (ECS, EC2, CloudWatch, Lambda, Redshift, DynamoDB, S3, API Gateway, CloudFormation, Route 53, CodePipeline, CodeBuild, CodeDeploy).
+Technology wise, I have experience with __Apache Kafka__, __Angular 9__, __Vue__, __React.js__, __Docker__, __Jenkins__, __GitHub__, __BitBucket__, and __AWS__ (ECS, EC2, CloudWatch, Lambda, Redshift, DynamoDB, S3, API Gateway, CloudFormation, Route 53, CodePipeline, CodeBuild, CodeDeploy).
 
 ### More Information
 
