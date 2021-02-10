@@ -6,7 +6,7 @@ This study guide is a collection of my notes in preparation for the AWS Certifie
 
 - AWS has **Regions** (cluster of data centers) all around the world
 - Example region names: `us-east-1`, `us-east-2`, `eu-west-3`, etc...
-- Most AWS services are region-scoped (e.g., EC2). In other words, if you you use a service in region "a" (e.g., `us-east-`) your data will not be replicated or synchronized in region "b" (e.g., `us-east-2`), so you would have to re-create your infrastructure
+- Most AWS services are region-scoped (e.g., EC2). In other words, if you you use a service in region "a" (e.g., `us-east-1`) your data will not be replicated or synchronized in region "b" (e.g., `us-east-2`), so you would have to re-create your infrastructure
 - Some AWS services are global services. This means they are **not** linked to any particular region (e.g., Identity and Access Management or IAM)
 
 ## AWS Availability Zones (AZs)
@@ -26,7 +26,7 @@ API calls are the heart of the AWS Cloud, as every interaction with AWS is an AP
 Because security is a top priority for all applications, making calls to AWS requires API keys. We can create our own API keys by using AWS Identity and Access Management (IAM).
 
 - IAM (Identity and Access Management)
-- IAM enables creation and mangement of the following AWS security principles:
+- IAM enables creation and management of the following AWS security principles:
   - Users
   - Groups
   - Roles
@@ -48,7 +48,7 @@ At a high level, IAM has:
 - MFA (Multi Factor Authentication) can be setup
 - IAM has predefined "managed policies" (these are common policies that Amazon has already put together so we don't have to re-write them)
 - It's best to give users the minimal amount of permissions they need to perform their job (least privilege principles)
-- Big enterprises usually integrate their own repository of users (e.g., Active Directory) with IAM. Doing this allows users to login to AWS using their company credentials
+- Big enterprises usually integrate their own repository of users (e.g., Microsoft Active Directory) with IAM. Doing this allows users to login to AWS using their company credentials
 - Identity Federation uses the SAML standard (e.g., Microsoft Active Directory is one of the big users of the SAML standard)
 
 IAM takeaway:
@@ -57,4 +57,4 @@ IAM takeaway:
 - IAM credentials should never be shared
 - **Never** write IAM credentials in code
 - Never use the root account except for initial setup
-- Security is important.. AWS can cost a lot of money if you or someone else misuses it
+- Security is important! AWS can cost a lot of money if you or someone else misuses it
