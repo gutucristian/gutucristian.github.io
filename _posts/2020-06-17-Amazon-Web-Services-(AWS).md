@@ -6,18 +6,18 @@ This study guide is a collection of my notes in preparation for the AWS Certifie
 
 - AWS has **Regions** (cluster of data centers) all around the world
 - Example region names: `us-east-1`, `us-east-2`, `eu-west-3`, etc...
-- Most AWS services are region-scoped (e.g., EC2). In other words, if you you use a service in region "a" (e.g., `us-east-1`) your data will not be replicated or synchronized in region "b" (e.g., `us-east-2`), so you would have to re-create your infrastructure
-- Some AWS services are global services. This means they are **not** linked to any particular region (e.g., Identity and Access Management or IAM)
+- Most AWS services are **region-scoped** (e.g., EC2). In other words, if, for example, you you use a service in region `us-east-1` (N. Virginia) your data will not be replicated or synchronized to other regions (e.g., `us-east-2`, etc..), so you would have to re-create your infrastructure
+- Some AWS services are **global services**. This means they are **not** linked to any particular region (e.g., Identity and Access Management or IAM)
 
 ## AWS Availability Zones (AZs)
 
-- Each region has many availability zones (usually 3 per region, min is 2, max is 6)
-- For example AWS Region `ap-southeast-2` (i.e., Sydney) has 3 availability zones: `ap-southeast-2a`, `ap-southeast-2b`, and `ap-southeast-2c`
+- Each region has many availability zones (usually `3` per region, min is `2`, max is `6`)
+- For example, AWS Region `ap-southeast-2` (i.e., Sydney region) has 3 availability zones: `ap-southeast-2a`, `ap-southeast-2b`, and `ap-southeast-2c`
 - Each AZ consists of one or more discrete data centers with redundant power, networking, and connectivity
 - AZs are geographically separated from each other so that they are isolated from disasters
 - AZs are connected to each other with high bandwidth, ultra-low latency networking
 
-**Note:** regions end with a number and AZs end with a letter
+**Note:** **regions end with a number** and **AZs end with a letter**
 
 ## IAM Introduction
 
