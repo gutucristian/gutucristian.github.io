@@ -67,9 +67,9 @@ IAM takeaway:
   - Distribute load across machines (ELB)
   - Scaling the services using an auto-scaling group (ASG)
 
-Steps required To create an EC2 instance:
+### Creating an EC2 EC2 instance
 
-1. Select an instace type
+1. Select an instance type
 
 The EC2 Instance Type determines the *hardware* of the host computer used for your instance. Each instance type offers different compute and memory capabilities
 
@@ -113,3 +113,10 @@ This private key will be ignored.
 Load key "EC2tutorial.pem": bad permissions
 ec2-user@54.172.238.16: Permission denied (publickey,gssapi-keyex,gssapi-with-mic).
 ```
+
+### EC2 Security Best Practices
+
+- Use AWS Identity and Access Management (IAM) to control access to your AWS resources, including your instances. You can create IAM users and groups under your AWS account, assign security credentials to each, and control the access that each has to resources and services in AWS
+- Restrict access by only allowing trusted hosts or networks to access ports on your instance. For example, you can restrict SSH access by restricting incoming traffic on port 22. For more information, see Amazon EC2 security groups for Linux instances.
+- Review the rules in your security groups regularly, and ensure that you apply the principle of **least privilege—only** open up permissions that you require. You can also create different security groups to deal with instances that have different security requirements. Consider creating a bastion security group that allows external logins, and keep the remainder of your instances in a group that does not allow external logins.
+- Disable password-based logins for instances launched from your AMI. Passwords can be found or cracked, and are a security risk. For more information, see Disable password-based remote logins for root. For more information about sharing AMIs safely, see Shared AMIs.
