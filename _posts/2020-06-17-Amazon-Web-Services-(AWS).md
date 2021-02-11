@@ -57,3 +57,16 @@ IAM takeaway:
 - **Never** write IAM credentials in code
 - Never use the root account except for initial setup
 - Security is important! AWS can cost a lot of money if you or someone else misuses it
+
+## Amazon Elastic Compute Cloud (EC2) Introduction
+
+- EC2 is one of the most popular AWS offerings
+- Using EC2 users can:
+  - Rent virtual machines (EC2)
+  - Store data on virtual drives (EBS)
+  - Distribute load across machines (ELB)
+  - Scaling the services using an auto-scaling group (ASG)
+
+To create an EC2 instance you have to:
+1. Select an instace type. An instance type essentially determines the hardware of the host computer used for your instance. Make a selection based on the compute and memory capabilities your use case requires.
+2. Select an AMI for your instance
