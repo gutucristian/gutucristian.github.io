@@ -19,13 +19,12 @@ This study guide is a collection of my notes in preparation for the AWS Certifie
 
 **Note:** **regions end with a number** and **AZs end with a letter**
 
-## IAM Introduction
+## Identity and Access Management (IAM) Introduction
 
 API calls are the heart of the AWS Cloud, as every interaction with AWS is an API call to some service.
 
 Because security is a top priority for all applications, making calls to AWS requires API keys. We can create our own API keys by using AWS Identity and Access Management (IAM).
 
-- IAM (Identity and Access Management)
 - IAM enables creation and management of the following AWS security principles:
   - Users
   - Groups
@@ -39,7 +38,7 @@ At a high level, IAM has:
 - Users: usually a person (e.g., a developer) that needs access to certain AWS services. This person will get an account in IAM (which is **not** the root account)
 - Groups: contains users that are grouped together. For example, groups can be established by function (e.g., admin, devops, etc..) and teams (engineering, design, etc..). This allows permissions to be applied to groups and for users to inherit these permissions when they are added to a group
 - Roles: for internal usage within the AWS resources and services. Roles is what is given to machines to define access
-- Policies: JSON documents which define what Users, Groups, and Roles can and cannot do
+- Policies: JSON documents which **define what Users, Groups, and Roles can and cannot do**
 
 **Important distinction:** Users is for physical people and Roles are for machines
 
