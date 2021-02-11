@@ -67,6 +67,49 @@ IAM takeaway:
   - Distribute load across machines (ELB)
   - Scaling the services using an auto-scaling group (ASG)
 
-To create an EC2 instance you have to:
-1. Select an instace type. An instance type essentially determines the hardware of the host computer used for your instance. Make a selection based on the compute and memory capabilities your use case requires.
-2. Select an AMI for your instance
+Steps required To create an EC2 instance:
+
+1. Select an instace type
+
+The EC2 Instance Type determines the *hardware* of the host computer used for your instance. Each instance type offers different compute and memory capabilities
+
+2. Select an Amazon Machine Image (AMI) for your instance
+
+The AMI is a template that contains a software configuration (for example, an operating system, an application server, and applications). From an AMI, you launch an instance, which is a *copy* of the AMI running as a virtual server in the cloud
+
+3. Add Storage
+
+The **root device** for your instance **contains the image used to boot the instance**. The root device is either an Amazon Elastic Block Store (Amazon EBS) volume or an instance store volume.
+
+Your instance may include **local storage volumes**, known as **instance store volumes**, which you can configure at launch time with **block device mapping**. After these volumes have been added to and mapped on your instance, they are available for you to mount and use. If your instance fails, or if your instance is stopped or terminated, the data on these volumes is lost; therefore, these volumes are best used for temporary (ephemeral) data. To keep important data safe, you should use a replication strategy across multiple instances, or store your persistent data in Amazon S3 or Amazon EBS volumes.
+
+4. Add Tags (Optional)
+
+Tags can be used to describe or group instances
+
+5. Configure Security Group
+
+Use Security Groups to restrict access by only allowing trusted hosts or networks to access ports on your instance. For example, you can restrict SSH access by restricting incoming traffic on port 22.
+
+To access your EC2 instance via SSH, you will need a key pair. The key is generated once during instance creation and **cannot be recovered**.
+
+Before SSHing into your instance you will need to set appropriate permissions on the key using:
+
+`chmod 400 EC2Tutorial.pem`
+
+Where "EC2Tutorial.pem" would be replaced by the name of your key file.
+
+As a side note, `chmod 400` sets permissions so that, (U)ser / owner can read, can't write and can't execute. (G)roup can't read, can't write and can't execute. (O)thers can't read, can't write and can't execute ([reference](https://www.quora.com/What-does-chmod-400-mean)).
+
+If you skip this step you won't be able to SSH into your instance and will get the error:
+
+```
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@         WARNING: UNPROTECTED PRIVATE KEY FILE!          @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+Permissions 0644 for 'EC2tutorial.pem' are too open.
+It is required that your private key files are NOT accessible by others.
+This private key will be ignored.
+Load key "EC2tutorial.pem": bad permissions
+ec2-user@54.172.238.16: Permission denied (publickey,gssapi-keyex,gssapi-with-mic).
+```
