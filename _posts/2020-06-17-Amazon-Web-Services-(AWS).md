@@ -114,6 +114,10 @@ Load key "EC2tutorial.pem": bad permissions
 ec2-user@54.172.238.16: Permission denied (publickey,gssapi-keyex,gssapi-with-mic).
 ```
 
+And, finally, to SSH: `ssh -i EC2tutorial.pem <user>@<your-instance-public-ip-address>`
+
+For example: `ssh -i EC2tutorial.pem ec2-user@54.132.218.27`
+
 ### EC2 Security Best Practices
 
 - Use AWS Identity and Access Management (IAM) to control access to your AWS resources, including your instances. You can create IAM users and groups under your AWS account, assign security credentials to each, and control the access that each has to resources and services in AWS
