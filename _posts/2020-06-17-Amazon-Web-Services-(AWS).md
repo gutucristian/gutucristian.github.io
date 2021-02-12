@@ -103,7 +103,7 @@ As a side note, `chmod 400` sets permissions so that, (U)ser / owner can read, c
 
 If you skip this step you won't be able to SSH into your instance and will get the error:
 
-```
+{% highlight c linenos %}
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @         WARNING: UNPROTECTED PRIVATE KEY FILE!          @
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -112,9 +112,9 @@ It is required that your private key files are NOT accessible by others.
 This private key will be ignored.
 Load key "EC2tutorial.pem": bad permissions
 ec2-user@54.172.238.16: Permission denied (publickey,gssapi-keyex,gssapi-with-mic).
-```
+{% endhighlight %}
 
-And, finally, to SSH: `ssh -i EC2tutorial.pem <user>@<your-instance-public-ip-address>`
+And, finally, to SSH: `ssh -i EC2tutorial.pem <hostname>@<your-instance-public-ip-address>`
 
 For example: `ssh -i EC2tutorial.pem ec2-user@54.132.218.27`
 
@@ -124,3 +124,10 @@ For example: `ssh -i EC2tutorial.pem ec2-user@54.132.218.27`
 - Restrict access by only allowing trusted hosts or networks to access ports on your instance. For example, you can restrict SSH access by restricting incoming traffic on port 22. For more information, see Amazon EC2 security groups for Linux instances.
 - Review the rules in your security groups regularly, and ensure that you apply the principle of **least privilege—only** open up permissions that you require. You can also create different security groups to deal with instances that have different security requirements. Consider creating a bastion security group that allows external logins, and keep the remainder of your instances in a group that does not allow external logins.
 - Disable password-based logins for instances launched from your AMI. Passwords can be found or cracked, and are a security risk. For more information, see Disable password-based remote logins for root. For more information about sharing AMIs safely, see Shared AMIs.
+
+### Introduction to Security Groups
+
+- Security Groups are fundamental to network security in AWS
+- **They control what traffic is allowed in or out of our EC2 machines**
+
+![](https://s3.amazonaws.com/gutucristian.github.io/Kafka/Screen+Shot+2020-06-01+at+5.54.47+PM.png)
