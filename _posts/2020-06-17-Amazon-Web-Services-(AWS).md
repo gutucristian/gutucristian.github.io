@@ -130,4 +130,4 @@ For example: `ssh -i EC2tutorial.pem ec2-user@54.132.218.27`
 - Security Groups are fundamental to network security in AWS
 - **They control what traffic is allowed in or out of our EC2 machines**
 
-![](https://s3.amazonaws.com/gutucristian.github.io/Kafka/Screen+Shot+2020-06-01+at+5.54.47+PM.png)
+![](https://s3.amazonaws.com/gutucristian.com/SecurityGroup.png)
