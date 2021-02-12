@@ -127,7 +127,9 @@ For example: `ssh -i EC2tutorial.pem ec2-user@54.132.218.27`
 
 ### Introduction to Security Groups
 
-- Security Groups are fundamental to network security in AWS
-- **They control what traffic is allowed in or out of our EC2 machines**
+Security Groups are fundamental to network security in AWS. **They control what traffic is allowed in or out of our EC2 machines**.
 
 ![](https://s3.amazonaws.com/gutucristian.com/SecurityGroup.png)
+
+As a general rule of thumb, anytime you get some kind of timeout or can't get into your machine it is probably a security group issue.
+
