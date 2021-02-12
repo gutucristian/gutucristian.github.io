@@ -67,7 +67,7 @@ IAM takeaway:
   - Distribute load across machines (ELB)
   - Scaling the services using an auto-scaling group (ASG)
 
-### Creating an EC2 EC2 instance
+### Creating an EC2 instance
 
 1. Select an instance type
 
@@ -127,9 +127,27 @@ For example: `ssh -i EC2tutorial.pem ec2-user@54.132.218.27`
 
 ### Introduction to Security Groups
 
-Security Groups are fundamental to network security in AWS. **They control what traffic is allowed in or out of our EC2 machines**.
+Security Groups are fundamental to network security in AWS. In essencse, they act as a "firewall" and, thus, **control what traffic is allowed in or out of our EC2 machines**. They regulate:
+- Access to ports
+- Authorized IP ranges (IPv4 and IPv6)
+- Control on ingress network traffic (from other to instance)
+- Control of egress network traffic (from instance to other)
 
 ![](https://s3.amazonaws.com/gutucristian.com/SecurityGroup.png)
 
-As a general rule of thumb, anytime you get some kind of timeout or can't get into your machine it is probably a security group issue.
+Security Groups Good to Know:
+- Can be attached to multiple instances
+- Locked down to a region / VPC combination (so if you switch to another region or create another VPC you have to re-create the security groups)
+- **Lives outside the EC2 instance**, it is not an appliction running on your instance, so, if traffic is blocked, then EC2 instance won't see it
+- **It is good to maintain one security group for SSH access**
+- **If **application is not accessible** (time out), then it is a **security group issue**
+- **If application gives a "connection refused" error**, then it's an **application error or it hasn't been launched**
+- By **default, all inbound traffic is blocked, and all outbound traffic is authorized**
 
+![](https://s3.amazonaws.com/gutucristian.com/SecurityGroup1.png)
+
+We can also reference other security groups within a security group to define allowed inbound and outbound network traffic. 
+
+For example, in the figure below EC2 instance on left has Security Group 1 attached for defining inbound network. This group allows inbound network from group 1 and 2 but not 3. This makes management easier as we no longer have to think about IPs:
+
+![](https://s3.amazonaws.com/gutucristian.com/SecurityGroup2.png)
