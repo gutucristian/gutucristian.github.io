@@ -158,7 +158,7 @@ For example, in the figure below EC2 instance on left has Security Group 1 attac
 - IPv6 is newer and introduces a greater IP range
 - Today, IPv4 is still most common
 - IPv4 allows for 3.7 billion different addresses in the public space
-- IPv4 format: [0-255].[0-255].[0-255].[0-255]
+- IPv4 format: `[0-255].[0-255].[0-255].[0-255]`
 - Public IP:
   - The machine can be uniquely identified on the internet (two machines **cannot** have the same **public IP**)
 - Private IP:
@@ -211,4 +211,4 @@ Steps:
 10. Run `curl localhost:80` to see the webpage that will be served
 11. To access website via browser, visit the EC2 instance using its **public IP**
   - Note: if you restart the EC2 instance, the public IP will change (unless you associate an Elastic IP with the instance -- in which case the public IP will not change)
-12. Run `echo "Hello World from Nuuk! (Internal DNS: $(hostname -f))" > /var/www/html/index.html` to change from default `httpd` page
+12. Run `echo "<h1>Hello World from Nuuk! (Internal DNS: <span style="color:red">$(hostname -f))</span></h1>" > /var/www/html/index.html` to change from default `httpd` page
