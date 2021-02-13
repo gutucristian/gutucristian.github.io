@@ -104,14 +104,14 @@ As a side note, `chmod 400` sets permissions so that, (U)ser / owner can read, c
 If you skip this step you won't be able to SSH into your instance and will get the error:
 
 {% highlight c linenos %}
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-@         WARNING: UNPROTECTED PRIVATE KEY FILE!          @
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-Permissions 0644 for 'EC2tutorial.pem' are too open.
-It is required that your private key files are NOT accessible by others.
-This private key will be ignored.
-Load key "EC2tutorial.pem": bad permissions
-ec2-user@54.172.238.16: Permission denied (publickey,gssapi-keyex,gssapi-with-mic).
+  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+  @         WARNING: UNPROTECTED PRIVATE KEY FILE!          @
+  @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+  Permissions 0644 for 'EC2tutorial.pem' are too open.
+  It is required that your private key files are NOT accessible by others.
+  This private key will be ignored.
+  Load key "EC2tutorial.pem": bad permissions
+  ec2-user@54.172.238.16: Permission denied (publickey,gssapi-keyex,gssapi-with-mic).
 {% endhighlight %}
 
 And, finally, to SSH: `ssh -i EC2tutorial.pem <hostname>@<your-instance-public-ip-address>`
@@ -142,7 +142,12 @@ Security Groups Good to Know:
 - **It is good to maintain one security group for SSH access**
 - **If application is not accessible** (time out), then it is a **security group issue**
 - **If application gives a "connection refused" error**, then it's an **application error or it hasn't been launched**
-- By **default, all inbound traffic is blocked, and all outbound traffic is authorized**
+- Operate at instance level
+- Allow or deny traffic that a NACL allows in
+- Are implicit deny -- you can only add "allow" rules
+- By **default, all inbound traffic is denied, and all outbound traffic is allowed**
+- **Are stateful -- response traffic is automatically allowed**
+  - For example, if inbound allows TCP port `80` (HTTP) but denies all outbound traffic and we get a request from the outside to port `80`, a response will still be sent (even though Security Group says all outbound traffic is denied). This is because, by default, all response traffic is automatically allowed. However, we would not be able to initiate a request to the outside world from within the instance since per the Security Group all outbound traffic is denied ([reference](https://www.fugue.co/blog/cloud-network-security-101-aws-security-groups-vs-nacls))
 
 ![](https://s3.amazonaws.com/gutucristian.com/SecurityGroup1.png)
 
@@ -236,11 +241,11 @@ What is `systemctl`?
 User Data script to automate Apache `httpd` installation from the example above:
 {% highlight bash linenos %}
 #!/bin/bash
-yum update -y
-yum install -y httpd.x86_64
-systemctl start httpd.service
-systemctl enable httpd.service
-echo "<h1>Hello World from Nuuk! (Internal DNS: <span style="color:red">$(hostname -f))</span></h1>" > /var/www/html/index.html
+  yum update -y
+  yum install -y httpd.x86_64
+  systemctl start httpd.service
+  systemctl enable httpd.service
+  echo "<h1>Hello World from Nuuk! (Internal DNS: <span style="color:red">$(hostname -f)</span>)</h1>" > /var/www/html/index.html
 {% endhighlight %}
 
 A note on why you need `#!/bin/bash`:
