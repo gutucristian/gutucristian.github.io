@@ -184,3 +184,31 @@ Things to note:
   - Use a random public IP and register a DNS name to, or 
   - Use a load balancer and don't use a public IP
 - To use the Elastic IP with your EC2 instance, you have to create an association between the instance and the Elastic IP
+
+### Install Apache on EC2
+
+In this example we will install an Apache HTTP Server (`httpd`) on an EC2 instance to host a basic web application.
+
+The Apache HTTP Server, colloquially called Apache, is a free and open-source cross-platform web server software.
+
+`httpd` is the Apache HyperText Transfer Protocol (HTTP) server program. It is designed to be run as a standalone **daemon process**. When used like this it will create a pool of child processes or threads to handle requests.
+
+We will also use The Yellowdog Updater, Modified (a free and open-source command-line package-management utility for computers running the Linux operating system using the RPM Package Manager), also know as `yum`, to update all instance packages (OS: Amazon Linux 2).
+
+Steps:
+1. Create an EC2 instace (select Amazon Linux 2 AMI)
+2. Configure instance Security Group to allow inbound SSH (TCP port `22`) and HTTP (TCP port `80`) traffic
+3. Create a new SSH key or use an existing one (Note: this is required to be able to get terminal access to instance)
+4. SSH into instance using `ssh -i <key-file>.pem ec2-user@<instance-public-ip>
+5. Run `sudo su`
+  - `sudo` is a program for Unix-like computer operating systems that allows users to run programs with the security privileges of another user
+  - `su` is used to switch to another user (**s** witch **u** ser)
+  - `sudo su` command switches to the super user – or root user – when you execute it with no additional options
+6. Run `yum update -y` to update all system packages
+7. Run `yum install -y httpd.x86_64` to install `httpd`
+8. Run `systemctl start httpd.service` to start the `httpd` service (listening on port `80`)
+9. Run `systemctl enable httpd.service` to make sure service is enabled across reboots
+10. Run `curl localhost:80` to see the webpage that will be served
+11. To access website via browser, visit the EC2 instance using its **public IP**
+  - Note: if you restart the EC2 instance, the public IP will change (unless you associate an Elastic IP with the instance -- in which case the public IP will not change)
+12. Run `echo "Hello World from Nuuk! (Internal DNS: $(hostname -f))" > /var/www/html/index.html` to change from default `httpd` page
