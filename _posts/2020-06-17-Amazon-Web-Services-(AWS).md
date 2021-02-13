@@ -170,7 +170,7 @@ For example, in the figure below EC2 instance on left has Security Group 1 attac
 ![](https://s3.amazonaws.com/gutucristian.com/PublicPrivateIPNetworkGraph.png)
 
 Things to note:
-- When you stop and then start an EC2 instance there is a high chance that its public IP will change
+- **When you stop and then start an EC2 instance** there is a high chance that **public IP will change** and **private IP will remain as is**
 - **By default, an EC2 instance comes with a private IP** for the internal AWS network **and a public IP for the WWW**
 - When SSHing into our EC2 machines, we can't use the private IP because we are not in the same network
 
