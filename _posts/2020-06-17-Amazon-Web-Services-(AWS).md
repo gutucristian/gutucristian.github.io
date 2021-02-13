@@ -151,3 +151,38 @@ We can also reference other security groups within a security group to define al
 For example, in the figure below EC2 instance on left has Security Group 1 attached for defining inbound network. This group allows inbound network from group 1 and 2 but not 3. This makes management easier as we no longer have to think about IPs:
 
 ![](https://s3.amazonaws.com/gutucristian.com/SecurityGroup2.png)
+
+### Private vs Public IP (IPv4)
+
+- Networking has two sorts of IPs: IPv4 and IPv6
+- IPv6 is newer and introduces a greater IP range
+- Today, IPv4 is still most common
+- IPv4 allows for 3.7 billion different addresses in the public space
+- IPv4 format: [0-255].[0-255].[0-255].[0-255]
+
+![]()
+
+Fundamental difference between public and private IPs:
+
+Public IP:
+- The machine can be uniquely identified on the internet (two machines **cannot** have the same **public IP**)
+
+Private IP:
+- Using the private IP, the machine can only be identified on the private network that its on
+- The IP of the machine must be unique across the private network that its on
+- Machines connect to the WWW using NAT + internet gateway (proxy)
+- Only a specified range of IPs can be used as private IPs
+
+Things to note:
+- When you stop and then start an EC2 instance there is a high chance that its public IP will change
+- **By default, an EC2 instance comes with a private IP** for the internal AWS network **and a public IP for the WWW**
+- When SSHing into our EC2 machines, we can't use the private IP because we are not in the same network
+
+### AWS Elastic IP
+
+- If you need to have a **fixed public IP** for your instance, you need an **Elastic IP**
+- An Elastic IP is a public IPv4 IP you own as long as you don't delete it
+- **You can only have `5` Elastic IP in your account (you can ask AWS to increase that)**
+- Overall, try to avoid using Elastic IPs -- they often reflect poor architectural decisions. Instead:
+  - Use a random public IP and register a DNS name to i, or 
+  - Use a load balancer and don't use a public IP
