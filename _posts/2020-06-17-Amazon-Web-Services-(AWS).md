@@ -212,3 +212,23 @@ Steps:
 11. To access website via browser, visit the EC2 instance using its **public IP**
   - Note: if you restart the EC2 instance, the public IP will change (unless you associate an Elastic IP with the instance -- in which case the public IP will not change)
 12. Run `echo "<h1>Hello World from Nuuk! (Internal DNS: <span style="color:red">$(hostname -f))</span></h1>" > /var/www/html/index.html` to change from default `httpd` page
+
+What is `systemctl`?
+- `systemctl` is a controlling interface and inspection tool for the widely-adopted init system and service manager `systemd`
+- `systemd` is a suite of basic building blocks for a Linux system. It provides a system and service manager that runs as `PID 1` and starts the rest of the system
+
+`systemctl` references:
+- https://www.digitalocean.com/community/tutorials/how-to-use-systemctl-to-manage-systemd-services-and-units
+- https://www.linode.com/docs/guides/introduction-to-systemctl/
+- https://wiki.archlinux.org/index.php/systemd
+
+### EC2 User Data
+
+- It is possible to **bootstrap** our EC2 instance using a User Data script
+- Bootstraping means launching commands when a machine starts
+- The script is **only run once** at **instance start**
+- EC2 user data is often used to automate boot tasks such as:
+  - Installing updates
+  - Installing software
+  - Downloading common files from the internet
+- The EC2 User Data Script runs with the **root user**
