@@ -178,6 +178,7 @@ Things to note:
 
 - If you need to have a **fixed public IP** for your instance, you need an **Elastic IP**
 - An Elastic IP is a public IPv4 IP you own as long as you don't delete it
+- You only pay for an Elastic IP when it is not associated with an EC2 instance
 - **You can only have `5` Elastic IP in your account (you can ask AWS to increase that)**
 - Overall, try to avoid using Elastic IPs -- they often reflect poor architectural decisions. Instead it is recommended to:
   - Use a random public IP and register a DNS name to, or 
