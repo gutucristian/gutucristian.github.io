@@ -232,3 +232,17 @@ What is `systemctl`?
   - Installing software
   - Downloading common files from the internet
 - The EC2 User Data Script runs with the **root user**
+
+User Data script to automate Apache `httpd` installation from the example above:
+{% highlight bash linenos %}
+#!/bin/bash
+yum update -y
+yum install -y httpd.x86_64
+systemctl start httpd.service
+systemctl enable httpd.service
+echo "<h1>Hello World from Nuuk! (Internal DNS: <span style="color:red">$(hostname -f))</span></h1>" > /var/www/html/index.html
+{% endhighlight %}
+
+A note on why you need `#!/bin/bash`:
+- It's a convention so the *nix shell knows what kind of interpreter to run.
+- The shebang `#!`, when it is the first two bytes of an executable (`x` mode) file, is interpreted by the `execve(2)` system call (which executes programs). As such, `#!` must be followed by a file path of an interpreter executable. Thus: we have `#!/bin/bash`
