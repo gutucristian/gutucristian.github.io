@@ -160,7 +160,7 @@ For example, in the figure below EC2 instance on left has Security Group 1 attac
 - IPv4 allows for 3.7 billion different addresses in the public space
 - IPv4 format: [0-255].[0-255].[0-255].[0-255]
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/PublicPrivateIPNetworkGraph.png)
 
 Fundamental difference between public and private IPs:
 
