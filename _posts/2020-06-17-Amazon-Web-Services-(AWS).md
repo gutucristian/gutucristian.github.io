@@ -140,7 +140,7 @@ Security Groups Good to Know:
 - Locked down to a region / VPC combination (so if you switch to another region or create another VPC you have to re-create the security groups)
 - **Lives outside the EC2 instance**, it is not an appliction running on your instance, so, if traffic is blocked, then EC2 instance won't see it
 - **It is good to maintain one security group for SSH access**
-- **If **application is not accessible** (time out), then it is a **security group issue**
+- **If application is not accessible** (time out), then it is a **security group issue**
 - **If application gives a "connection refused" error**, then it's an **application error or it hasn't been launched**
 - By **default, all inbound traffic is blocked, and all outbound traffic is authorized**
 
