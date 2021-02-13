@@ -182,3 +182,4 @@ Things to note:
 - Overall, try to avoid using Elastic IPs -- they often reflect poor architectural decisions. Instead it is recommended to:
   - Use a random public IP and register a DNS name to, or 
   - Use a load balancer and don't use a public IP
+- To use the Elastic IP with your EC2 instance, you have to create an association between the instance and the Elastic IP
