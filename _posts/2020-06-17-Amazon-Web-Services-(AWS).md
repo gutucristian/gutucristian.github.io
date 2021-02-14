@@ -251,3 +251,57 @@ User Data script to automate Apache `httpd` installation from the example above:
 A note on why you need `#!/bin/bash`:
 - It's a convention so the *nix shell knows what kind of interpreter to run.
 - The shebang `#!`, when it is the first two bytes of an executable (`x` mode) file, is interpreted by the `execve(2)` system call (which executes programs). As such, `#!` must be followed by a file path of an interpreter executable. Thus: we have `#!/bin/bash`
+
+### EC2 Instance Launch Types
+
+- On Demand Instances: short workload, predictable pricing
+- Reserved: (MINIMUM one year)
+  - Reserved Instances: long workloads
+  - Convertible Reserved Instances: long workloads with flexible instances
+  - Scheduled Reserved Instances: example -- every Thursday between `3` PM and `6` PM
+- Spot Instances: short workloads, much cheaper price, but can loose instance if spot price goes above your max bid (thus, less reliable)
+- Dedicated Instances: no other customers will share your hardware
+- Dedicated Hosts: book an entire physical server, control instance placement
+
+EC2 On Demand:
+- Pay for what you use (billing per second -- after the first minute)
+- Has the highest cost, but no upfront payment
+- No long term commitment
+- Recommended for short-term and un-interrupted workloads where you can't predict how the application will behave
+
+EC2 Reserved Instances:
+- Up to 75% discount compared to On Demand
+- Pay up front for what you use with long term commitment
+- Reservation period can be `1` or `3` years
+- Reserve a specific instance type
+- Recommended for steady state usage applications (e.g., database)
+- **Convertible Reserved Instance**:
+  - Can change the EC2 instance type
+  - Up to 54% discount
+- **Scheduled Reserved Instances**:
+  - Launch within the time window you reserve
+  - Use when you require a fraction of day / week / month
+  
+EC2 Spot Instance:
+- Can get a discount of up to 90% compared to On Demand
+- You may loose instance at any point if your max price is less than the current spot price (bidding approach)
+- The MOST cost efficient instances in AWS
+- Useful for workloads that are resilient to failure:
+  - Batch jobs
+  - Data analysis
+  - Image processing
+- Not good for mission critical jobs or databases
+- Great combinatin: reserved instances for baseline needs + On Demand & Spot instances to handle peak times
+
+EC2 Dedicated Hosts:
+- Physical dedicated EC2 server for your use
+- Full control of EC2 instance placement
+- Visibility into the underlying sockets / physical cores of the hardware
+- Allocated to your account for a `3` year period reservation
+- More expensive
+- Useful for software that have complicated licensing model
+
+EC2 Dedicated Instances:
+- Instances running on hardware that is dedicated to you
+- May share hardware with other instances in same account
+- No control over instance placement (can move hardware after Stop / Start)
