@@ -385,7 +385,8 @@ A note on why you need `#!/bin/bash`:
   1. Vertical, and
   2. Horizontal (a.k.a., elasticity)
   
-**Vertical Scalability**:
+**Vertical Scalability**
+
 - Vertical Scalability means increasing the hardware capabilities of the instance (scale up / scale down)
   - From: `t2.nano` - 0.5G of RAM, 1 vCPU
   - To: `u-12tb1.metal` - 12.3TB RAM, 448 vCPU
@@ -394,15 +395,81 @@ A note on why you need `#!/bin/bash`:
 - RDS, ElasticCache are services that can scale vertically
 - There is a hardware limit to how much you can scale vertically
 
-**Horizontal Scaling**:
+**Horizontal Scaling**
+
 - Horizontal scaling means increasing the number of instances (scale out / scale in)
   - Auto Scaling Group (ASG)
   - Load Balancer
 - Horizontal scaling implies distributed systems (e.g., Kafka, BitTorrent)
 
-**High Availability**:
+**High Availability**
+
 - High Availability goes hand in hand with horizontal scaling
   - Auto Scaling Group multi AZ
   - Load Balancer multi AZ
 - High Availability is used to guarantee **fault tolerance** -- the property that enables a system to continue operating properly in the event of the failure of some of its components
 - To make our application highly available, we could run it in two Availability Zones. In this case, if one data center is compromized (e.g., natural disaster), then our application will continue to function as usual out of the second Availability Zone (data center)
+
+### Load Balancing
+
+- Load balancers are servers that forward internet traffic to multiple servers (EC2 Instances) downstream
+
+![]()
+
+**Why use a Load Balancer?**
+
+- Spread load across multiple downstream instances
+- Expose a single point of access (DNS) to your application
+- Seamlessly handle failures of downstream instances
+- Do regular health checks to your instances
+- Provide SSL termination (HTTPS) for your websites
+- Enforce stickiness with cookies
+- High availability across zones
+- Separate public traffic from private traffic
+
+**Why use an EC2 Load Balancer?**
+
+- An ELB (EC2 Load Balancer) is a **managed load balancer**
+  - AWS guarantees that it will be working
+  - AWS takes care of upgrades, maintenance, high availability
+  - AWS provides only a few configuration knobs
+- It costs less to setup your own load balancer, but it will cost more in maintenance and effort on your end
+- It is integrated with many AWS offerings / services
+
+**Health Checks**
+
+- Health Checks are crucial for Load Balancers
+- They enable the load balancer to know if instances it forwards traffic to are available to reply to requests
+- The health check is done on a port and a route (`/health` is common)
+- If the response is not `200 (OK)`, then the instance is marked "un-healthy"
+
+![](https://s3.amazonaws.com/gutucristian.com/HealthCheck.png)
+
+**Types of Load Balancers on AWS**
+
+- **Classic Load Balancer** (v1 -- old generation) - 2009
+  - HTTP, HTTPS, TCP
+- **Application Load Balancer** (v2 -- new generation) - 2016
+  - HTTP, HTTPS, WebSocket
+- **Network Load Balancer** (v2 -- new generation) - 2017
+  - TCP, TLS (secure TCP) & UDP
+- It is recommended to use newer / v2 generation load balancers as they provide more features
+- You can set up **internal** (private) or **external** (public) ELBs
+
+![](https://s3.amazonaws.com/gutucristian.com/LoadBalancer.png)
+
+**Load Balancer Security Group with Application Security Group that allows traffic only from Load Balancer**
+
+![](https://s3.amazonaws.com/gutucristian.com/LoadBalancer.png)
+
+**Load Balancer Good to Know**
+
+- Load Balancers can scale but no instantaneously -- contact AWS for a "warm-up"
+- Troubleshooting:
+  - `4xx` errors are client induced errors
+  - `5xx` errors are application induced errors
+  - Load Balancer Error `503` means that LB is at capacity or no registered targets
+  - If the LB can't connec to your application, check your security groups!
+- Monitoring:
+  - ELB access logs will log all access requests (so you can debug per request)
+  - CloudWatch Metrics will give you aggregate statistics (e.g., connection counts)
