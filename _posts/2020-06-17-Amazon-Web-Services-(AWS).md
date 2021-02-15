@@ -240,7 +240,7 @@ What is `systemctl`?
 
 User Data script to automate Apache `httpd` installation from the example above:
 {% highlight bash linenos %}
-#!/bin/bash
+  #!/bin/bash
   yum update -y
   yum install -y httpd.x86_64
   systemctl start httpd.service
@@ -254,22 +254,22 @@ A note on why you need `#!/bin/bash`:
 
 ### EC2 Instance Launch Types
 
-- On Demand Instances: short workload, predictable pricing
-- Reserved: (MINIMUM one year)
+- **On Demand Instances**: short workload, predictable pricing
+- **Reserved**: (MINIMUM one year)
   - Reserved Instances: long workloads
   - Convertible Reserved Instances: long workloads with flexible instances
   - Scheduled Reserved Instances: example -- every Thursday between `3` PM and `6` PM
-- Spot Instances: short workloads, much cheaper price, but can loose instance if spot price goes above your max bid (thus, less reliable)
-- Dedicated Instances: no other customers will share your hardware
-- Dedicated Hosts: book an entire physical server, control instance placement
+- **Spot Instances**: short workloads, much cheaper price, but can loose instance if spot price goes above your max bid (thus, less reliable)
+- **Dedicated Instances**: no other customers will share your hardware
+- **Dedicated Hosts**: book an entire physical server, control instance placement
 
-EC2 On Demand:
+**EC2 On Demand**:
 - Pay for what you use (billing per second -- after the first minute)
 - Has the highest cost, but no upfront payment
 - No long term commitment
 - Recommended for short-term and un-interrupted workloads where you can't predict how the application will behave
 
-EC2 Reserved Instances:
+**EC2 Reserved Instances**:
 - Up to 75% discount compared to On Demand
 - Pay up front for what you use with long term commitment
 - Reservation period can be `1` or `3` years
@@ -282,7 +282,7 @@ EC2 Reserved Instances:
   - Launch within the time window you reserve
   - Use when you require a fraction of day / week / month
   
-EC2 Spot Instance:
+**EC2 Spot Instance**:
 - Can get a discount of up to 90% compared to On Demand
 - You may loose instance at any point if your max price is less than the current spot price (bidding approach)
 - The MOST cost efficient instances in AWS
@@ -293,7 +293,7 @@ EC2 Spot Instance:
 - Not good for mission critical jobs or databases
 - Great combinatin: reserved instances for baseline needs + On Demand & Spot instances to handle peak times
 
-EC2 Dedicated Hosts:
+**EC2 Dedicated Hosts**:
 - Physical dedicated EC2 server for your use
 - Full control of EC2 instance placement
 - Visibility into the underlying sockets / physical cores of the hardware
@@ -301,7 +301,52 @@ EC2 Dedicated Hosts:
 - More expensive
 - Useful for software that have complicated licensing model
 
-EC2 Dedicated Instances:
+**EC2 Dedicated Instances**:
 - Instances running on hardware that is dedicated to you
 - May share hardware with other instances in same account
 - No control over instance placement (can move hardware after Stop / Start)
+
+### EC2 Elastic Network Interfaces
+
+- Logical component in a VPC that represents a **virtual network card**
+- The ENI can have the following attributes:
+  - Primary private IPv4, one or more secondary IPv4
+  - One Elastic IP (IPv4) per private IPv4
+  - One public IPv4
+  - One or more security groups
+  - A MAC address
+- You can create ENI independendtly and attach them on the fly on EC2 for failover
+- Bound to a specific availability zone (AZ)
+
+![](https://s3.amazonaws.com/gutucristian.com/ElasticNetworkInterface.png)
+
+## AWS Elastic Load Balancer (ELB) + Auto Scaling Group (ASG)
+
+### Scalability & High Availability
+
+- Scalability means that an application / system can handle greater loads by adapting
+- There are two types of scaling:
+  1. Vertical, and
+  2. Horizontal (a.k.a., elasticity)
+  
+**Vertical Scalability**:
+- Vertical Scalability means increasing the hardware capabilities of the instance (scale up / scale down)
+  - From: `t2.nano` - 0.5G of RAM, 1 vCPU
+  - To: `u-12tb1.metal` - 12.3TB RAM, 448 vCPU
+- For example, if your application is currently running on a `t2.micro` instance type, then scaling vertically could mean changing it to a `t2.large` instead
+- Vertical scaling is common for **non distributed systems** like databases
+- RDS, ElasticCache are services that can scale vertically
+- There is a hardware limit to how much you can scale vertically
+
+**Horizontal Scaling**:
+- Horizontal scaling means increasing the number of instances (scale out / scale in)
+  - Auto Scaling Group (ASG)
+  - Load Balancer
+- Horizontal scaling implies distributed systems (e.g., Kafka, BitTorrent)
+
+**High Availability**:
+- High Availability goes hand in hand with horizontal scaling
+  - Auto Scaling Group multi AZ
+  - Load Balancer multi AZ
+- High Availability is used to guarantee **fault tolerance** -- the property that enables a system to continue operating properly in the event of the failure of some of its components
+- To make our application highly available, we could run it in two Availability Zones. In this case, if one data center is compromized (e.g., natural disaster), then our application will continue to function as usual out of the second Availability Zone (data center)
