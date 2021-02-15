@@ -263,13 +263,15 @@ A note on why you need `#!/bin/bash`:
 - **Dedicated Instances**: no other customers will share your hardware
 - **Dedicated Hosts**: book an entire physical server, control instance placement
 
-**EC2 On Demand**:
+**EC2 On Demand**
+
 - Pay for what you use (billing per second -- after the first minute)
 - Has the highest cost, but no upfront payment
 - No long term commitment
 - Recommended for short-term and un-interrupted workloads where you can't predict how the application will behave
 
-**EC2 Reserved Instances**:
+**EC2 Reserved Instances**
+
 - Up to 75% discount compared to On Demand
 - Pay up front for what you use with long term commitment
 - Reservation period can be `1` or `3` years
@@ -282,7 +284,8 @@ A note on why you need `#!/bin/bash`:
   - Launch within the time window you reserve
   - Use when you require a fraction of day / week / month
   
-**EC2 Spot Instance**:
+**EC2 Spot Instance**
+
 - Can get a discount of up to 90% compared to On Demand
 - You may loose instance at any point if your max price is less than the current spot price (bidding approach)
 - The MOST cost efficient instances in AWS
@@ -293,7 +296,8 @@ A note on why you need `#!/bin/bash`:
 - Not good for mission critical jobs or databases
 - Great combinatin: reserved instances for baseline needs + On Demand & Spot instances to handle peak times
 
-**EC2 Dedicated Hosts**:
+**EC2 Dedicated Hosts**
+
 - Physical dedicated EC2 server for your use
 - Full control of EC2 instance placement
 - Visibility into the underlying sockets / physical cores of the hardware
@@ -301,7 +305,8 @@ A note on why you need `#!/bin/bash`:
 - More expensive
 - Useful for software that have complicated licensing model
 
-**EC2 Dedicated Instances**:
+**EC2 Dedicated Instances**
+
 - Instances running on hardware that is dedicated to you
 - May share hardware with other instances in same account
 - No control over instance placement (can move hardware after Stop / Start)
@@ -319,6 +324,57 @@ A note on why you need `#!/bin/bash`:
 - Bound to a specific availability zone (AZ)
 
 ![](https://s3.amazonaws.com/gutucristian.com/ElasticNetworkInterface.png)
+
+### EC2 Good to Know and Checklist
+
+**Pricing**
+
+- EC2 instance price (per hour) varies based on these parameters:
+  - Region
+  - Instance type
+  - On Demand vs Spot vs Reserved vs Dedicated Host
+  - Linux vs Windows vs Private OS
+- You are billed by the second, with a minimum of `60` seconds
+- You also pay for other factors such as storage, data transfer, fixed IP public addresses, load balancing
+
+**Amazon Machine Image (AMI)**
+
+- AWS comes with base images that you can use to create your EC2 instance
+  - Ubuntu
+  - RedHat
+  - Windows
+- These images can be customized at runtime using EC2 User Data
+- Alternatively, we can create our own AMI that is ready to go without needing to run User Data script on start
+- Building your own AMI has some advantages:
+  - Pre-install packages
+  - Faster boot time (no need for long EC2 User Data at boot time)
+  - Machine comes configured with monitoring / enterprise software
+  - Control of maintenance and updates of AMI over time
+  - **Note**: AMIs are build for a specific AWS region
+
+**EC2 Instance Characteristics Overview**
+
+- Instances have `5` distinct characteristics:
+  - RAM (type, amount, generation)
+  - CPU (type, make, frequency, generation, number of cores)
+  - I/O (disk performance, EBS optimizations)
+  - Network (network bandwidth, network latency)
+  - Graphical Processing Unit (GPU)
+- R/C/P/G/H/X/I/F/Z/CR are specialized in RAM, CPU, I/O, Network, GPU
+- M instance types are balanced
+- T2/T3 instances are "burstable"
+
+**Burstable Instances (T2)**
+
+- Burst means that overall, the instance has OK CPU performance
+- When the machine needs to process something unexpected (a spike in load for example), it can burst, and CPU can be VERY good
+- If the machine bursts it utilizes "burst credit"
+- If all the credits are gone, the CPU becomes BAD
+- If machine stops bursting, credits are accumulated over time
+- Burstable instances can be amazing to handle unexpected traffic, but if your instance consistently runs on low credit, you need to move to a different kind of non-burstable instance
+- **Note:** it is possible to have an "unlimited burst credit balance" -- you pay extra money (can get very expensive), but you don't loose in performance
+
+![](https://s3.amazonaws.com/gutucristian.com/BurstCredit.png)
 
 ## AWS Elastic Load Balancer (ELB) + Auto Scaling Group (ASG)
 
