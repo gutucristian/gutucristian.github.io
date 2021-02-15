@@ -414,7 +414,7 @@ A note on why you need `#!/bin/bash`:
 
 - Load balancers are servers that forward internet traffic to multiple servers (EC2 Instances) downstream
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/LoadBalancer.png)
 
 **Why use a Load Balancer?**
 
@@ -441,7 +441,7 @@ A note on why you need `#!/bin/bash`:
 - Health Checks are crucial for Load Balancers
 - They enable the load balancer to know if instances it forwards traffic to are available to reply to requests
 - The health check is done on a port and a route (`/health` is common)
-- If the response is not `200 (OK)`, then the instance is marked "un-healthy"
+- If the response is **not** `200 (OK)`, then the instance is marked "un-healthy"
 
 ![](https://s3.amazonaws.com/gutucristian.com/HealthCheck.png)
 
@@ -455,8 +455,6 @@ A note on why you need `#!/bin/bash`:
   - TCP, TLS (secure TCP) & UDP
 - It is recommended to use newer / v2 generation load balancers as they provide more features
 - You can set up **internal** (private) or **external** (public) ELBs
-
-![](https://s3.amazonaws.com/gutucristian.com/LoadBalancer.png)
 
 **Load Balancer Security Group with Application Security Group that allows traffic only from Load Balancer**
 
