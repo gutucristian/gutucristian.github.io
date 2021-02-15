@@ -460,7 +460,7 @@ A note on why you need `#!/bin/bash`:
 
 **Load Balancer Security Group with Application Security Group that allows traffic only from Load Balancer**
 
-![](https://s3.amazonaws.com/gutucristian.com/LoadBalancer.png)
+![](https://s3.amazonaws.com/gutucristian.com/LoadBalancer1.png)
 
 **Load Balancer Good to Know**
 
