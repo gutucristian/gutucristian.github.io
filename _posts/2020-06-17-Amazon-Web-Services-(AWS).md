@@ -448,9 +448,21 @@ A note on why you need `#!/bin/bash`:
 **Types of Load Balancers on AWS**
 
 - **Classic Load Balancer** (v1 -- old generation) - 2009
-  - HTTP, HTTPS, TCP
+  - HTTP & HTTPS (OSI layer `7`), TCP (OSI layer `4`)
+  - Health checks are TCP or HTTP based
+  - Fixed hostname: `xxx.region.elb.amazonaws.com`
+  
+![]()
+
 - **Application Load Balancer** (v2 -- new generation) - 2016
-  - HTTP, HTTPS, WebSocket
+  - HTTP & HTTPS (OSI layer `7`), HTTP2, WebSocket
+  - Can load balance to multiple HTTP applications across machines (target groups)
+  - Can load balance to multiple applications on the same machine (e.g., containers)
+  - Supports redirects (from HTTP to HTTPS for example)
+  - Supports routing tables to define routing logic to different target groups based on some attributes
+    - Routing based on 
+  
+  
 - **Network Load Balancer** (v2 -- new generation) - 2017
   - TCP, TLS (secure TCP) & UDP
 - It is recommended to use newer / v2 generation load balancers as they provide more features
