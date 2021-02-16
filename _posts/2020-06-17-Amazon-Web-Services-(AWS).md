@@ -447,24 +447,41 @@ A note on why you need `#!/bin/bash`:
 
 **Types of Load Balancers on AWS**
 
-- **Classic Load Balancer** (v1 -- old generation) - 2009
+1. **Classic Load Balancer** (v1 -- old generation) - 2009
+
   - HTTP & HTTPS (OSI layer `7`), TCP (OSI layer `4`)
   - Health checks are TCP or HTTP based
   - Fixed hostname: `xxx.region.elb.amazonaws.com`
   
 ![]()
 
-- **Application Load Balancer** (v2 -- new generation) - 2016
+2. **Application Load Balancer** (v2 -- new generation) - 2016
+
   - HTTP & HTTPS (OSI layer `7`), HTTP2, WebSocket
   - Can load balance to multiple HTTP applications across machines (target groups)
   - Can load balance to multiple applications on the same machine (e.g., containers)
   - Supports redirects (from HTTP to HTTPS for example)
-  - Supports routing tables to define routing logic to different target groups based on some attributes
-    - Routing based on 
-  
-  
-- **Network Load Balancer** (v2 -- new generation) - 2017
+  - Supports routing tables to define routing logic to different target groups based on some attributes:
+    - Routing based on path in URL (e.g., example.com**/users** & example.com**/posts**)
+    - Routing based on hostname in URL (e.g., one.example.com vs other.example.com)
+    - Routing based on query string, headers (e.g., example.com/users?**id=123&order=false**)
+  - ALB is a great fit for microservices and container based applications (e.g., Docker & Amazon ECS)
+  - Has a port mapping feature that enables redirection to a dynamic port in ECS
+  - Target Groups can be:
+    - EC2 instances (can be managed by an Auto Scaling Group) -- HTTP
+    - ECS tasks (managed by ECS itself) -- HTTP
+    - Lambda functions -- HTTP request is translated into a JSON event
+    - IP addresses (must be private IPs)
+    - Note: ALB can route to multiple target groups and health checks are at the target group level
+  - Good to know:
+    - ALB has a fixed hostname (e.g., `xxx.region.elb.amazonaws.com`)
+    - The application servers **do not** see the IP of the client directly (instead Classic Load Balancers and Application Load Balancers use the private IP addresses associated with their elastic network interfaces as the source IP address for requests forwarded to your web servers)
+    - The true IP of the client is inserted in the header `X-Forwarded-For`
+    - We can also get the client port and protocol in the headers `X-Forwarded-Port` and `X-Forwarded-Proto` respectively
+      
+3. **Network Load Balancer** (v2 -- new generation) - 2017
   - TCP, TLS (secure TCP) & UDP
+
 - It is recommended to use newer / v2 generation load balancers as they provide more features
 - You can set up **internal** (private) or **external** (public) ELBs
 
