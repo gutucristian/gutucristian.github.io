@@ -412,7 +412,7 @@ A note on why you need `#!/bin/bash`:
 
 ### Load Balancing
 
-- Load balancers are servers that forward internet traffic to multiple servers (EC2 Instances) downstream
+Load balancers are servers that forward internet traffic to multiple servers (EC2 Instances) downstream
 
 ![](https://s3.amazonaws.com/gutucristian.com/LoadBalancer.png)
 
@@ -445,7 +445,7 @@ A note on why you need `#!/bin/bash`:
 
 ![](https://s3.amazonaws.com/gutucristian.com/HealthCheck.png)
 
-**Types of Load Balancers on AWS**
+### Types of Load Balancers on AWS
 
 **Classic Load Balancer** (v1 -- old generation, 2009)
 
@@ -481,6 +481,8 @@ A note on why you need `#!/bin/bash`:
       
 ![](https://s3.amazonaws.com/gutucristian.com/ApplicationLoadBalancer.png)
       
+![](https://s3.amazonaws.com/gutucristian.com/ConnectionTermination.png)
+
 **Network Load Balancer** (v2 -- new generation, 2017)
 
 - TCP, TLS (secure TCP) & UDP
