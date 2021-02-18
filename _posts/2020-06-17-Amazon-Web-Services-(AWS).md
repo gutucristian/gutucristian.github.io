@@ -458,21 +458,28 @@ Load balancers are servers that forward internet traffic to multiple servers (EC
 **Application Load Balancer** (v2 -- new generation, 2016)
 
 - HTTP & HTTPS (OSI layer `7`), HTTP2, WebSocket
-- Can load balance to multiple HTTP applications across machines (target groups)
-- Can load balance to multiple applications on the same machine (e.g., containers)
-- Supports redirects (from HTTP to HTTPS for example)
-- Supports routing tables to define routing logic to different target groups based on some attributes:
-  - Routing based on path in URL (e.g., example.com**/users** & example.com**/posts**)
-  - Routing based on hostname in URL (e.g., one.example.com vs other.example.com)
-  - Routing based on query string, headers (e.g., example.com/users?**id=123&order=false**)
-- ALB is a great fit for microservices and container based applications (e.g., Docker & Amazon ECS)
-- Has a port mapping feature that enables redirection to a dynamic port in ECS
+- Can load balance to multiple **target groups**
+  - A target group is a cluster of related instances (e.g., running some HTTP application)
 - Target Groups can be:
-  - EC2 instances (can be managed by an Auto Scaling Group) -- HTTP
-  - ECS tasks (managed by ECS itself) -- HTTP
+  - EC2 instances (can be managed by an Auto Scaling Group)
+  - ECS tasks (managed by ECS itself)
   - Lambda functions -- HTTP request is translated into a JSON event
   - IP addresses (must be private IPs)
   - Note: ALB can route to multiple target groups and health checks are at the target group level
+- As a result of target groups, ALB can load balance to multiple applications running behind the same load balancer
+  - For example, we can create a listener rule such that all requests with path `/pricing/*` go to target group running the pricing microservice
+  - Similarly, we can have a rule to forward requests with `/forecasting/*` in path to the target group running the forecasting EC2 instances
+- ALB can also load balance to multiple applications running on the same machine (e.g., Docker containers on EC2)
+- As such, ALB is a great fit for microservices and container based applications (e.g., Docker & Amazon ECS)
+- In general, ALB supports traffic forwarding, redirection (e.g. from HTTP to HTTPS), and fixed responses based on conditions from a request's:
+  - Path,
+  - Host header
+  - HTTP header
+  - HTTP request method
+  - Query string
+  - Source IP
+  - Hostname
+- ALB, has a port mapping feature that enables redirection to a dynamic port in ECS
 - Good to know:
   - ALB has a fixed hostname (e.g., `xxx.region.elb.amazonaws.com`)
   - The application servers **do not** see the IP of the client directly (instead Classic Load Balancers and Application Load Balancers use the private IP addresses associated with their elastic network interfaces as the source IP address for requests forwarded to your web servers)
@@ -480,7 +487,9 @@ Load balancers are servers that forward internet traffic to multiple servers (EC
   - We can also get the client port and protocol in the headers `X-Forwarded-Port` and `X-Forwarded-Proto` respectively
       
 ![](https://s3.amazonaws.com/gutucristian.com/ApplicationLoadBalancer.png)
-      
+
+ALB also supports SSL termination:
+
 ![](https://s3.amazonaws.com/gutucristian.com/ConnectionTermination.png)
 
 **Network Load Balancer** (v2 -- new generation, 2017)
