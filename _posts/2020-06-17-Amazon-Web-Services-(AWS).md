@@ -449,7 +449,7 @@ Load balancers are servers that forward internet traffic to multiple servers (EC
 
 **Classic Load Balancer** (v1 -- old generation, 2009)
 
-- HTTP & HTTPS (OSI layer `7`), TCP (OSI layer `4`)
+- HTTP & HTTPS (**OSI layer 7**), TCP (**OSI layer 4**)
 - Health checks are TCP or HTTP based
 - Fixed hostname: `xxx.region.elb.amazonaws.com`
   
@@ -457,7 +457,7 @@ Load balancers are servers that forward internet traffic to multiple servers (EC
 
 **Application Load Balancer** (v2 -- new generation, 2016)
 
-- HTTP & HTTPS (OSI layer `7`), HTTP2, WebSocket
+- HTTP & HTTPS (**OSI layer 7**), HTTP2, WebSocket
 - Can load balance to multiple **target groups**
   - A target group is a cluster of related instances (e.g., running some HTTP application)
 - Target Groups can be:
@@ -494,8 +494,13 @@ ALB also supports SSL termination:
 
 **Network Load Balancer** (v2 -- new generation, 2017)
 
-- TCP, TLS (secure TCP) & UDP
-- It is recommended to use newer / v2 generation load balancers as they provide more features
+- TCP, TLS (secure TCP), UDP (all **OSI layer 4**)
+- Network load balancers (OSI layer 4) allow to:
+  - Forward TCP & UDP traffic to your instances
+  - Handle millions of requests per second
+  - Less latency ~100 ms (vs ~400 ms fo ALB)
+- **NLB has one static IP per AZ and supports assigning Elastic IP**
+- NLBs are **used for extreme performance** (TCP or UDP traffic)
 - You can set up **internal** (private) or **external** (public) ELBs
 
 **Load Balancer Security Group with Application Security Group that allows traffic only from Load Balancer**
