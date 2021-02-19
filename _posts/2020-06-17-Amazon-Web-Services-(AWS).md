@@ -69,25 +69,25 @@ IAM takeaway:
 
 ### Creating an EC2 instance
 
-1. Select an instance type
+**Step 1:** Select an instance type
 
 The EC2 Instance Type determines the *hardware* of the host computer used for your instance. Each instance type offers different compute and memory capabilities
 
-2. Select an Amazon Machine Image (AMI) for your instance
+**Step 2:** Select an Amazon Machine Image (AMI) for your instance
 
 The AMI is a template that contains a software configuration (for example, an operating system, an application server, and applications). From an AMI, you launch an instance, which is a *copy* of the AMI running as a virtual server in the cloud
 
-3. Add Storage
+**Step 3:** Add Storage
 
 The **root device** for your instance **contains the image used to boot the instance**. The root device is either an Amazon Elastic Block Store (Amazon EBS) volume or an instance store volume.
 
 Your instance may include **local storage volumes**, known as **instance store volumes**, which you can configure at launch time with **block device mapping**. After these volumes have been added to and mapped on your instance, they are available for you to mount and use. If your instance fails, or if your instance is stopped or terminated, the data on these volumes is lost; therefore, these volumes are best used for temporary (ephemeral) data. To keep important data safe, you should use a replication strategy across multiple instances, or store your persistent data in Amazon S3 or Amazon EBS volumes.
 
-4. Add Tags (Optional)
+**Step 4:** Add Tags (Optional)
 
 Tags can be used to describe or group instances
 
-5. Configure Security Group
+**Step 5:** Configure Security Group
 
 Use Security Groups to restrict access by only allowing trusted hosts or networks to access ports on your instance. For example, you can restrict SSH access by restricting incoming traffic on port 22.
 
@@ -376,9 +376,9 @@ A note on why you need `#!/bin/bash`:
 
 ![](https://s3.amazonaws.com/gutucristian.com/BurstCredit.png)
 
-## AWS Elastic Load Balancer (ELB) + Auto Scaling Group (ASG)
+# AWS Elastic Load Balancer (ELB) + Auto Scaling Group (ASG)
 
-### Scalability & High Availability
+## Scalability & High Availability
 
 - Scalability means that an application / system can handle greater loads by adapting
 - There are two types of scaling:
@@ -410,13 +410,13 @@ A note on why you need `#!/bin/bash`:
 - High Availability is used to guarantee **fault tolerance** -- the property that enables a system to continue operating properly in the event of the failure of some of its components
 - To make our application highly available, we could run it in two Availability Zones. In this case, if one data center is compromized (e.g., natural disaster), then our application will continue to function as usual out of the second Availability Zone (data center)
 
-### Load Balancing
+## Load Balancing
 
 Load balancers are servers that forward internet traffic to multiple servers (EC2 Instances) downstream
 
 ![](https://s3.amazonaws.com/gutucristian.com/LoadBalancer.png)
 
-**Why use a Load Balancer?**
+### Why use a Load Balancer?
 
 - Spread load across multiple downstream instances
 - Expose a single point of access (DNS) to your application
@@ -427,7 +427,7 @@ Load balancers are servers that forward internet traffic to multiple servers (EC
 - High availability across zones
 - Separate public traffic from private traffic
 
-**Why use an EC2 Load Balancer?**
+### Why use an EC2 Load Balancer?
 
 - An ELB (EC2 Load Balancer) is a **managed load balancer**
   - AWS guarantees that it will be working
@@ -436,7 +436,7 @@ Load balancers are servers that forward internet traffic to multiple servers (EC
 - It costs less to setup your own load balancer, but it will cost more in maintenance and effort on your end
 - It is integrated with many AWS offerings / services
 
-**Health Checks**
+### Health Checks
 
 - Health Checks are crucial for Load Balancers
 - They enable the load balancer to know if instances it forwards traffic to are available to reply to requests
@@ -445,9 +445,9 @@ Load balancers are servers that forward internet traffic to multiple servers (EC
 
 ![](https://s3.amazonaws.com/gutucristian.com/HealthCheck.png)
 
-### Types of Load Balancers on AWS
+## Types of Load Balancers on AWS
 
-**Classic Load Balancer** (v1 -- old generation, 2009)
+### Classic Load Balancer (v1 -- old generation, 2009)
 
 - HTTP & HTTPS (**OSI layer 7**), TCP (**OSI layer 4**)
 - Health checks are TCP or HTTP based
@@ -455,7 +455,7 @@ Load balancers are servers that forward internet traffic to multiple servers (EC
   
 ![](https://s3.amazonaws.com/gutucristian.com/ClassicLoadBalancer.png)
 
-**Application Load Balancer** (v2 -- new generation, 2016)
+### Application Load Balancer (v2 -- new generation, 2016)
 
 - HTTP & HTTPS (**OSI layer 7**), HTTP2, WebSocket
 - Can load balance to multiple **target groups**
@@ -492,7 +492,7 @@ ALB also supports SSL termination:
 
 ![](https://s3.amazonaws.com/gutucristian.com/ConnectionTermination.png)
 
-**Network Load Balancer** (v2 -- new generation, 2017)
+### Network Load Balancer (v2 -- new generation, 2017)
 
 - TCP, TLS (secure TCP), UDP (all **OSI layer 4**)
 - Network load balancers (OSI layer 4) allow to:
@@ -503,11 +503,11 @@ ALB also supports SSL termination:
 - NLBs are **used for extreme performance** (TCP or UDP traffic)
 - You can set up **internal** (private) or **external** (public) ELBs
 
-**Load Balancer Security Group with Application Security Group that allows traffic only from Load Balancer**
+### Load Balancer Security Group with Application Security Group that allows traffic only from Load Balancer
 
 ![](https://s3.amazonaws.com/gutucristian.com/LoadBalancer1.png)
 
-**Load Balancer Good to Know**
+### Load Balancer Good to Know
 
 - Load Balancers can scale but no instantaneously -- contact AWS for a "warm-up"
 - Troubleshooting:
@@ -518,3 +518,17 @@ ALB also supports SSL termination:
 - Monitoring:
   - ELB access logs will log all access requests (so you can debug per request)
   - CloudWatch Metrics will give you aggregate statistics (e.g., connection counts)
+
+## ELB - Stickiness
+
+- It is possible to implement **stickiness** so that the same client is always redirected to the same instance behind a load balancer
+- This is possible for **Classic Load Balancers (CLB)** and **Application Load Balancers (ALB)** -- both of which operate at **OSI layer 7**
+- Stickiness is implemented via a session tracking **cookie** which has an **expiration date** that you control
+- Note that enabling stickiness **may bring an imbalance to the load** over the backend EC2 instances
+
+![]()
+
+## ELB - Cross Zone Load Balancing
+
+- With **Cross Zone Load Balancing** each load balancer instance **distributes load evenly across all registered instances in all Availability Zones (AZs)**
+- Without Cross Zone Load Balancing, each load balancer would only distribute requests across registered instances in its AZ only
