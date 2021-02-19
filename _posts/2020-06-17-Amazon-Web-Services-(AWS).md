@@ -532,3 +532,52 @@ ALB also supports SSL termination:
 
 - With **Cross Zone Load Balancing** each load balancer instance **distributes load evenly across all registered instances in all Availability Zones (AZs)**
 - Without Cross Zone Load Balancing, each load balancer would only distribute requests across registered instances in its AZ only
+- **Classic Load Balancer**
+  - Disabled by default
+  - No charges for inter AZ data if enabled
+- **Application Load Balancer**
+  - Always on (can't be disabled)
+  - No charges for inter AZ data
+- **Network Load Balancer**
+  - Disabled by default
+  - You pay for inter AZ data if enabled
+
+![]()
+
+## ELB - SSL Certificates
+
+- An SSL Certificate allows traffic between your clients and your load balancer to be encrypted in transit (i.e., in-flight encryption)
+- **SSL** refers to Secure Socket Layer -- used to encrypt connections
+- **TLS** refers to Transport Layer Security which is a newer version
+- Nowadays, **TLS certificates are mainly used**, but people still say SSL
+- Public SSL certificates are issued by Certificate Authorities (e.g., Comodo, Symantec, GoDaddy, Digicert, etc..)
+- SSL certificates have an expiration date that you set and must be renewed
+
+![]()
+
+- The load balancer uses a X.509 certificate (SSL/TLS server certificate)
+- You can manage certificates using ACM (AWS Certificate Manager)
+- Alternatively, you can upload your own certificates
+- Load Balancer HTTPS listener:
+  - You must specify a default certificate
+  - You can add an optional list of certs to support **multiple domains**
+  - Clients can use **SNI (Server Name Identification) to specify the hostname they reach**
+  - Ability to specify a security policy to support older versions of SSL / TLS for legacy clients
+
+### SSL - Server Name Indication
+
+- SNI solves the problem of loading **multiple SSL certificates onto one web server** (to serve multiple websites)
+- It's a newer protocol and requires the client to **indicate the hostname** of the target server in the initial SSL handshake
+- The server will then find the correct certificate or return the default one
+- Only works for ALB & NLB (newer generation load balancers), CloudFront -- does not work for CLB
+
+![]()
+
+- **Classic Load Balancer (v1)**
+  - Supports only one SSL certificate
+  - Must use multiple CLB for multiple hostnames with multiple SSL certificates
+- **Application Load Balancer (v2)**
+  - Supports multiple listeners with multiple SSL certificates
+  - Uses Server Name Indication (SNI) to make it work
+- **Network Load Balancer (v2)**
+  - Supports multiple listeners with multiple SSL certificates
