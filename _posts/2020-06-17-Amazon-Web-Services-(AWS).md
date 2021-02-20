@@ -592,21 +592,25 @@ ALB also supports SSL termination:
 - Can be disabled (set value to `0`). If you do this, when an EC2 instance goes into de-registration mode all in-flight requests to that instance will be dropped
 - Set to a low value if your requests are short, else set to something a bit higher so you give a chance to requests that are in-flight to be completed
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/ELBConnectionDraining.png)
 
 ## Auto Scaling Group (ASG)
 
-- The goal of an Auto Scaling Group (ASG) is to:
+- An Auto Scaling group contains a collection of Amazon EC2 instances that are treated as a logical grouping for the purposes of automatic scaling and management. An Auto Scaling group also enables you to use Amazon EC2 Auto Scaling features such as health check replacements and scaling policies. Both maintaining the number of instances in an Auto Scaling group and automatic scaling are the core functionality of the Amazon EC2 Auto Scaling service
+- The size of an Auto Scaling group depends on the number of instances that you set as the desired capacity. You can adjust its size to meet demand, either manually or by using automatic scaling
+- An Auto Scaling group starts by launching enough instances to meet its desired capacity. It maintains this number of instances by performing periodic health checks on the instances in the group. The Auto Scaling group continues to maintain a fixed number of instances even if an instance becomes unhealthy. If an instance becomes unhealthy, the group terminates the unhealthy instance and launches another instance to replace it
+- You can use scaling policies to increase or decrease the number of instances in your group dynamically to meet changing conditions. When the scaling policy is in effect, the Auto Scaling group adjusts the desired capacity of the group, between the minimum and maximum capacity values that you specify, and launches or terminates the instances as needed. You can also scale on a schedule
+- Thus, ASGs allow us to:
   - Scale out (add EC2 instances) to match an increase in load
   - Scale in (remove EC2 instances) to match a decrease in load
   - Ensure we have a minimum and maximum number of machines running
   - Automatically register new instances to a load balancer
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/AutoScalingGroup.png)
 
 ### Auto Scaling Group with Load Balancer
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/ELBWithASG.png)
 
 ### ASGs Have The Following Attributes
 
@@ -620,3 +624,31 @@ ALB also supports SSL termination:
 - Network + Subnets Information
 - Load Balancer Information
 - Scaling Policies
+
+### Auto Scaling Alarms
+
+- ASG scaling policies are driven by CloudWatch alarms
+- An Alarm monitors a metric. For example:
+  - Average CPU
+  - Number of requests on the ELB per instance
+  - Average Network In
+  - Average Network Out
+- Metrics are computed for the overall ASG instances
+- Based on the alarm:
+  - We can create **scale-out** policies (increase the number of instances)
+  - We can create **scale-in** policies (decrease the number of instances)
+- We can also auto scale based on a **custom metric**:
+  - Send custom metric from application on EC2 to CloudWatch (using `PutMetric` API)
+  - Create CloudWatch alarm to react to low / high values
+  - Use the CloudWatch alarm as the scaling policy for ASG
+
+![](https://s3.amazonaws.com/gutucristian.com/ASGAlarm.png)
+
+### ASG Additional Information
+
+- Scaling policies can be based on predefined metrics (e.g., CPU, Network, etc..) and even on custom metrics or based on a schedule (if you know the user patterns)
+- To update an ASG, you must provide a new launch configuration / launch template
+- IAM roles attached to an ASG will get assigned to EC2 instances
+- ASG are free -- you pay for the underlying resources being used
+- Having instances under an ASG means that if they get terminated for whatever reason, the ASG will automatically create new ones as a replacement
+- ASG can terminate instances marked as unhealthy by an LB and replace them
