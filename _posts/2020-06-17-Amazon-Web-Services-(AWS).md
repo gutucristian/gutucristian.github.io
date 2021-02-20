@@ -581,3 +581,42 @@ ALB also supports SSL termination:
   - Uses Server Name Indication (SNI) to make it work
 - **Network Load Balancer (v2)**
   - Supports multiple listeners with multiple SSL certificates
+
+## ELB - Connection Draining
+
+- If you are using a **Classic Load Balancer** (CLB), then it is called **Connection Draining**
+- If you are using a **target group** (i.e., **Application Load Balancer** (ALB) or **Network Load Balancer** (NLB)), then it is called **Deregistration Delay**
+- In either case, both are referring to the amount of time given to in-flight requests to complete before the instance is in "de-registration mode" (i.e., being stoped or terminated)
+- Thus, when an instance goes into de-registration mode, the ELB stops forwarding requests to the instance and the **de-registration delay** goes into effect
+- The **de-registration delay** can be **between `1` and `3600` seconds**. The **default is `300` seconds**
+- Can be disabled (set value to `0`). If you do this, when an EC2 instance goes into de-registration mode all in-flight requests to that instance will be dropped
+- Set to a low value if your requests are short, else set to something a bit higher so you give a chance to requests that are in-flight to be completed
+
+![]()
+
+## Auto Scaling Group (ASG)
+
+- The goal of an Auto Scaling Group (ASG) is to:
+  - Scale out (add EC2 instances) to match an increase in load
+  - Scale in (remove EC2 instances) to match a decrease in load
+  - Ensure we have a minimum and maximum number of machines running
+  - Automatically register new instances to a load balancer
+
+![]()
+
+### Auto Scaling Group with Load Balancer
+
+![]()
+
+### ASGs Have The Following Attributes
+
+- A launch configuration
+  - AMI + Instance Type
+  - EC2 User Data
+  - EBS Volumes
+  - Security Groups
+  - SSH Key Pair
+- Minimum Size / Maximum Size / Initial Capacity
+- Network + Subnets Information
+- Load Balancer Information
+- Scaling Policies
