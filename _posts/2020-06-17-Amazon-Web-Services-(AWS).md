@@ -526,7 +526,7 @@ ALB also supports SSL termination:
 - Stickiness is implemented via a session tracking **cookie** which has an **expiration date** that you control
 - Note that enabling stickiness **may bring an imbalance to the load** over the backend EC2 instances
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/ELBStickiness.png)
 
 ## ELB - Cross Zone Load Balancing
 
@@ -542,7 +542,7 @@ ALB also supports SSL termination:
   - Disabled by default
   - You pay for inter AZ data if enabled
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/ELBCrossZoneLoadBalancing.png)
 
 ## ELB - SSL Certificates
 
@@ -553,7 +553,7 @@ ALB also supports SSL termination:
 - Public SSL certificates are issued by Certificate Authorities (e.g., Comodo, Symantec, GoDaddy, Digicert, etc..)
 - SSL certificates have an expiration date that you set and must be renewed
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/ELBSSL.png)
 
 - The load balancer uses a X.509 certificate (SSL/TLS server certificate)
 - You can manage certificates using ACM (AWS Certificate Manager)
@@ -571,7 +571,7 @@ ALB also supports SSL termination:
 - The server will then find the correct certificate or return the default one
 - Only works for ALB & NLB (newer generation load balancers), CloudFront -- does not work for CLB
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/ELBSSLServerNameIdentification.png)
 
 - **Classic Load Balancer (v1)**
   - Supports only one SSL certificate
