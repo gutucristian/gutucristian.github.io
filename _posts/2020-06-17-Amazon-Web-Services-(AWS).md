@@ -604,9 +604,9 @@ ALB also supports SSL termination:
   - EC2 Auto Scaling automatically replaces instances that fail health checks. If you enabled load balancing, you can enable **ELB health checks** in addition to the EC2 health checks that are **always enabled**
   - The default EC2 health checks pro-vided by Amazon only check for hardware and software issues that may impair an instance
   - ELB health checks are more customized and can be set up to verify a TCP port on an instance is accepting connections OR a specified web page returns some success code -- thus ELB health checks are a little bit smarter and verify that actual app works instead of verifying that just an instance works
-  - There is a third health check type: custom health check. If your application can't be checked by simple HTTP request and requires advanced test logic, you can implement a custom check in your code and set instance health though an API (![reference](https://docs.aws.amazon.com/autoscaling/ec2/userguide/healthcheck.html)
+  - There is a third health check type: custom health check. If your application can't be checked by simple HTTP request and requires advanced test logic, you can implement a custom check in your code and set instance health though an API (![reference](https://docs.aws.amazon.com/autoscaling/ec2/userguide/healthcheck.html))
   - ELB health checks used in conjunction with an ASG allows ELB health check to report application health on the instances to ASG and ASG will then rotate failing instances (ELB health checks can be pointed at a specific URL similar to Route 53 health checks)
-- ASG Health Check Grace Period: Amazon EC2 Auto Scaling doesn't terminate an instance that came into service based on EC2 status checks and ELB health checks until the health check grace period expires
+- ASG Health Check Grace Period: Amazon EC2 Auto Scaling doesn't terminate an instance that came into service based on EC2 status checks and ELB health checks until the health check grace period expires (![reference](https://aws.amazon.com/premiumsupport/knowledge-center/auto-scaling-terminate-instance/))
 - Thus, ASGs allow us to:
   - Scale out (add EC2 instances) to match an increase in load
   - Scale in (remove EC2 instances) to match a decrease in load
