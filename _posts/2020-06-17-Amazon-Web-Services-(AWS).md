@@ -596,10 +596,16 @@ ALB also supports SSL termination:
 
 ## Auto Scaling Group (ASG)
 
-- An Auto Scaling group contains a collection of Amazon EC2 instances that are treated as a logical grouping for the purposes of automatic scaling and management. An Auto Scaling group also enables you to use Amazon EC2 Auto Scaling features such as health check replacements and scaling policies. Both maintaining the number of instances in an Auto Scaling group and automatic scaling are the core functionality of the Amazon EC2 Auto Scaling service
-- The size of an Auto Scaling group depends on the number of instances that you set as the desired capacity. You can adjust its size to meet demand, either manually or by using automatic scaling
+- An Auto Scaling group contains a collection of Amazon **EC2 instances that are treated as a logical grouping for the purposes of automatic scaling and management**. An Auto Scaling group also enables you to use Amazon EC2 Auto Scaling features such as health check replacements and scaling policies. Both maintaining the number of instances in an Auto Scaling group and automatic scaling are the core functionality of the Amazon EC2 Auto Scaling service
+- The size of an Auto Scaling group depends on the number of instances that you set as the **desired capacity**. You can adjust its size to meet demand, either manually or by using automatic scaling
 - An Auto Scaling group starts by launching enough instances to meet its desired capacity. It maintains this number of instances by performing periodic health checks on the instances in the group. The Auto Scaling group continues to maintain a fixed number of instances even if an instance becomes unhealthy. If an instance becomes unhealthy, the group terminates the unhealthy instance and launches another instance to replace it
 - You can use scaling policies to increase or decrease the number of instances in your group dynamically to meet changing conditions. When the scaling policy is in effect, the Auto Scaling group adjusts the desired capacity of the group, between the minimum and maximum capacity values that you specify, and launches or terminates the instances as needed. You can also scale on a schedule
+- On health checks:
+  - EC2 Auto Scaling automatically replaces instances that fail health checks. If you enabled load balancing, you can enable **ELB health checks** in addition to the EC2 health checks that are **always enabled**
+  - The default EC2 health checks pro-vided by Amazon only check for hardware and software issues that may impair an instance
+  - ELB health checks are more customized and can be set up to verify a TCP port on an instance is accepting connections OR a specified web page returns some success code -- thus ELB health checks are a little bit smarter and verify that actual app works instead of verifying that just an instance works
+  - There is a third health check type: custom health check. If your application can't be checked by simple HTTP request and requires advanced test logic, you can implement a custom check in your code and set instance health though an API (![reference](https://docs.aws.amazon.com/autoscaling/ec2/userguide/healthcheck.html)
+- ASG Health Check Grace Period: Amazon EC2 Auto Scaling doesn't terminate an instance that came into service based on EC2 status checks and ELB health checks until the health check grace period expires
 - Thus, ASGs allow us to:
   - Scale out (add EC2 instances) to match an increase in load
   - Scale in (remove EC2 instances) to match a decrease in load
