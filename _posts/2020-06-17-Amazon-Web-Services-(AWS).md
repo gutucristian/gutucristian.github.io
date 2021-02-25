@@ -602,7 +602,7 @@ ALB also supports SSL termination:
 - You can use scaling policies to increase or decrease the number of instances in your group dynamically to meet changing conditions. When the scaling policy is in effect, the Auto Scaling group adjusts the desired capacity of the group, between the minimum and maximum capacity values that you specify, and launches or terminates the instances as needed. You can also scale on a schedule
 - On health checks:
   - EC2 Auto Scaling automatically replaces instances that fail health checks. If you enabled load balancing, you can enable **ELB health checks** in addition to the EC2 health checks that are **always enabled**
-  - The default EC2 health checks pro-vided by Amazon only check for hardware and software issues that may impair an instance
+  - The default EC2 health checks provided by Amazon only check for hardware and software issues that may impair an instance
   - ELB health checks are more customized and can be set up to verify a TCP port on an instance is accepting connections OR a specified web page returns some success code -- thus ELB health checks are a little bit smarter and verify that actual app works instead of verifying that just an instance works
   - There is a third health check type: custom health check. If your application can't be checked by simple HTTP request and requires advanced test logic, you can implement a custom check in your code and set instance health though an API ([reference](https://docs.aws.amazon.com/autoscaling/ec2/userguide/healthcheck.html))
   - ELB health checks used in conjunction with an ASG allows ELB health check to report application health on the instances to ASG and ASG will then rotate failing instances (ELB health checks can be pointed at a specific URL similar to Route 53 health checks)
@@ -656,6 +656,6 @@ ALB also supports SSL termination:
 - Scaling policies can be based on predefined metrics (e.g., CPU, Network, etc..) and even on custom metrics or based on a schedule (if you know the user patterns)
 - To update an ASG, you must provide a new launch configuration / launch template
 - IAM roles attached to an ASG will get assigned to EC2 instances
-- ASG are free -- you pay for the underlying resources being used
+- ASGs are free -- you pay for the underlying resources being used
 - Having instances under an ASG means that if they get terminated for whatever reason, the ASG will automatically create new ones as a replacement
 - ASG can terminate instances marked as unhealthy by an LB and replace them
