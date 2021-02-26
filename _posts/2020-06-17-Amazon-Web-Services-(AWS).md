@@ -681,3 +681,74 @@ ALB also supports SSL termination:
 - If your application is scaling up and down multiple times each hour, modify the Auto Scaling Group cool-down timers and the CloudWatch Alarm Period that triggers the scale in
 
 ![]()
+
+## Elastic Block Storage (EBS) / Elastic File System (EFS)
+
+### What is an EBS volume?
+
+- An EBS volume is a **network** drive you can attach to your instance
+  - It uses the network to communicate to the instance (which implies some latency)
+- EBS volumes persist independently from the running life of an EC2 instance. However, you can choose to automatically delete an EBS volume when the associated instance is terminated
+- It is locked to an Availability Zone (AZ)
+  - An EBS volume in `us-east-1a` cannot be attached to an instance in `us-east-1b`
+  - To move a volume across AZs you first need to create a **snapshot** of it
+- Has provisioned capacity (size in GBs and IOPS - Input Output Per Second)
+  - You get billed for all the provisioned capacity
+  - You can increase the capacity of the drive over time
+- Read [here](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-using-volumes.html) how to make an Amazon EBS volume available for use
+
+### EBS Volume Types
+
+- EBS volumes come in `4` types:
+  - GP2 (SSD): general purpose SSD volume that balances price and performance for a wide variety of workloads
+  - IO1 (SSD): highest performance SSD volume for mission critical low latency or high throughput workloads
+  - ST1 (HDD): low cost HDD volume designed for frequently accessed, throughput intensive workloads
+  - SC1 (HDD): lowest cost HDD volume designed for less frequently accessed workloads
+- EBS volumes are characterized by: size, throughput, IOPS
+- **Only GP2 and IO1 can be used as boot volumes**
+
+![]()
+
+### EBS GP2 (SSD) Volume Type
+
+- General purpose SSD volume that balances price and performance for a wide variety of workloads
+- Recommended for most workloads
+- Virtual Desktops
+- Low-latency interactive apps
+- Development and test environments
+- Small GP2 volumes can burst IOPS to `3000`
+- Size range: `1` GiB - `16` GiB
+- Max IOPS is `16000`
+- `3` IOPS per GB -- which means that at `5334` GB we are at max IOPS
+- Throughput not applicable
+
+### EBS IO1 (SSD) Volume Type
+
+- Highest performance SSD volume for mission critical low latency or high throughput workloads
+- Critical business applications that require sustained IOPS performance or more than `16000` IOPS per volume (gp2 limit)
+- Large database workloads (e.g., MongoDB, Cassandra, PostgreSQL, etc..)
+- Size range: `4` GiB - `16` TiB
+- IOPS is provisioned: MIN `100` - MAX `32000` or `64000` if on Nitro instance
+- The maximum ratio of provisioned IOPS to requested volume size (in GiB) is 50:1
+- Throughput not applicable
+
+### EBS IO1 (HDD) Volume Type
+
+- Low cost HDD volume designed for frequently accessed, throughput intensive workloads
+- Streaming workloads requiring consistent, fast throughput at low price
+- Big data, data warehouses, log processing
+- Apache Kafka
+- Cannot be a boot volume
+- Size range: `500` GiB - `16` TiB
+- Max IOPS is `500`
+- Baseline `40` MB/s per TiB throughput until a max of `500` MiB/s  -- can burst
+
+### EBS SC1 (HDD) Volume Type
+
+- Lowest cost HDD volume designed for less frequently accessed workloads
+- Throughput oriented storage for large volumes of data that is infrequently accessed
+- Scenarios where the lowest storage cost is important
+- Cannot be a boot volume
+- Size range: `500` GiB - `16` TiB
+- Max IOPS is `250`
+- Baseline `12` MB/s per TiB throughput until a max of `250` MiB/s  -- can burst
