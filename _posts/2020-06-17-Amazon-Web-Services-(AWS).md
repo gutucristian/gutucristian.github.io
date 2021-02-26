@@ -659,3 +659,25 @@ ALB also supports SSL termination:
 - ASGs are free -- you pay for the underlying resources being used
 - Having instances under an ASG means that if they get terminated for whatever reason, the ASG will automatically create new ones as a replacement
 - ASG can terminate instances marked as unhealthy by an LB and replace them
+
+### Auto Scaling Groups -- Scaling Policies
+
+- **Target Tracking Scaling**
+  - With target tracking scaling policies, you select a scaling metric and set a target value. Amazon EC2 Auto Scaling creates and manages the CloudWatch alarms that trigger the scaling policy and calculates the scaling adjustment based on the metric and the target value
+  - Example: I want the average ASG CPU to stay at around 40%
+- **Simple / Step Scaling**
+  - With step scaling and simple scaling, you choose scaling metrics and threshold values for the CloudWatch alarms that trigger the scaling process. You also define how your Auto Scaling group should be scaled when a threshold is in breach for a specified number of evaluation periods
+- **Scheduled Actions**
+  - Scheduled scaling allows you to set your own scaling schedule
+  - For example, let's say that every week the traffic to your web application starts to increase on Wednesday, remains high on Thursday, and starts to decrease on Friday. You can plan your scaling actions based on the predictable traffic patterns of your web application. Scaling actions are performed automatically as a function of time and date
+
+### Auto Scaling Groups -- Scaling Cooldowns
+
+- The cooldown period helps to ensure that your Auto Scaling Group doesn't launch or terminate additional instances before the previous scaling activity takes effect
+- In addition to default cooldown for Auto Scaling Group, we can create cooldowns that apply to a specific **simple scaling policy**
+- A scaling-specific cooldown period overrides the default cooldown period
+- One common use for scaling-specific cooldowns is with a scale-in policy -- a policy that terminate instances based on a specific criteria or metric. Because this policy terminates instances, Amazon EC2 Auto Scaling needs less time to determine whether to terminate additional instances
+- If the default cooldown period of `300` seconds is too long, you can reduce costs by applying a scaling-specific cooldown period of `180` seconds to the scale-in policy
+- If your application is scaling up and down multiple times each hour, modify the Auto Scaling Group cool-down timers and the CloudWatch Alarm Period that triggers the scale in
+
+![]()
