@@ -669,10 +669,38 @@ ALB also supports SSL termination:
   - Example: I want the average ASG CPU to stay at around 40%
 - **Simple / Step Scaling**
   - With step scaling and simple scaling, you choose scaling metrics and threshold values for the CloudWatch alarms that trigger the scaling process. You also define how your Auto Scaling group should be scaled when a threshold is in breach for a specified number of evaluation periods
-  - Read [here](https://tutorialsdojo.com/step-scaling-vs-simple-scaling-policies-in-amazon-ec2/) about step scaling vs simple scaling
 - **Scheduled Actions**
   - Scheduled scaling allows you to set your own scaling schedule
   - For example, let's say that every week the traffic to your web application starts to increase on Wednesday, remains high on Thursday, and starts to decrease on Friday. You can plan your scaling actions based on the predictable traffic patterns of your web application. Scaling actions are performed automatically as a function of time and date
+
+**Simple Scaling Example**
+
+- You pick ANY Cloud Watch metric
+- For this examples I am choosing CPU Utilization
+- You specify, a **SINGLE THRESHOLD** beyond which you want to scale and specify your response
+- EXAMPLE: how many EC2 instances do you want to add or take away when the CPU UTILIZATION breaches the threshold
+- The scaling policy then acts
+- THRESHOLD - add 1 instance when CPU Utilization is between 40% and 50%
+- Note: This is the ONLY Threshold
+
+**Step Scaling Example**
+
+- You specify MULTIPLE thresholds Along with different responses
+- Threshold A - add 1 instance when CPU Utilization is between 40% and 50%
+- Threshold B - add 2 instances when CPU Utilization is between 50% and 70%
+- Threshold C - add 3 instances when CPU Utilization is between 70% and 90%
+- And so on and so on
+- Note: There are multiple thresholds
+
+**Target Tracking Example**
+
+- You don't want to have to make so many decisions
+- Makes the experience simple as compared to the previous 2 scaling options
+- It’s automatic
+- All you do is pick metric (CPU Utilization in this example)
+- Set the value and that’s it
+- Auto scaling does the rest adding and removing the capacity in order to keep your metric (CPU utilization) as close as possible to the target value
+- It’s SELF OPTIMIZING: meaning that it has an Algorithm that learns how your metric changes over time and uses that information to make sure that over and under scaling are minimized
 
 ### Auto Scaling Groups -- Scaling Cooldowns
 
