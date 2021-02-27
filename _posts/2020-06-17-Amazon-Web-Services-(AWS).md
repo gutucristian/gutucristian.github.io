@@ -829,7 +829,7 @@ ALB also supports SSL termination:
 ## EBS vs EFS
 
 - EFS is for a shared network file system to be mounted across many instances across AZs
-- EBS is for a network file system that can be attached to only one instance and locked at AZ level (meaning you can't decide to detach it from an instance in `us-east-1a` and attach it to another instance in `us-east-1b`)
+- EBS is for a network file system that can be attached to only one instance and is locked at AZ level (meaning you can't decide to detach it from an instance in `us-east-1a` and attach it to another instance in `us-east-1b`)
 - Instance Store is to get the maximum amount of I/O (since it is storage that is physically attached to our instance) but it is something you loose once instance is terminated so it is an ephemeral drive
 
 ### EBS
