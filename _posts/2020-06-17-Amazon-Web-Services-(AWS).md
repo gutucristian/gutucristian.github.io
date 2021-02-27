@@ -667,6 +667,7 @@ ALB also supports SSL termination:
   - Example: I want the average ASG CPU to stay at around 40%
 - **Simple / Step Scaling**
   - With step scaling and simple scaling, you choose scaling metrics and threshold values for the CloudWatch alarms that trigger the scaling process. You also define how your Auto Scaling group should be scaled when a threshold is in breach for a specified number of evaluation periods
+  - Read [here](https://tutorialsdojo.com/step-scaling-vs-simple-scaling-policies-in-amazon-ec2/) about step scaling vs simple scaling
 - **Scheduled Actions**
   - Scheduled scaling allows you to set your own scaling schedule
   - For example, let's say that every week the traffic to your web application starts to increase on Wednesday, remains high on Thursday, and starts to decrease on Friday. You can plan your scaling actions based on the predictable traffic patterns of your web application. Scaling actions are performed automatically as a function of time and date
@@ -696,6 +697,7 @@ ALB also supports SSL termination:
   - You get billed for all the provisioned capacity
   - You can increase the capacity of the drive over time
 - Read [here](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-using-volumes.html) how to make an Amazon EBS volume available for use
+- Throughput vs IOPS: IOPS measures the number of read and write **operations** per second, while throughput measures the number of **bits** read or written per second
 
 ### EBS Volume Types
 
@@ -752,3 +754,21 @@ ALB also supports SSL termination:
 - Size range: `500` GiB - `16` TiB
 - Max IOPS is `250`
 - Baseline `12` MB/s per TiB throughput until a max of `250` MiB/s  -- can burst
+
+## EBS vs Instance Store
+
+- Some instances do not come with Root EBS volumes, instead they come with "**Instance Store**" (i.e., ephemeral storage)
+- **Instance store is physically attached** to the machine whereas **EBS is a network device**
+- Instance Store Pros:
+  - Better IO performance (very high IOPS -- since it is physically attached to the instance)
+  - Good for caching (since its closer to hardware executing our code)
+- Cons:
+  - Data survives only *reboots**
+  - **If instance is stopped or terminated the instance store is lost**
+  - You cannot resize the instance store
+  - Performing backups is left to the user
+
+## Elastic File System (EFS)
+
+- Managed network file system (NFS) that can be mounted on many EC2 instances at once
+- EFS works with EC2 instances in multi-AZ (which means its expensive)
