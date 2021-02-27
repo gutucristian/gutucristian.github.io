@@ -311,6 +311,8 @@ A note on why you need `#!/bin/bash`:
 - May share hardware with other instances in same account
 - No control over instance placement (can move hardware after Stop / Start)
 
+![](https://s3.amazonaws.com/gutucristian.com/DedicatedInstanceVSDedicatedHost.png)
+
 ### EC2 Elastic Network Interfaces
 
 - Logical component in a VPC that represents a **virtual network card**
@@ -681,7 +683,7 @@ ALB also supports SSL termination:
 - If the default cooldown period of `300` seconds is too long, you can reduce costs by applying a scaling-specific cooldown period of `180` seconds to the scale-in policy
 - If your application is scaling up and down multiple times each hour, modify the Auto Scaling Group cool-down timers and the CloudWatch Alarm Period that triggers the scale in
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/ScalingActionWithCooldown.png)
 
 ## Elastic Block Storage (EBS) / Elastic File System (EFS)
 
@@ -696,8 +698,10 @@ ALB also supports SSL termination:
 - Has provisioned capacity (size in GBs and IOPS - Input Output Per Second)
   - You get billed for all the provisioned capacity
   - You can increase the capacity of the drive over time
-- Read [here](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-using-volumes.html) how to make an Amazon EBS volume available for use
+- Read [here](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-using-volumes.html) how to mount an Amazon EBS volume and make it available for use
 - Throughput vs IOPS: IOPS measures the number of read and write **operations** per second, while throughput measures the number of **bits** read or written per second
+
+![](https://s3.amazonaws.com/gutucristian.com/ElasticBlockStorage.png)
 
 ### EBS Volume Types
 
@@ -708,8 +712,6 @@ ALB also supports SSL termination:
   - SC1 (HDD): lowest cost HDD volume designed for less frequently accessed workloads
 - EBS volumes are characterized by: size, throughput, IOPS
 - **Only GP2 and IO1 can be used as boot volumes**
-
-![]()
 
 ### EBS GP2 (SSD) Volume Type
 
@@ -772,3 +774,55 @@ ALB also supports SSL termination:
 
 - Managed network file system (NFS) that can be mounted on many EC2 instances at once
 - EFS works with EC2 instances in multi-AZ (which means its expensive)
+- Highly available, pay per use (which is different than EBS where you pay for amount of storage you reserve)
+- Uses NFSv4.1 protocol
+- Uses security group to control access to EFS
+- **Compatible with Linux based AMIs (not Windows)**
+- Can leverage encryption at rest using KMS
+- POSIX file system that has standard file API
+- File system scales automatically, pay per use, so no capacity planning
+- EFS scale:
+  - Supports 1000s of concurrent NFS clients with 10 GB+ /s throughput
+  - Can grow to Petabyte-scale network file system automatically (again: no capacity planning, pay per use)
+- Performance modes (set at EFS creation time):
+  - General purpose (default): low latency. In General Purpose performance mode, read and write operations consume a different number of file operations. Read data or metadata consumes one file operation. Write data or update metadata consumes five file operations. A file system can support up to 35,000 file operations per second (use cases: web server, CMS)
+  - Max I/O: higher latency. Max I/O performance mode doesn't have a file system operations limit. Use the Max I/O performance mode if you have a very high requirement of file system operations per second
+  - Note: General Purpose performance mode has the lower latency of the two performance modes and is suitable if your workload is sensitive to latency. Max I/O performance mode offers a higher number of file system operations per second but has a slightly higher latency per each file system operation
+- Throughput modes (set at EFS creation time):
+  - Bursting: throughput scales with file system size
+  - Provisioned: throughput fixed at specified amount (range: `1` - `1024` MiB/s)
+- Storage Tiers (file lifecycle management feature -- move file if unused for `N` days):
+  - Standard storage tier: for frequently accessed
+  - Infrequent Access storage tier (EFS IA): after not used for `N` days file is moved to infrequent storage class, this results is a lower price, but cost to retrive is higher
+  - To mount an EFS file system you will need to install the `amazon-efs-utils`. Follow instruction [here](https://docs.aws.amazon.com/efs/latest/ug/mounting-fs.html)
+
+![](https://s3.amazonaws.com/gutucristian.com/ElasticFileSystem.png)
+
+## EBS vs EFS
+
+- EFS is for a shared network file system to be mounted across many instances across AZs
+- EBS is for a network file system that can be attached to only one instance and locked at AZ level (meaning you can't decide to detach it from an instance in `us-east-1a` and attach it to another instance in `us-east-1b`)
+- Instance Store is to get the maximum amount of I/O (since it is storage that is physically attached to our instance) but it is something you loose once instance is terminated so it is an ephemeral drive
+
+### EBS
+
+- Can be attached to only one instance at a time
+- Are locked at the Availability Zone (AZ) level (e.g., `us-east-1a`)
+- `gp2` volume type: I/O increases if the disk size increases
+- `io1`: can increase I/O independently
+- To migrate an EBS volume across AZs:
+  - Take a snapshot
+  - Restore the snapshot to another AZ
+  - EBS backups use I/O and you shouldn't run them while your application is handling a lot of traffic since you will be affecting performance (since IOPS is limited)
+- **Root** EBS volumes of instances get terminated by default if the EC2 instance get terminated but you can disable that
+
+![](https://s3.amazonaws.com/gutucristian.com/EBSSnapshot.png)
+
+### EFS
+
+- Supports mounting hundreds of instances across AZs
+- Only supports for POSIX based instances (e.g., Linux)
+- More expensive than EBS (because of the cross AZ communication required to have a shared file system across AZs)
+- Can leverage EFS Infrequent Access storage class for files not accessed after `N` days for a much cheaper storage cost
+
+![](https://s3.amazonaws.com/gutucristian.com/EFS1.png)
