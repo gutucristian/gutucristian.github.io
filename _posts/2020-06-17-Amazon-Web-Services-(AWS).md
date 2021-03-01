@@ -675,32 +675,32 @@ ALB also supports SSL termination:
 
 **Simple Scaling Example**
 
-- You pick ANY Cloud Watch metric
-- For this examples I am choosing CPU Utilization
+- You pick **ANY** Cloud Watch metric
+- For this examples I am choosing CPU utilization
 - You specify, a **SINGLE THRESHOLD** beyond which you want to scale and specify your response
-- EXAMPLE: how many EC2 instances do you want to add or take away when the CPU UTILIZATION breaches the threshold
+- Example: how many EC2 instances do you want to add or take away when the CPU utilization breaches the threshold
 - The scaling policy then acts
-- THRESHOLD - add 1 instance when CPU Utilization is between 40% and 50%
-- Note: This is the ONLY Threshold
+- THRESHOLD: add `1` instance when CPU utilization is between `40%` and `50%`
+- Note: This is the **ONLY** threshold
 
 **Step Scaling Example**
 
-- You specify MULTIPLE thresholds Along with different responses
-- Threshold A - add 1 instance when CPU Utilization is between 40% and 50%
-- Threshold B - add 2 instances when CPU Utilization is between 50% and 70%
-- Threshold C - add 3 instances when CPU Utilization is between 70% and 90%
+- You specify **MULTIPLE** thresholds along with different responses
+- Threshold `A`: add 1 instance when CPU utilization is between `40%` and `50%`
+- Threshold `B`: add 2 instances when CPU utilization is between `50%` and `70%`
+- Threshold `C`: add 3 instances when CPU utilization is between `70%` and `90%`
 - And so on and so on
-- Note: There are multiple thresholds
+- Note: There are **MULTIPLE** thresholds
 
 **Target Tracking Example**
 
 - You don't want to have to make so many decisions
 - Makes the experience simple as compared to the previous 2 scaling options
 - It’s automatic
-- All you do is pick metric (CPU Utilization in this example)
+- All you do is pick metric (CPU utilization in this example)
 - Set the value and that’s it
 - Auto scaling does the rest adding and removing the capacity in order to keep your metric (CPU utilization) as close as possible to the target value
-- It’s SELF OPTIMIZING: meaning that it has an Algorithm that learns how your metric changes over time and uses that information to make sure that over and under scaling are minimized
+- It’s **SELF OPTIMIZING**: meaning that it has an algorithm that learns how your metric changes over time and uses that information to make sure that over and under scaling are minimized
 
 ### Auto Scaling Groups -- Scaling Cooldowns
 
@@ -734,14 +734,14 @@ ALB also supports SSL termination:
 ### EBS Volume Types
 
 - EBS volumes come in `4` types:
-  - GP2 (SSD): general purpose SSD volume that balances price and performance for a wide variety of workloads
-  - IO1 (SSD): highest performance SSD volume for mission critical low latency or high throughput workloads
-  - ST1 (HDD): low cost HDD volume designed for frequently accessed, throughput intensive workloads
-  - SC1 (HDD): lowest cost HDD volume designed for less frequently accessed workloads
+  - `gp2` (SSD): general purpose SSD volume that balances price and performance for a wide variety of workloads
+  - `io1` (SSD): highest performance SSD volume for mission critical low latency or high throughput workloads
+  - `st1` (HDD): low cost HDD volume designed for frequently accessed, throughput intensive workloads
+  - `sc1` (HDD): lowest cost HDD volume designed for less frequently accessed workloads
 - EBS volumes are characterized by: size, throughput, IOPS
-- **Only GP2 and IO1 can be used as boot volumes**
+- **Only `gp2` and `io1` can be used as boot volumes**
 
-### EBS GP2 (SSD) Volume Type
+### EBS `gp2` (SSD) Volume Type
 
 - General purpose SSD volume that balances price and performance for a wide variety of workloads
 - Recommended for most workloads
@@ -754,7 +754,7 @@ ALB also supports SSL termination:
 - `3` IOPS per GB -- which means that at `5334` GB we are at max IOPS
 - Throughput not applicable
 
-### EBS IO1 (SSD) Volume Type
+### EBS `io1` (SSD) Volume Type
 
 - Highest performance SSD volume for mission critical low latency or high throughput workloads
 - Critical business applications that require sustained IOPS performance or more than `16000` IOPS per volume (gp2 limit)
@@ -764,7 +764,7 @@ ALB also supports SSL termination:
 - The maximum ratio of provisioned IOPS to requested volume size (in GiB) is 50:1
 - Throughput not applicable
 
-### EBS IO1 (HDD) Volume Type
+### EBS `st1` (HDD) Volume Type
 
 - Low cost HDD volume designed for frequently accessed, throughput intensive workloads
 - Streaming workloads requiring consistent, fast throughput at low price
@@ -775,7 +775,7 @@ ALB also supports SSL termination:
 - Max IOPS is `500`
 - Baseline `40` MB/s per TiB throughput until a max of `500` MiB/s  -- can burst
 
-### EBS SC1 (HDD) Volume Type
+### EBS `sc1` (HDD) Volume Type
 
 - Lowest cost HDD volume designed for less frequently accessed workloads
 - Throughput oriented storage for large volumes of data that is infrequently accessed
@@ -789,10 +789,10 @@ ALB also supports SSL termination:
 
 - Some instances do not come with Root EBS volumes, instead they come with "**Instance Store**" (i.e., ephemeral storage)
 - **Instance store is physically attached** to the machine whereas **EBS is a network device**
-- Instance Store Pros:
+- Instance Store pros:
   - Better IO performance (very high IOPS -- since it is physically attached to the instance)
   - Good for caching (since its closer to hardware executing our code)
-- Cons:
+- Instance Store cons:
   - Data survives only *reboots**
   - **If instance is stopped or terminated the instance store is lost**
   - You cannot resize the instance store
@@ -810,22 +810,29 @@ ALB also supports SSL termination:
 - POSIX file system that has standard file API
 - File system scales automatically, pay per use, so no capacity planning
 - EFS scale:
-  - Supports 1000s of concurrent NFS clients with 10 GB+ /s throughput
+  - Supports thousands of concurrent NFS clients with `10` GB+ /s throughput
   - Can grow to Petabyte-scale network file system automatically (again: no capacity planning, pay per use)
-- Performance modes (set at EFS creation time):
-  - General purpose (default): low latency. In General Purpose performance mode, read and write operations consume a different number of file operations. Read data or metadata consumes one file operation. Write data or update metadata consumes five file operations. A file system can support up to 35,000 file operations per second (use cases: web server, CMS)
-  - Max I/O: higher latency. Max I/O performance mode doesn't have a file system operations limit. Use the Max I/O performance mode if you have a very high requirement of file system operations per second
-  - Note: General Purpose performance mode has the lower latency of the two performance modes and is suitable if your workload is sensitive to latency. Max I/O performance mode offers a higher number of file system operations per second but has a slightly higher latency per each file system operation
-- Throughput modes (set at EFS creation time):
-  - Bursting: throughput scales with file system size
-  - Provisioned: throughput fixed at specified amount (range: `1` - `1024` MiB/s)
-- Storage Tiers (file lifecycle management feature -- move file if unused for `N` days):
-  - Standard storage tier: for frequently accessed
-  - Infrequent Access storage tier (EFS IA): after not used for `N` days file is moved to infrequent storage class, this results is a lower price, but cost to retrive is higher
-  - To mount an EFS file system you will need to install the `amazon-efs-utils`. Follow instruction [here](https://docs.aws.amazon.com/efs/latest/ug/mounting-fs.html)
+- To mount an EFS file system you will need to install the `amazon-efs-utils`. Follow instruction [here](https://docs.aws.amazon.com/efs/latest/ug/mounting-fs.html)
 
 ![](https://s3.amazonaws.com/gutucristian.com/ElasticFileSystem.png)
 
+
+### EFS Performance modes (set at EFS creation time):
+
+- General purpose (default): low latency. In General Purpose performance mode, read and write operations consume a different number of file operations. Read data or metadata consumes one file operation. Write data or update metadata consumes five file operations. A file system can support up to 35,000 file operations per second (use cases: web server, CMS)
+- Max I/O: higher latency. Max I/O performance mode doesn't have a file system operations limit. Use the Max I/O performance mode if you have a very high requirement of file system operations per second
+- Note: General Purpose performance mode has the lower latency of the two performance modes and is suitable if your workload is sensitive to latency. Max I/O performance mode offers a higher number of file system operations per second but has a slightly higher latency per each file system operation
+
+### EFS Throughput modes (set at EFS creation time):
+
+- Bursting: throughput scales with file system size
+- Provisioned: throughput fixed at specified amount (range: `1` - `1024` MiB/s)
+
+### EFS Storage Tiers (file lifecycle management feature -- move file if unused for `N` days):
+  
+- Standard storage tier: for frequently accessed
+- Infrequent Access storage tier (EFS IA): after not used for `N` days file is moved to infrequent storage class, this results is a lower price, but cost to retrive is higher
+  
 ## EBS vs EFS
 
 - EFS is for a shared network file system to be mounted across many instances across AZs
@@ -848,7 +855,7 @@ ALB also supports SSL termination:
 
 ### EFS
 
-- Supports mounting hundreds of instances across AZs
+- Supports mounting thousands of instances across AZs
 - Only supports for POSIX based instances (e.g., Linux)
 - More expensive than EBS (because of the cross AZ communication required to have a shared file system across AZs)
 - Can leverage EFS Infrequent Access storage class for files not accessed after `N` days for a much cheaper storage cost
