@@ -713,9 +713,9 @@ ALB also supports SSL termination:
 
 ![](https://s3.amazonaws.com/gutucristian.com/ScalingActionWithCooldown.png)
 
-## Elastic Block Storage (EBS) / Elastic File System (EFS)
+# EC2 Storage -- Elastic Block Storage (EBS) and Elastic File System (EFS)
 
-### What is an EBS volume?
+## What is an EBS volume?
 
 - An EBS volume is a **network** drive you can attach to your instance
   - It uses the network to communicate to the instance (which implies some latency)
@@ -731,7 +731,7 @@ ALB also supports SSL termination:
 
 ![](https://s3.amazonaws.com/gutucristian.com/ElasticBlockStorage.png)
 
-### EBS Volume Types
+## EBS Volume Types
 
 - EBS volumes come in `4` types:
   - `gp2` (SSD): general purpose SSD volume that balances price and performance for a wide variety of workloads
@@ -793,7 +793,7 @@ ALB also supports SSL termination:
   - Better IO performance (very high IOPS -- since it is physically attached to the instance)
   - Good for caching (since its closer to hardware executing our code)
 - Instance Store cons:
-  - Data survives only *reboots**
+  - Data survives only **reboots**
   - **If instance is stopped or terminated the instance store is lost**
   - You cannot resize the instance store
   - Performing backups is left to the user
@@ -861,3 +861,37 @@ ALB also supports SSL termination:
 - Can leverage EFS Infrequent Access storage class for files not accessed after `N` days for a much cheaper storage cost
 
 ![](https://s3.amazonaws.com/gutucristian.com/EFS1.png)
+
+# AWS Relational Databases (RDS), Aurora, ElastiCache
+
+- RDS stands for Relational Database Service
+- It is an AWS service that manages relational databases (i.e., databases that use SQL as a query language)
+- Thus, it allows you to create databases in the cloud that are managed by AWS. For example:
+  - MySQL
+  - PostgreSQL
+  - MariaDB
+  - Oracle
+  - Microsoft SQL
+  - Aurora (AWS proprietary database)
+
+## Advantages of using RDS over deploying same database on EC2
+
+- Automated provisioning, OS patching
+- Continuous backups and ability to **restore** to a specific timestamp (**Point in Time Restore**)
+- Monitoring dashboards
+- **Read replicas** for improved read performance
+- **Multi AZ** setup for **disaster recovery** (DR)
+- Scaling capability (vertical and horizontal)
+- Storage backed by EBS (`gp2` or `io1` -- both SSD)
+- **Note:** because this is a **managed service** you **cannot** SSH into the underlying instance
+
+## RDS Backups
+
+- Backups are **automatically enabled** in RDS
+- Automated backups:
+  - Daily full backup of the database (during the **maintenance window**)
+  - Database **transaction logs** are backed-up by RDS **every five minutes**, thus enabling the ability to restore to any point in time (from oldest backup to the one that was done five minutes ago)
+  - Default `7` day backup retention period, but can be increased to `35` days
+- DB Snapshots:
+  - Different from automated backups in that these are **manually triggered** by the user
+  - Retention of backup can be as long as you want
