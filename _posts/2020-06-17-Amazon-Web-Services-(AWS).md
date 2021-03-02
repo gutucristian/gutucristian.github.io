@@ -991,3 +991,112 @@ ALB also supports SSL termination:
 - AWS responsability:
   - Guarantees nobody can SSH to your DB instance
   - Performs all required DB and OS patching
+
+## Aurora Overview
+
+- Aurora is a proprietary technology from AWS (not open source)
+- PostgreSQL and MySQL are both supported as Aurora DB (that means your drivers will work as if Aurora was a PostgreSQL or MySQL database)
+- Aurora is "AWS cloud optimized" and claims 5x performance improvement over MySQL on RDS and over 3x the performance of PostgreSQL on RDS
+- Aurora has **shared storage volume** that **automatically grows** in increments of `10` GB, up to `64` TB
+- Aurora can have `15` replicas (while MySQL can only have `5`) and the replication process is faster (sub `10` ms replica lag)
+- Failover in Aurora is instantaneous
+- Aurora costs ~20% more than RDS
+
+### Aurora High Availability and Read Scaling
+
+- Store `6` copies of you data anytime you write anything across `3` AZs
+  - `4` copies out of `6` needed for writes
+  - `3` copies out of `6` needed for reads
+  - Self healing with peer-to-peer replication
+  - Storage is **striped** across hundreds of volumes
+- One Aurora instance takes all the writes (i.e., the master instance)
+- Automated failover from master in less than `30` seconds
+- Master plus up to `15` Aurora **read replicas**
+- Support for **cross region replication**
+
+![]()
+
+### Aurora DB Cluster
+
+- Aurora provides a **constant** writer endpoint that always points to the master database instance -- even if the master DB instance changes (e.g., during a failover event) the **writer endpoint stays the same** requiring **no intervention**
+- We also have many **read replicas** which can be enabled to have **auto scaling**. Now, because of auto scaling, it can be really hard for applications to keep track where are the read replicas, connection url, etc.. So, Aurora introduced the **reader endpoint** concept which exposes a constant DNS endpoint (which is actually a **load balancer**) that we can use to perform all reads
+
+![]()
+
+### Aurora Security
+
+- Similar to RDS since it uses the same engine
+- Encryption at rest using KMS
+- Automated backups, snapshots, and replicas are also encrypted
+- Encryption in flight using SSL (same process as MySQL and Postgres)
+- **Possibility to authenticate using IAM token (as in RDS)**
+- You are responsible for protecting the instance with security groups
+- You can't SSH into the underlying Aurora instances
+
+### Aurora Serverless
+
+- Automated database instantiation and auto-scaling based on actual usage
+- Good for infrequent intermittent or unpredictable workloads
+- No capacity planning needed
+- Pay per second, can be more cost-effective
+
+![]()
+
+### Aurora Global
+
+- **Aurora Cross Region Read Replicas**:
+  - Useful for disaster recovery
+  - Simple to put in place
+- **Aurora Global Database (recommended)**:
+  - **`1` primary region** (for read / write)
+  - **Up to `5` secondary read only regions** where replication lag is less than `1` second
+  - **Up to `16` Read Replicas per secondary region``
+  - Helps to decrease latency
+  - Promoting another region (for DR) has a recovery time objective (RTO) of less than one minute
+
+![]()
+
+## AWS ElastiCache Overview
+
+- The same way RDS is to get a managed relational database, ElastiCache is to get a **managed Redis** or **Memcached**
+- Caches are in-memory databases with really high performance, low latency
+- Caches are often used to help reduce load off of databases for read intensive workloads
+- Helps make your application stateless
+- Has **write scaling** capability using **sharding**
+- Has **read scaling** capability using **read replicas**
+- Has **Multi AZ failover capability**
+- AWS takes care of OS maintenance / patching, optimizations, setup, configurations, monitoring, failover recovery, backups
+
+### ElastiCache Solution Architecture -- DB Cache
+
+- Applications queries ElastiCache. If it does not have the data ("cache miss"), then application queries RDS and stores result in ElastiCache, else it uses the data available from ElastiCache ("cache hit")
+- This design helps **relieve load** in RDS
+- Cache must have an **invalidation strategy** to make sure only the most current data is kept in the cache (since we are limited in cache size)
+
+![]()
+
+### ElastiCache Solution Architecture -- User Session Store
+
+- User logs in to any of the application instances
+- The application writes the session data into ElastiCache
+- When the user hits another instance of our application the instance retrieves the data and user info (e.g., if user is already logge in) from ElastiCache
+
+!()[]
+
+### ElastiCache Common Uses
+
+- To relieve read load from a database
+- To share some application state
+
+### ElastiCache -- Redis vs Memcached
+
+- **Redis (Replication)**
+  - Has **Multi AZ auto-failover feature** to make it **highly available**
+  - Has **read replicas** to scale reads
+  - Data durability using AOF persistence -- meaning even if your cache is stopped and then restarted you can still have the data from before stopping available to you
+  - **Backup and restore features**
+- **Memcached (Sharding)**
+  - Uses multiple nodes for partitioning of data (sharding)
+  - **Non persistent**
+  - **No backup and restore**
+  - Multi-threaded architecture
