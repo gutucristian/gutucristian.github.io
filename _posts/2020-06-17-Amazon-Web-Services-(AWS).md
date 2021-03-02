@@ -895,3 +895,99 @@ ALB also supports SSL termination:
 - DB Snapshots:
   - Different from automated backups in that these are **manually triggered** by the user
   - Retention of backup can be as long as you want
+
+## RDS Read Replicas for read scalability
+
+- Read replicas are **read only** database replicas that can be used by applications to **read** data. This pattern allows us to reduce load on the main database instance which is **read write** enabled
+- We can create up to `5` read replicas which can be within AZ, across AZs, or across regions
+- The replication itself is **asynchronous** which means that the read replicas are **eventually consistent**. Eventually consistent means that they **eventually** reflect the data in the master database instance, but not necessarily right away
+- Replicas can be **promoted** to become their own separate database
+- Applications must update the connection string to leverage read replicas. In other words, we have **separate endpoints** for the read replicas and the main RDS DB instance
+
+![]()
+
+### RDS Read Replicas Use Cases
+
+- You have a production database that is taking normal load
+- A separate team comes in and wants to use the data to run some reporting application
+- In this scenario, we can create an RDS Read Replica of our main DB instance and tell the other team to use that instance for their reporting application instead
+- As such, our production application and database is completely unaffected
+- **Note:** read replicas are used for **read operations only** (so `SELECT` kind of statements **not** `INSERT, UPDATE, DELETE`)
+
+![]()
+
+### RDS Read Replicas
+
+- In AWS there is a network cost when data goes from one AZ to another
+- To reduce costs keep your Read Replicas in the same AZ
+
+![]()
+
+### RDS Multi AZ (Disaster Recovery)
+
+- With Multi AZ, RDS maintains a **standby** DB instance (in AZ B from figure below) that is a **replica** of the master DB instance (in AZ A in instance below)
+- Multi AZ has **synchronous replication** from master DB instance to standby instance
+- Application uses **one DNS name** to write and read from DB
+- In case the master DB instance fails RDS will (behind the scenes) failover to the standby instance and the DNS name will be updated to resolve to the failover -- thereby leaving the application completely **unaffected** and **without any need for developer intervention**
+- Because the standby instance is in another AZ, we increase our applications **availability** and enable **fault tolerance** in case of loss of one AZ
+- **Note:** RDS Read Replicas can be setup as Multi AZ for Disaster Recovery
+
+## RDS Encryption + Security
+
+- At rest encryption:
+  - Possibility to encrypt the master & read replicas with AWS KMS - AES-256 encryption
+  - Encryption has to be defines at launch time
+  - **If the master is not encrypted, then the read replicas cannot by encrypted**
+  - Transparent Data Encryption (TDE) available for Oracle and SQL Server (an alternative way of encrypting your database)
+- In-flight encryption:
+  - SSL certificates to encrypt data to RDS in flight
+  - Provide SSL options with trust certificate when connecting to database
+  - To enforce SSL in **PostgreSQL** set `rds.force_ssl=1` in the AWS RDS Console (Parameter Groups) and in `MySQL` within the DB run `GRANT USAGE ON *.* TP 'mysqluser'@'%' REQUIRE SSL;` (SQL command)
+
+### RDS Encryption Operations
+
+- Encrypting RDS backups
+  - Snapshots of un-encrypted RDS databases are un-encrypted
+  - Snapshots of encrypted RDS databases are encrypted
+  - Can copy an un-encrypted snapshot into an encrypted one (using some options)
+- **To encrypt an un-encrypted RDS database:**
+  - Create a snapshot of the un-encrypted database
+  - Copy the snapshot and enable encryption for the snapshot
+  - Restore the database from the encrypted snapshot
+  - Migrate applications to the new database and delete the old one
+
+### RDS Security - Network & IAM
+
+- Network security
+  - RDS databases are usually deployed within a **private subnet**, not in a public one
+  - RDS security works by leveraging security groups (the same concept as for EC2 instances) which control which IP / security group can **communicate** with RDS
+- Access Management
+  - IAM policies help control who can **manage** AWS RDS (through the RDS API)
+  - Traditional username and password can be used to **login into** the database
+  - **IAM-based authentication** can be used to login into RDS MySQL and PostgreSQL
+
+### RDS -- IAM Authentication
+
+- IAM database authentication works with **MySQL** and **PostgreSQL**
+- You don't need a password just an authentication token obtained through IAM & RDS API calls
+- Auth token has a lifetime of `15` minutes
+- Benefits of this approach:
+  - Network in/out must be encrypted using SSL
+  - IAM is used to **centrally manage** users instead of DB
+  - Can leverage IAM Roles and EC2 instance profiles for easy integration
+
+![]()
+
+### RDS Security -- Summary
+
+- Encryption at rest:
+  - Is done only when you first create the DB instance, or
+  - Unencrypted DB => snapshot => copy snapshot as encrypted => create encrypted DB from snapshot
+- Your responsability:
+  - Check the ports / IP / security group inbound rules in DB's security group
+  - In-database user creation and permissions or manage through IAM
+  - Creating a database with or without public access
+  - Ensure parameter groups or DB is configured to only allow SSL connections
+- AWS responsability:
+  - Guarantees nobody can SSH to your DB instance
+  - Performs all required DB and OS patching
