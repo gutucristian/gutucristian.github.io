@@ -1100,3 +1100,49 @@ ALB also supports SSL termination:
   - **Non persistent**
   - **No backup and restore**
   - Multi-threaded architecture
+
+## ElastiCache Strategies
+
+### Caching Implementation Considerations
+
+Read in more detail [here](https://docs.aws.amazon.com/AmazonElastiCache/latest/mem-ug/Strategies.html)
+
+- **Is caching effective for that data?**
+  - Caching will be effective if data is changing slowly and few keys are frequently needed
+  - Caching will not be effective if data is changing rapidly many keys are frequenly needed.
+- **Is data structured well for caching?**
+  - Key value based data works great for caching
+
+### Lazy Loading / Cache Aside / Lazy Population Caching Strategy
+
+- With **lazy loading** pattern, application first checks for data in cache
+- If the data is there then we take it and use it -- this is called a **cache hit**
+- If the data is not in the cache, then this is called a **cache miss**
+- If there is a **cache miss** the application code does two things: (1) makes a call to the database to retrive the data and (2) updates the cache with this new data, so that the next time we ask for it its there
+- Pros of this approach:
+  - Only requested data is cached (the cached is not filled up with unused data)
+  - Node failures are not fatal (there is just an increased latency to **warm up** the cache again will all of our data)
+- Cons of this approach:
+  - **Read penalty**: cache miss results in `3` round trips -- which may be a noticeable delay for that request
+  - Stale data: data could be updated in the database and outdated in the cache
+
+![]()
+
+### Write Through Caching Pattern
+
+- With **write through** pattern, whenever the application writes data it will first write to the cache and then to the database
+- Pros:
+  - The data in the cache is **never** stale
+- Cons:
+  - **Write penalty**: each write requires `2` calls (still, this might not be so bad since users generally accept that writes may take longer than reads)
+  - There may be missing data in the cache since we only actually write to the cache when we have a need to write to the database (this can be mitigated by combining write through with lazy loading strategy)
+  - This design is prone to **cache churn**: the idea that we may end up writing a lot of data which might never be read
+
+![]()
+
+### Cache Evictions and Time To Live (TTL)
+
+- Cache evictions can occur in three ways:
+  - You delete the item explicitly
+  - Item is evicted because the memory is full and it is least recently used (LRU cache)
+  - The Time To Live for the item expired
