@@ -1146,3 +1146,26 @@ Read in more detail [here](https://docs.aws.amazon.com/AmazonElastiCache/latest/
   - You delete the item explicitly
   - Item is evicted because the memory is full and it is least recently used (LRU cache)
   - The Time To Live for the item expired
+
+# Route 53
+
+## AWS Route 53 Overview
+
+- Route 53 is a managed DNS (Domain Name System)
+- DNS is a collection of rules and records which helps clients understand how to reach a server through its domain name
+- In AWS, the most common records are:
+  - `A`: hostname to IPv4
+  - `AAAA`: hostname to IPv6
+  - `CNAME`: hostname to hostname
+  - `Alias`: hostname to AWS resource
+- Route 53 can use:
+  - Public domain names you own (or buy)
+  - Private domain names that can be resolved by your instance in your VPCs
+- Route 53 has advanced features such as:
+  - Load balancing (through DNS -- also called client side load balancing)
+  - Health checks (although limited)
+  - Routing policies: simple, failover, geolocation, latency, weighted, multi value
+- You pay $0.50 per month per hosted zone
+
+![]()
+
