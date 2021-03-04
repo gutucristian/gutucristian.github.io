@@ -1147,21 +1147,21 @@ Read in more detail [here](https://docs.aws.amazon.com/AmazonElastiCache/latest/
   - Item is evicted because the memory is full and it is least recently used (LRU cache)
   - The Time To Live for the item expired
 
-# Route 53
+# Route53
 
-## AWS Route 53 Overview
+## AWS Route53 Overview
 
-- Route 53 is a managed DNS (Domain Name System)
+- Route53 is a managed DNS (Domain Name System)
 - DNS is a collection of rules and records which helps clients understand how to reach a server through its domain name
 - In AWS, the most common records are:
   - `A`: hostname to IPv4
   - `AAAA`: hostname to IPv6
   - `CNAME`: hostname to hostname
   - `Alias`: hostname to AWS resource
-- Route 53 can use:
+- Route53 can use:
   - Public domain names you own (or buy)
   - Private domain names that can be resolved by your instance in your VPCs
-- Route 53 has advanced features such as:
+- Route53 has advanced features such as:
   - Load balancing (through DNS -- also called client side load balancing)
   - Health checks (although limited)
   - Routing policies: simple, failover, geolocation, latency, weighted, multi value
@@ -1183,3 +1183,78 @@ Read in more detail [here](https://docs.aws.amazon.com/AmazonElastiCache/latest/
 - TTL is mandatory for each DNS record
 
 ![]()
+
+## `CNAME` vs `Alias` Record
+
+- For example, lets say we have some AWS resource (e.g., Load Balancer, CloudFront, etc..) that exposes an AWS hostname: `lb1-1234.us-east-2.elb.amazonaws.com` and we want the hostname `myapp.mydomain.com` to point to it
+- In this case we can use a `CNAME` record:
+  - `CNAME` can point any **non-root** (also called **non apex**) hostname to any other hostname (e.g., `app.mydomain.com` => `blabla.anything.com`)
+  - Again, `CNAME` records only work for **non root** domains (e.g., `abc.mydomain.com`)
+- We can also use an `Alias` but **note:**
+  - An `Alias` record can only point a hostname to an **AWS resource** (e.g., `abc.mydomain.com` => `lb1-1234.us-east-2.elb.amazonaws.com`)
+  - The benefit of an `Alias` record is that it works for **root domains** and also **non-root domains**
+  - `Alias` records are also **free of charge**
+  - Has native health check
+
+## Simple Routing Policy
+
+- Use when you need to redirect to a **single resource**
+- You **cannot** attach health checks to a simple routing policy
+- If multiple values are returned (i.e., IPs), a **random** one is chosen **by the client** -- so there is **client side load balancing**
+
+![]()
+
+## Weighted Routing Policy
+
+- Control the percent of the requests that go to a specific endpoint
+- For example, can be used to test a certain percent of traffic to a new app version
+- Helpful to split traffic between regions
+- Can be associated with health checks
+
+![]()
+
+## Latency Routing Policy
+
+- Redirect user to the server that would result in least latency
+- For example, a user in Germany could be redirected to an instance in the US if AWS Route53 decided that it would yield the lowest latency
+- Can be associated with health checks
+
+![]()
+
+## Failover routing
+
+- Use when you want to configure active-passive failover
+- Failover routing lets you route traffic to a resource when the resource is healthy or to a different resource when the first resource is unhealthy. The primary and secondary records can route traffic to anything from an Amazon S3 bucket that is configured as a website to a complex tree of records
+
+![]()
+
+## Geo Location Routing Policy
+
+- Geolocation routing lets you choose the resources that serve your traffic based on the geographic location of your users, meaning the location that DNS queries originate from. For example, you might want all queries from Europe to be routed to an ELB load balancer in the Frankfurt region
+- We also need to create a default policy (in case there is no match)
+
+![]()
+
+## Multi Value Routing Policy
+
+- Use when you want Route 53 to respond to DNS queries with up to eight healthy records selected at random
+- Multivalue answer routing lets you configure Amazon Route 53 to return multiple values, such as IP addresses for your web servers, in response to DNS queries. You can specify multiple values for almost any record, but multivalue answer routing also lets you check the health of each resource, so Route 53 returns only values for healthy resources. It's not a substitute for a load balancer, but the ability to return multiple health-checkable IP addresses is a way to use DNS to improve availability and load balancing
+- To route traffic approximately randomly to multiple resources, such as web servers, you create one multivalue answer record for each resource and, optionally, associate a Route 53 health check with each record. Route 53 responds to DNS queries with up to eight healthy records and gives different answers to different DNS resolvers. If a web server becomes unavailable after a resolver caches a response, client software can try another IP address in the response
+- Note the following:
+  - If you associate a health check with a multivalue answer record, Route 53 responds to DNS queries with the corresponding IP address only when the health check is healthy
+  - If you don't associate a health check with a multivalue answer record, Route 53 always considers the record to be healthy
+  - If you have eight or fewer healthy records, Route 53 responds to all DNS queries with all the healthy records
+  - When all records are unhealthy, Route 53 responds to DNS queries with up to eight unhealthy records
+
+![]()
+
+## Health Checks
+
+- If you want Route 53 to check the health of a specified endpoint and to respond to DNS queries using the record only when the endpoint is healthy, choose a health check
+- Note if, for example, you have a weighted routing policy with multiple endpoints and you want to use health checks, then you will need to define a Route53 health check for each one of those endpoints
+- After `N` failed health checks instance is considered unhealthy (default is `3`)
+- After `N` health checks passed instance is considered healthy (default `3`)
+- Default health check interval is `30` seconds (can be set to `10` seconds but is more expensive)
+- **About 15 health checkers will check the endpoint we define** which means about one request every `2` seconds
+- Can have HTTP, TCP, and HTTPS health checks (no SSL verification)
+- We can also integrate health check with CloudWatch
