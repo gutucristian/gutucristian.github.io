@@ -1169,3 +1169,17 @@ Read in more detail [here](https://docs.aws.amazon.com/AmazonElastiCache/latest/
 
 ![]()
 
+## DNS Records TTL (Time to Live)
+
+- When we make a DNS request to Route 53 to resolve a certain domain, Route 53 will send back to us the IP as well as a TTL (that is predefined by us in Route 53)
+- The web browser will cache the received IP for the requested hostname for the duration of the TTL
+- After the TTL is over, if we receive another DNS request for the hostname, then the browser will query Route 53 which will (again) return to us the IP mapped to this domain (which *may* have changed) as well as the TTL
+- A high TTL would be something like `24` hours
+  - The downside of a high TTL is that there is a chance that the IP cached by the browser may be out of date for a long time before the TTL expires and the new one is received
+  - The upside of a high TTL is that it significantly reduces traffic on the DNS server
+- A low TTL would be something like `60` seconds
+  - The downside of this is that it increases traffic to DNS server significantly
+  - The upside is that records are outdated for less time (in case the IP mapping for the hostname changes)
+- TTL is mandatory for each DNS record
+
+![]()
