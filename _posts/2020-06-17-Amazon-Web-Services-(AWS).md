@@ -1353,3 +1353,15 @@ Read in more detail [here](https://docs.aws.amazon.com/AmazonElastiCache/latest/
 ![]()
 
 ## VPC Cheatsheet
+
+- **VPC:** Virtual Private Cloud
+- **Subnets:** tied to an AZ, network partition of the VPC
+- **Internet Gateway:** at the VPC level, provide Internet Access
+- **NAT Gateway / Instances:** give internet access to private subnets
+- **NACL:** stateless, subnet rules for inbound and outbound
+- **Security Groups:** stateful, operate at the EC2 instance level or ENI (stateful means if you send a request from your instance, the response traffic for that request is allowed to flow in regardless of inbound security group rules. Responses to allowed inbound traffic are allowed to flow out, regardless of outbound rules)
+- **VPC Peering:** connect two VPC with non overlapping IP ranges, non transitive
+- **VPC Endpoints:** provide private access to AWS Services within VPC
+- **VPC Flow Logs:** network traffic logs
+- **Site to Site VPN:** VPN over the public internet between on premise data center and AWS
+- **Direct Connection:** direct private connection to AWS
