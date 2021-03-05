@@ -1147,18 +1147,18 @@ Read in more detail [here](https://docs.aws.amazon.com/AmazonElastiCache/latest/
   - Item is evicted because the memory is full and it is least recently used (LRU cache)
   - The Time To Live for the item expired
 
-# Route53
+# Route 53
 
 ## AWS Route53 Overview
 
-- Route53 is a managed DNS (Domain Name System)
+- Route 53 is a managed DNS (Domain Name System)
 - DNS is a collection of rules and records which helps clients understand how to reach a server through its domain name
 - In AWS, the most common records are:
   - `A`: hostname to IPv4
   - `AAAA`: hostname to IPv6
   - `CNAME`: hostname to hostname
   - `Alias`: hostname to AWS resource
-- Route53 can use:
+- Route 53 can use:
   - Public domain names you own (or buy)
   - Private domain names that can be resolved by your instance in your VPCs
 - Route53 has advanced features such as:
@@ -1237,9 +1237,9 @@ Read in more detail [here](https://docs.aws.amazon.com/AmazonElastiCache/latest/
 
 ## Multi Value Routing Policy
 
-- Use when you want Route 53 to respond to DNS queries with up to eight healthy records selected at random
+- Use when you want Route 53 to respond to DNS queries with up to `8` healthy records selected at random
 - Multivalue answer routing lets you configure Amazon Route 53 to return multiple values, such as IP addresses for your web servers, in response to DNS queries. You can specify multiple values for almost any record, but multivalue answer routing also lets you check the health of each resource, so Route 53 returns only values for healthy resources. It's not a substitute for a load balancer, but the ability to return multiple health-checkable IP addresses is a way to use DNS to improve availability and load balancing
-- To route traffic approximately randomly to multiple resources, such as web servers, you create one multivalue answer record for each resource and, optionally, associate a Route 53 health check with each record. Route 53 responds to DNS queries with up to eight healthy records and gives different answers to different DNS resolvers. If a web server becomes unavailable after a resolver caches a response, client software can try another IP address in the response
+- To route traffic approximately randomly to multiple resources, such as web servers, you create one multivalue answer record for each resource and, optionally, associate a Route 53 health check with each record. Route 53 responds to DNS queries with up to `8` healthy records and gives different answers to different DNS resolvers. If a web server becomes unavailable after a resolver caches a response, client software can try another IP address in the response
 - Note the following:
   - If you associate a health check with a multivalue answer record, Route 53 responds to DNS queries with the corresponding IP address only when the health check is healthy
   - If you don't associate a health check with a multivalue answer record, Route 53 always considers the record to be healthy
@@ -1258,3 +1258,98 @@ Read in more detail [here](https://docs.aws.amazon.com/AmazonElastiCache/latest/
 - **About 15 health checkers will check the endpoint we define** which means about one request every `2` seconds
 - Can have HTTP, TCP, and HTTPS health checks (no SSL verification)
 - We can also integrate health check with CloudWatch
+
+# VPC Fundamentals
+
+- VPC, Subnets, Internet Gateways, NAT Gateways
+- Security Groups, Network ACL (NACL), VPC Flow Logs
+- VPC Peering, VPC Endpoints
+- Site to Site VPN & Direct Connect
+
+![]()
+
+## VPC & Subnets
+
+- **VPC:** private network to deploy your resources (regional resources)
+- **Subnets:** allow you to partition your network inside your VPC (subnets are defined at the Availability Zone level)
+- A **public subnet** is a subnet that is accessible from the internet
+- A **private subnet** is a subnet that is **not** accessible from the internet
+- To define access to the internet and **between subnets** we use **Route Tables**
+
+![]()
+
+## Internet Gateway and NAT Gateways
+
+- **Internet Gateways** help our VPC instances connect to the internet
+- Public subnet has a route to the internet gateway
+- **NAT Gateways** (AWS managed) and **NAT Instances** (self managed) allow your instances in your **Private Subnets** to access the internet while remaining private
+
+![]()
+
+## Network ACL and Security Groups
+
+- **NACL** (Network ACL)
+  - A firewall which controls the traffic from and to the subnet (i.e., the **first mechanism of defense of our public subnet**)
+  - Can have **ALLOW** and **DENY** rules
+  - Are attached at the **Subnet** level
+  - Rules **only** include **IP addresses**
+- **Security Groups**
+  - A firewall that controls the traffic to and from an **ENI** or an **EC2 Instance** (i.e., **second mechanism of defense**)
+  - Can have **only ALLOW** rules
+  - Rules can include IP addresses as well as other security groups
+
+![]()
+
+## NACL vs Security Groups
+
+![]()
+
+## VPC Flow Logs
+
+- Capture information about network traffic:
+  - **VPC** Flow Logs
+  - **Subnet** Flow Logs
+  - **Elastic Network Interface** Flow Logs
+- Captures network information from AWS managed interfaces too: Elastic Load Balancers, ElastiCache, RDS, Aurora, etc..
+- VPC Flow logs data can go to S3 / CloudWatch Logs
+
+## VPC Peering
+
+- Connect two VPC privately using AWS network
+- Make them behave as if the two VPCs are in the same network 
+- We do this by setting up a **VPC peering connection** between them
+- The two VPCs must **not** have overlapping CIDR (IP address range)
+- VPC Peering is **not transitive**. If we have a peering connection between (VPC A and VPC B) and (VPC A and VPC C) this does not mean that VPC C can communicate with VPC B (this means there is **no transitivity**)
+
+## VPC Endpoints
+
+- **Use when you need private access from within your VPC to an AWS services**
+- Endpoints allow you to connect to AWS services **using a private network** instead of the public network
+- This gives you increased security and lower latency to access AWS services
+- Use **VPC Endpoint Gateway** for S3 and DynamoDB
+- Use **VPC Endpoint Interface** for the rest of the services
+
+![]()
+
+## Site to Site VPN & Direct Connect
+
+- **Site to Site VPN**
+  - Connect an on premise VPN to AWS
+  - The connection is **automatically encrypted**
+  - Goes over the **public internet**
+- Direct Connect (DX)
+  - Establish a **physical connection** between on-premise and AWS
+  - The connection is private secure and fast
+  - Goes over a private network
+- **Note:** Site to site VPN and Direct Connect cannot access VPC endpoints
+
+## Three Tier Solution Architecture
+
+- The `3` tiers:
+  - Public Subnet (e.g., ELB which is publicly available by users)
+  - Private Subnet (e.g., EC2 instaces with ASG sitting behind the ELB -- they do not need to be accessible to anyone beside the ELB, so we use route tables to define network access between public ELB subnet and the EC2 private subnet)
+  - Data Subnet (e.g., AWS RDS + ElastiCache also sitting in private subnet
+
+![]()
+
+## VPC Cheatsheet
