@@ -1411,4 +1411,48 @@ Read in more detail [here](https://docs.aws.amazon.com/AmazonElastiCache/latest/
 
 ## S3 Encryption for Objects
 
-- There are `4` methods of encrypting objects in S3
+- There are `4` methods of encrypting objects in S3:
+  - `SSE-S3`: encrypts S3 objects using keys handled and managed by AWS
+  - `SSE-KMS`: leverages AWS Key Management Service to manage encryption keys
+  - `SSE-C`: when you want to manage your own encryption keys
+  - Client Side Encryption
+
+### `SSE-S3`
+
+- `SSE-S3`: encryption using keys handled and managed by AWS
+- Object is **encrypted server side**
+- `AES-256` encryption
+- Must set header: `"x-amx-server-side-encryption":"AES256"`
+
+![]()
+
+### `SSE-KMS`
+
+- `SSE-KMS`: encryption using keys handled and managed by AWS
+- KMS advantages: user control + audit trail
+- Object is **encrypted server side**
+- Must set header: `"x-amx-server-side-encryption":"aws:kms"`
+
+### `SSE-C`
+
+- `SSE-C`: **server side encryption** using data keys fully managed by the customer outside of AWS
+- Amazon S3 **does not store the encryption key** you provide
+- **`HTTPS` must be used** (because you are sending a secret over the wire to AWS)
+- Encryption key must be provided in `HTTP` headers for every `HTTP` request made
+
+![]()
+
+### Client Side Encryption
+
+- Data is encrypted before sending it over to S3
+- Client must decrypt the data themselves when retrieving from S3
+- Customer fully manages encryption / decryption cycle
+
+![]()
+
+### Encryption in transit
+
+- In terms of retrieving an object S3 exposes:
+  - `HTTP` endpoint: non encrypted
+  - `HTTPS` endpoint: encryption in flight
+- Note: `HTTPS` is **mandatory** for `SSE-C`
