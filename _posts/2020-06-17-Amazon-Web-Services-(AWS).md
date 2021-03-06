@@ -1462,3 +1462,51 @@ Read in more detail [here](https://docs.aws.amazon.com/AmazonElastiCache/latest/
   - `HTTP` endpoint: non encrypted
   - `HTTPS` endpoint: encryption in flight
 - Note: `HTTPS` is **mandatory** for `SSE-C`
+
+## S3 Security
+
+- **User based**
+  - IAM policies -- which API calls should be allowed for a specific user from IAM console
+- **Resource based**
+  - Bucket Policies -- bucket wide rules that we can set from the S3 console (bucket rules say what **principals** can and cannot do on our S3 bucket -- enables us to do cross account access on our buckets)
+  - Object Access Control List (ACL) -- finer grain (we set the access rule at the **object level**)
+  - Bucket Access Control List (ACL) -- less common
+- **Note:** an IAM principal can access an S3 object if:
+  - The user IAM permissions allow it **OR** the bucket policy **ALLOWS** it
+  - **AND** if there is no explicit **DENY**
+
+## Bucket Policies
+
+- JSON based policies:
+  - `Resource`: buckets and object which policy applies to
+  - `Action`: Set of actions to ALLOW or DENY (as dictated by `Effect`)
+  - `Effect`: ALLOW or DENY actions defined in `Action` array
+  - `Principal`: the account of user to apply the policy to
+- Bucket policies are also commonly used to:
+  - Grant public access to a bucket
+  - Force objects to be encrypted at upload
+  - Grant access to another account (Cross Account S3 Bucket policies)
+
+## Bucket settings for Block Public Access
+
+- Below details are not required for the exam, but, in general, you should know that it is possible to block public access to your S3 bucket through these settings
+- Block public access to buckets and objects granted through:
+  - *new* access control lists (ACLs)
+  - *any* access control lists (ACLs)
+  - *new* public bucket or access point policies
+- Block public and cross-account access to buckets and objects through any public bucket or access point policies
+
+## S3 Security -- Other
+
+- Networking:
+  - Can access S3 privately through VPC Endpoints (e.g., an EC2 instance in a VPC can use VPC Endpoints to make a request to S3 without going through public internet)
+- Logging and Audit:
+  - S3 Access Logs can be stored in other S3 buckets
+  - API calls can be logged in AWS CloudTrail
+- User Security:
+  - MFA Delete: Multi Factor Authentication can be setup so that it is required in versioned objects whenever someone tries to delete objects
+  - Pre-Signed URLs: URLs that are valid only for a limited time (e.g., premium video service)
+
+## S3 Websites
+
+- S3 can host static websites and have them accessible on the public internet
