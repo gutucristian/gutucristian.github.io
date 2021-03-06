@@ -1365,3 +1365,50 @@ Read in more detail [here](https://docs.aws.amazon.com/AmazonElastiCache/latest/
 - **VPC Flow Logs:** network traffic logs
 - **Site to Site VPN:** VPN over the public internet between on premise data center and AWS
 - **Direct Connection:** direct private connection to AWS
+
+# Simple Storage Service (AWS S3)
+
+- Main building block of AWS
+- Advertised as "infinetly scaling" storage
+
+## S3 Buckets and Objects
+
+- S3 allows people to store **objects** (files) in **buckets** (directories)
+- Buckets must have **globally unique name**
+- Buckets are **defined at the region level**
+- Naming convention
+  - No uppercase
+  - No underscore
+  - 3-63 characters long
+  - Not an IP
+  - Must start with lowercase letter or number
+
+### S3 Overview -- Objects
+
+- Objects (files) have a key
+- The **key** is the **FULL** path:
+  - s3://my-bucket/**my_file.txt**
+  - s3://my-bucket/**my_folder/another_folder/my_file.txt**
+- The key is composed of **prefix** + **object name**
+  - So, from above, **my_folder/another_folder/** would be the **prefix** and **my_file.txt** would be the object name
+- Max object size if 5TB (5000GB)
+- If uploading more than 5GB, you must use **multi-part upload**
+- Each object can have **metadata** (list of text key/value pair)
+- Can also have Tags (Unicode key/value pair -- up to `10`)
+- Object can also have Version ID (if versioning is enabled)
+
+## S3 Versioning
+
+- Not enabled by defauld
+- It is enabled at the **bucket level**
+- Same key overwrite will increment the version
+- Best practive is to version your buckets
+  - Protects against unintended deletes (i.e., ability to restore a version)
+  - Easily roll back to a previous version
+- Notes:
+  - Any file that is not versioned prior to enabling versioning will have a version of **null**
+  - Suspending versioning does not delete the previous versions
+
+## S3 Encryption for Objects
+
+- There are `4` methods of encrypting objects in S3
