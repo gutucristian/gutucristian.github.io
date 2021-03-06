@@ -1531,7 +1531,50 @@ Read in more detail [here](https://docs.aws.amazon.com/AmazonElastiCache/latest/
 
 ![]()
 
-## S3 Consistency Model
+## S3 Consistency Model -- Before December 2020
 
-- S3 is a distributed service as such it is **eventually consistent**
-- READ after WRITE consisten
+**Before December 2020 S3 did not have strong eventual consistency**
+
+There was a happy path scenario. This is where we are writing a brand new object to an S3 bucket.
+
+1. `PUT /key-prefix/cool-file.jpg 200`
+2. `GET /key-prefix/cool-file.jpg 200`
+
+When we `GET` the file right after we `PUT` we get a status code of `200` and we know the file is the most up to date copy. Otherwise known as **read-after-write** consistency
+
+But then there was this caveat scenario with overwriting. We write an object to the bucket. Another process writes that object again (with new content), and then we try to read the object:
+
+1. `PUT /key-prefix/cool-file.jpg 200`
+2. `PUT /key-prefix/cool-file.jpg 200` (new content)
+3. `GET /key-prefix/cool-file.jpg 200`
+
+Here we **used to** end up with the **eventual consistency** issue. Namely, when we called `GET` we could have received the file contents of the first `PUT` or the second. The reason being that S3 is a distributed service and it could take time for the change to be propagated behind the scenes -- thus yielding the the **eventual consistency** problem.
+
+Then there was the fussy `404` caveat. This occurred when you would issue a `GET` before the `PUT` had finished.
+
+1. `GET /key-prefix/cool-file.jpg 404`
+2. `PUT /key-prefix/cool-file.jpg 200`
+3. `GET /key-prefix/cool-file.jpg 404`
+
+Here because the `GET` happened on the object before the `PUT` was complete, we got a `404`. Because of **eventual consistency**, it was possible to get a `404` again (after `2`) because the `PUT` may have still been propagating.
+
+## S3 Consistency Model -- Post December 2020 (S3 Strong Consistency)
+
+AWS announced strong **read-after-write consistency** for all `GET`, `PUT`, and `LIST` operations in S3.
+
+So what does that mean for the scenarios we talked about up above? Well, if a `PUT` call of an object to S3 is successful you can assume that **any** subsequent `GET` or `LIST` call for that object will return the latest version of the object.
+
+The overwrite scenario will return the latest data as well. **But the first GET request must happen after all PUT requests have finished to guarantee the latest object.**
+
+This last bit is important. You can have concurrent processes writing the same object, with different data, to the same bucket:
+
+1. The first process finishes writing the object and then the next process starts writing the object with new data
+2. Meanwhile, **before this second write finishes**, we start a `GET` request on the object
+
+In this scenario our `GET` request will return the object with data before the second `PUT` and, as expected, this is because the second `PUT` hasn't yet completed.
+
+We can also have a scenario where there are **simultaneous writes**. Meaning that before process one finishes writing the object, process two starts writing to that object as well. This is what we call **concurrent writes**. In this scenario, S3 uses **last-write wins semantics**. But our GET request will return **mixed results until the final write finishes.**
+
+Basically the issue before was that even after a successful `PUT` S3 did not guaranteed that a subsequent `GET` request for this object will return the latest object that **we just wrote** because of eventual consistency and the time required to propagate changes across entire system. With the new update there is **strong read-after-write consistency** which means that after a successful `PUT` request any subsequent `GET` is guaranteed to get the data that was just written (not an older previous version).
+
+Read more from [here](https://blog.kylegalbraith.com/2021/01/12/the-s3-consistency-model-got-an-upgrade/).
