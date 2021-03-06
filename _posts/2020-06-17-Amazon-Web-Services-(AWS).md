@@ -1474,6 +1474,7 @@ Read in more detail [here](https://docs.aws.amazon.com/AmazonElastiCache/latest/
 - **Note:** an IAM principal can access an S3 object if:
   - The user IAM permissions allow it **OR** the bucket policy **ALLOWS** it
   - **AND** if there is no explicit **DENY**
+  - Thus: explicit **DENY** in an IAM policy will take precedence over a bucket policy permission
 
 ## Bucket Policies
 
@@ -1510,3 +1511,27 @@ Read in more detail [here](https://docs.aws.amazon.com/AmazonElastiCache/latest/
 ## S3 Websites
 
 - S3 can host static websites and have them accessible on the public internet
+- The website URL will look like: `<bucket-name>.s3-website-<AWS-region>.amazonaws.com`
+- If you get a `403 Forbidden` error, make sure the bucket policy allows public reads
+
+## Cross-Origin Resource Sharing (CORS) Explained
+
+- An **origin** is a scheme (protocol) + host (domain) + port (e.g., `https://www.mydomain.com:8080`)
+- (CORS) is an HTTP-header based mechanism that allows a server to indicate any other origins (domain, scheme, or port) than its own from which a browser should permit loading of resources
+- Read more [here](https://medium.com/@electra_chong/what-is-cors-what-is-it-used-for-308cafa4df1a)
+- Preflight Request: a request that browser does before the actual request is sent to check that the cross origin allows us to make a request to it
+- Preflight Response: returns back to us information regarding whether we are allows to perform the cross origin request to the specified endpoint along with all of the allowed methods
+
+![]()
+
+## S3 CORS
+
+- If a client does a cross origin request on our S3 bucket, we need to enable the correct CORS headers
+- You can allow for a specific origin (or `*` for all origins)
+
+![]()
+
+## S3 Consistency Model
+
+- S3 is a distributed service as such it is **eventually consistent**
+- READ after WRITE consisten
