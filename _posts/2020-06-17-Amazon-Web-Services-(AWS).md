@@ -1578,3 +1578,12 @@ We can also have a scenario where there are **simultaneous writes**. Meaning tha
 Basically the issue before was that even after a successful `PUT` S3 did not guaranteed that a subsequent `GET` request for this object will return the latest object that **we just wrote** because of eventual consistency and the time required to propagate changes across entire system. With the new update there is **strong read-after-write consistency** which means that after a successful `PUT` request any subsequent `GET` is guaranteed to get the data that was just written (not an older previous version).
 
 Read more from [here](https://blog.kylegalbraith.com/2021/01/12/the-s3-consistency-model-got-an-upgrade/).
+
+# AWS CLI
+
+- Developing and performing AWS tasks against AWS can be done in several ways:
+  - Using the AWS CLI on our local computer
+  - Using the AWS CLI on our EC2 machines
+  - Using the AWS SDK on our local machine
+  - Using the AWS SDK on our EC2 machines
+  - Using the AWS Instance Metadata Service for EC2
