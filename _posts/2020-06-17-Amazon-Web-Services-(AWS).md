@@ -904,7 +904,7 @@ ALB also supports SSL termination:
 - Replicas can be **promoted** to become their own separate database
 - Applications must update the connection string to leverage read replicas. In other words, we have **separate endpoints** for the read replicas and the main RDS DB instance
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/RDSReadReplicas.png)
 
 ### RDS Read Replicas Use Cases
 
@@ -914,14 +914,14 @@ ALB also supports SSL termination:
 - As such, our production application and database is completely unaffected
 - **Note:** read replicas are used for **read operations only** (so `SELECT` kind of statements **not** `INSERT, UPDATE, DELETE`)
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/RDSReadReplicas1.png)
 
 ### RDS Read Replicas
 
 - In AWS there is a network cost when data goes from one AZ to another
 - To reduce costs keep your Read Replicas in the same AZ
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/ReadReplicaInSameAZ.png)
 
 ### RDS Multi AZ (Disaster Recovery)
 
@@ -931,6 +931,8 @@ ALB also supports SSL termination:
 - In case the master DB instance fails RDS will (behind the scenes) failover to the standby instance and the DNS name will be updated to resolve to the failover -- thereby leaving the application completely **unaffected** and **without any need for developer intervention**
 - Because the standby instance is in another AZ, we increase our applications **availability** and enable **fault tolerance** in case of loss of one AZ
 - **Note:** RDS Read Replicas can be setup as Multi AZ for Disaster Recovery
+
+![](https://s3.amazonaws.com/gutucristian.com/RDSMultiAZAutomaticFailover.png)
 
 ## RDS Encryption + Security
 
@@ -976,7 +978,7 @@ ALB also supports SSL termination:
   - IAM is used to **centrally manage** users instead of DB
   - Can leverage IAM Roles and EC2 instance profiles for easy integration
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/RDSIAMAuthentication.png)
 
 ### RDS Security -- Summary
 
@@ -1014,14 +1016,14 @@ ALB also supports SSL termination:
 - Master plus up to `15` Aurora **read replicas**
 - Support for **cross region replication**
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/AuroraOverview.png)
 
 ### Aurora DB Cluster
 
 - Aurora provides a **constant** writer endpoint that always points to the master database instance -- even if the master DB instance changes (e.g., during a failover event) the **writer endpoint stays the same** requiring **no intervention**
 - We also have many **read replicas** which can be enabled to have **auto scaling**. Now, because of auto scaling, it can be really hard for applications to keep track where are the read replicas, connection url, etc.. So, Aurora introduced the **reader endpoint** concept which exposes a constant DNS endpoint (which is actually a **load balancer**) that we can use to perform all reads
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/AuroraDBCluster.png)
 
 ### Aurora Security
 
@@ -1040,7 +1042,7 @@ ALB also supports SSL termination:
 - No capacity planning needed
 - Pay per second, can be more cost-effective
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/AuroraServerless.png)
 
 ### Aurora Global
 
@@ -1054,7 +1056,7 @@ ALB also supports SSL termination:
   - Helps to decrease latency
   - Promoting another region (for DR) has a recovery time objective (RTO) of less than one minute
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/AuroraGlobal.png)
 
 ## AWS ElastiCache Overview
 
@@ -1073,7 +1075,7 @@ ALB also supports SSL termination:
 - This design helps **relieve load** in RDS
 - Cache must have an **invalidation strategy** to make sure only the most current data is kept in the cache (since we are limited in cache size)
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/ElastiCacheLazyLoading.png)
 
 ### ElastiCache Solution Architecture -- User Session Store
 
@@ -1081,7 +1083,7 @@ ALB also supports SSL termination:
 - The application writes the session data into ElastiCache
 - When the user hits another instance of our application the instance retrieves the data and user info (e.g., if user is already logge in) from ElastiCache
 
-!()[]
+![](https://s3.amazonaws.com/gutucristian.com/ElastiCacheSessionStorage.png)
 
 ### ElastiCache Common Uses
 
@@ -1126,7 +1128,7 @@ Read in more detail [here](https://docs.aws.amazon.com/AmazonElastiCache/latest/
   - **Read penalty**: cache miss results in `3` round trips -- which may be a noticeable delay for that request
   - Stale data: data could be updated in the database and outdated in the cache
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/ElastiCacheLazyLoading.png)
 
 ### Write Through Caching Pattern
 
@@ -1138,7 +1140,7 @@ Read in more detail [here](https://docs.aws.amazon.com/AmazonElastiCache/latest/
   - There may be missing data in the cache since we only actually write to the cache when we have a need to write to the database (this can be mitigated by combining write through with lazy loading strategy)
   - This design is prone to **cache churn**: the idea that we may end up writing a lot of data which might never be read
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/ElastiCacheWriteThrough.png)
 
 ### Cache Evictions and Time To Live (TTL)
 
@@ -1167,7 +1169,7 @@ Read in more detail [here](https://docs.aws.amazon.com/AmazonElastiCache/latest/
   - Routing policies: simple, failover, geolocation, latency, weighted, multi value
 - You pay $0.50 per month per hosted zone
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/Route53Overview.png)
 
 ## DNS Records TTL (Time to Live)
 
@@ -1182,7 +1184,7 @@ Read in more detail [here](https://docs.aws.amazon.com/AmazonElastiCache/latest/
   - The upside is that records are outdated for less time (in case the IP mapping for the hostname changes)
 - TTL is mandatory for each DNS record
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/Route53TTL.png)
 
 ## `CNAME` vs `Alias` Record
 
@@ -1202,7 +1204,7 @@ Read in more detail [here](https://docs.aws.amazon.com/AmazonElastiCache/latest/
 - You **cannot** attach health checks to a simple routing policy
 - If multiple values are returned (i.e., IPs), a **random** one is chosen **by the client** -- so there is **client side load balancing**
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/Route53SimpleRouting.png)
 
 ## Weighted Routing Policy
 
@@ -1211,7 +1213,7 @@ Read in more detail [here](https://docs.aws.amazon.com/AmazonElastiCache/latest/
 - Helpful to split traffic between regions
 - Can be associated with health checks
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/Route53WeightedRouting.png)
 
 ## Latency Routing Policy
 
@@ -1219,21 +1221,21 @@ Read in more detail [here](https://docs.aws.amazon.com/AmazonElastiCache/latest/
 - For example, a user in Germany could be redirected to an instance in the US if AWS Route53 decided that it would yield the lowest latency
 - Can be associated with health checks
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/Route53LatencyRoutingPolicy.png)
 
 ## Failover routing
 
 - Use when you want to configure active-passive failover
 - Failover routing lets you route traffic to a resource when the resource is healthy or to a different resource when the first resource is unhealthy. The primary and secondary records can route traffic to anything from an Amazon S3 bucket that is configured as a website to a complex tree of records
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/Route53FailoverRouting.png)
 
 ## Geo Location Routing Policy
 
 - Geolocation routing lets you choose the resources that serve your traffic based on the geographic location of your users, meaning the location that DNS queries originate from. For example, you might want all queries from Europe to be routed to an ELB load balancer in the Frankfurt region
 - We also need to create a default policy (in case there is no match)
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/Route53GeoLocationRoutingPolicy.png)
 
 ## Multi Value Routing Policy
 
@@ -1246,7 +1248,7 @@ Read in more detail [here](https://docs.aws.amazon.com/AmazonElastiCache/latest/
   - If you have eight or fewer healthy records, Route 53 responds to all DNS queries with all the healthy records
   - When all records are unhealthy, Route 53 responds to DNS queries with up to eight unhealthy records
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/Route53MultiValueRoutingPolicy.png)
 
 ## Health Checks
 
@@ -1266,7 +1268,7 @@ Read in more detail [here](https://docs.aws.amazon.com/AmazonElastiCache/latest/
 - VPC Peering, VPC Endpoints
 - Site to Site VPN & Direct Connect
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/VPCSubnet.png)
 
 ## VPC & Subnets
 
@@ -1276,7 +1278,7 @@ Read in more detail [here](https://docs.aws.amazon.com/AmazonElastiCache/latest/
 - A **private subnet** is a subnet that is **not** accessible from the internet
 - To define access to the internet and **between subnets** we use **Route Tables**
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/VPCSubnetsDiagram.png)
 
 ## Internet Gateway and NAT Gateways
 
@@ -1284,7 +1286,7 @@ Read in more detail [here](https://docs.aws.amazon.com/AmazonElastiCache/latest/
 - Public subnet has a route to the internet gateway
 - **NAT Gateways** (AWS managed) and **NAT Instances** (self managed) allow your instances in your **Private Subnets** to access the internet while remaining private
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/InternetGatewaysAndNATGateways.png)
 
 ## Network ACL and Security Groups
 
@@ -1298,11 +1300,11 @@ Read in more detail [here](https://docs.aws.amazon.com/AmazonElastiCache/latest/
   - Can have **only ALLOW** rules
   - Rules can include IP addresses as well as other security groups
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/NetworkACLAndSecurityGroups.png)
 
 ## NACL vs Security Groups
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/NACLvsSG.png)
 
 ## VPC Flow Logs
 
@@ -1321,6 +1323,8 @@ Read in more detail [here](https://docs.aws.amazon.com/AmazonElastiCache/latest/
 - The two VPCs must **not** have overlapping CIDR (IP address range)
 - VPC Peering is **not transitive**. If we have a peering connection between (VPC A and VPC B) and (VPC A and VPC C) this does not mean that VPC C can communicate with VPC B (this means there is **no transitivity**)
 
+![](https://s3.amazonaws.com/gutucristian.com/VPCPeering.png)
+
 ## VPC Endpoints
 
 - **Use when you need private access from within your VPC to an AWS services**
@@ -1329,7 +1333,7 @@ Read in more detail [here](https://docs.aws.amazon.com/AmazonElastiCache/latest/
 - Use **VPC Endpoint Gateway** for S3 and DynamoDB
 - Use **VPC Endpoint Interface** for the rest of the services
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/VPCEndpoints.png)
 
 ## Site to Site VPN & Direct Connect
 
@@ -1350,7 +1354,7 @@ Read in more detail [here](https://docs.aws.amazon.com/AmazonElastiCache/latest/
   - Private Subnet (e.g., EC2 instaces with ASG sitting behind the ELB -- they do not need to be accessible to anyone beside the ELB, so we use route tables to define network access between public ELB subnet and the EC2 private subnet)
   - Data Subnet (e.g., AWS RDS + ElastiCache also sitting in private subnet
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/ThreeTierArchitecture.png)
 
 ## VPC Cheatsheet
 
@@ -1424,7 +1428,7 @@ Read in more detail [here](https://docs.aws.amazon.com/AmazonElastiCache/latest/
 - `AES-256` encryption
 - Must set header: `"x-amx-server-side-encryption":"AES256"`
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/SSE-S3.png)
 
 ### `SSE-KMS`
 
@@ -1433,6 +1437,8 @@ Read in more detail [here](https://docs.aws.amazon.com/AmazonElastiCache/latest/
 - Object is **encrypted server side**
 - Must set header: `"x-amx-server-side-encryption":"aws:kms"`
 
+![](https://s3.amazonaws.com/gutucristian.com/SSE-KMS.png)
+
 ### `SSE-C`
 
 - `SSE-C`: **server side encryption** using data keys fully managed by the customer outside of AWS
@@ -1440,7 +1446,7 @@ Read in more detail [here](https://docs.aws.amazon.com/AmazonElastiCache/latest/
 - **`HTTPS` must be used** (because you are sending a secret over the wire to AWS)
 - Encryption key must be provided in `HTTP` headers for every `HTTP` request made
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/SSE-C.png)
 
 ### Client Side Encryption
 
@@ -1448,7 +1454,7 @@ Read in more detail [here](https://docs.aws.amazon.com/AmazonElastiCache/latest/
 - Client must decrypt the data themselves when retrieving from S3
 - Customer fully manages encryption / decryption cycle
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/CSE.png)
 
 ### Encryption in transit
 
