@@ -1582,8 +1582,39 @@ Read more from [here](https://blog.kylegalbraith.com/2021/01/12/the-s3-consisten
 # AWS CLI
 
 - Developing and performing AWS tasks against AWS can be done in several ways:
-  - Using the AWS CLI on our local computer
+  - Using the AWS CLI on our local computer (Create Access keys and use them to set up in AWS CLI `aws configure`)
   - Using the AWS CLI on our EC2 machines
   - Using the AWS SDK on our local machine
   - Using the AWS SDK on our EC2 machines
   - Using the AWS Instance Metadata Service for EC2
+
+## AWS CLI on EC2
+
+- The **BAD** way:
+  - Run `aws configure` as we do locally on the EC2 instance
+  - This is dangerous because if EC2 instance gets compromised then so will your account
+- The **RIGHT** way:
+  - Use an IAM Role and attach it to the EC2 instance (Note: an EC2 instance can only have up to one role at a time)
+  - IAM Roles can come with a policy authorizing exactly what the EC2 instance should be able to do
+  - Anytime your EC2 instance needs to perform something, never put your credentials on it, always use an IAM Role
+
+![]()
+
+## IAM Policy Simulator
+
+Among other things, can be used to test the policies with selected services, actions, and resources. For example, you can test to ensure that your policy allows an entity to perform the ListAllMyBuckets, CreateBucket, and DeleteBucket actions in the Amazon S3 service on a specific bucket.
+
+Find it [here](https://policysim.aws.amazon.com/home/index.jsp?#).
+
+## AWS CLI Dry Runs
+
+Sometimes we just want to make sure we have the permissions to run a command, but not actually run it. 
+
+For example, we want to test that we can use the AWS CLI to create an EC2 instance, but not actually create it because it may be expensive.
+
+For this some AWS CLI command have the `--dry-run` option to simulate API calls.
+
+## AWS CLI STS Decode Errors
+
+- When you run API calls and they fail you can get long error messages
+- Decodes additional information about the authorization status of a request from an encoded message returned in response to an AWS request: `aws decode-authorization-message --encoded-message <encoded-err-msg-value>`
