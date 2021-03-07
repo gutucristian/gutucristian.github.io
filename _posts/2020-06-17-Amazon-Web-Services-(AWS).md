@@ -1587,6 +1587,7 @@ Read more from [here](https://blog.kylegalbraith.com/2021/01/12/the-s3-consisten
   - Using the AWS SDK on our local machine
   - Using the AWS SDK on our EC2 machines
   - Using the AWS Instance Metadata Service for EC2
+- Note: to create additional AWS CLI profiles run `aws configure --profile <your-desired-profile-name>`
 
 ## AWS CLI on EC2
 
@@ -1618,3 +1619,96 @@ For this some AWS CLI command have the `--dry-run` option to simulate API calls.
 
 - When you run API calls and they fail you can get long error messages
 - Decodes additional information about the authorization status of a request from an encoded message returned in response to an AWS request: `aws decode-authorization-message --encoded-message <encoded-err-msg-value>`
+
+## AWS EC2 Instance Metadata
+
+- AWS EC2 Instances Metadata allows EC2 instances to learn about themselves **without using an IAM Role for that purpose**
+- The URL is http://169.254.169.254/latest/metadata
+- This IP is an internal IP to AWS (it will not work from your computer) it will only work from the EC2 instance (Note: you cannot retrieve the AIM Policy from the instance metadata URL)
+- Metadata = info about the EC2 instance
+- Userdata = launch script of the EC2 instance
+
+## MFA with CLI
+
+To use MFA with the CLI you must create a temporary session.
+
+To do so, you must run the **STS GetSessionToken** API call:
+
+`aws sts get-session-token --serial-number arn-of-the-mfa-device --token-code code-from-token --duration-seconds 3600`
+
+Which would return something like:
+
+![]()
+
+That has a new access key and id a session token (which we will need to use in all the API calls to AWS) and an expiration date time.
+
+## AWS SDK Overview
+
+- Use if you want to perform actions on AWS without directly going through AWS Console or AWS CLI
+- Good to know: if you don't specify or configure a default region, then `us-east-1` is chosen by default by the SDK
+
+## AWS Limit (Quotas)
+
+- API Rate Limits (how many times you can call an API in a row)
+  - **DescribeInstances** API for EC2 has a limit of `100` calls per second
+  - **GetObject** on S3 has a limit of `5500` GET per second per prefix
+  - For intermitent errors: implement exponential backoff strategy
+  - For consistent errors: request an API throttling limit increase
+- Service Quotas (service limits)
+  - Running on-demand standard instances: `1152` vCPU
+  - You can request a service limit increase by **opening a ticket**
+  - You can request a service quota increase by using the **Service Quotas API**
+
+### Exponential Backoff
+
+- If you get a **ThrottlingException** intermittently, use exponential backoff
+- Retry mechanism included in SDK API calls
+- Must implement yourself if using the API as is w/o SDK
+- Exponential backoff means that everytime an API call fails with double the amount of time we wait before making another request
+
+## AWS Credentials Provider & Chain
+
+**When using the CLI** it will look for credentials in this order:
+
+1. **Command line options**: `--region`, `--output`, `--profile`
+2. **Environment variables:** `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_SESSION_TOKEN`
+3. **CLI credentials file**: `~/.aws/credentials` on Mac
+4. **CLI configuration file:** `~/.aws/config` on Mac
+5. **Container credentials:** for ECS tasks
+6. **Instance profile credentials:** for EC2 Instance Profiles
+
+**When using an SDK** (e.g., the Java SDK) it will look for credentials in this order:
+
+1. **Environment variables:** `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_SESSION_TOKEN`
+2. **Java system properties:** `aws.accessKeyId` and `aws.secretKey`
+3. **The default credential profiles file:** `~/.aws/credentials`
+4. **Amazon ECS container credentials** for ECS containers
+5. **Instance profile credentials** for EC2 instances
+
+## AWS Credentials Scenario
+
+Assume we have a scenario where an application deployed to an EC2 instance has Access Key and Id credentials from an IAM user set in the environment variables which are being used to make API calls to S3. Furthermore, assume that the IAM user has `S3FullAccess` permissions.
+
+As a developer, you realize this is against best practices and decide to:
+
+1. Create a separate IAM Role and EC2 Instance Profile for the EC2 instance, and
+2. Assign the role (which has minimum read only permissions to the specific bucket that it needs) to the EC2 instance
+
+Out expectation is that now the EC2 instance will use the instance profile (which defines *who am I*) to assume the role it was assigned and because of that will noe only have access read only permissions to the specific S3 bucket that we defined.
+
+However, you notice that despite this the EC2 instance **still** has access to all S3 buckets. Why?
+
+**Answer:** the credentials chain is still giving priority to the environment variables. So, to get the behaviour we desire, we would have to delete the environment variables from the EC2 instance and, after that, step `5` in the chain will become most relevant and credentials will be retrieved from the **instance profile**.
+
+Read [here](The difference between an AWS role and an instance profile) on more about AWS Role vs instance profile.
+
+## AWS Credentials Best Practices
+
+- **Never ever** store AWS credentials in your code
+- Best practice is for your credentials to be inherited from the credentials chain
+- So, **if working within AWS, use IAM Roles**:
+  - EC2 Instance Roles + EC2 Instance Profile for EC2 instances
+  - ECS Roles for ECS tasks
+  - Lambda Roles for Lambda functions
+  - Ultimatelly, the idea is that we assign a role to each service and the service assumes the role with temporary credentials and is able to perform API calls depending on what the role defines (read more [here](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html)
+- If working **outside of AWS** use environmental variables / named profiles
