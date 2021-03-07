@@ -1742,4 +1742,105 @@ Query String Option (e.g., S3 pre-signed URLs)
 - MFA (multi factor authentication) forces user to generate a code on a device (usually mobile) before doing **important** operations on S3
 - To use MFA Delete versioning must be enabled on the S3 bucket
 - You will need MFA to:
-  - P
+  - Permanently delete an object version
+  - Suspernd versioning on the bucket
+- You won't need MFA for:
+  - Enabling versions
+  - Listing deleted versions, etc..
+- Only the bucket owner (root account) can enable/disable MFA Delete
+- MFA Delete currently can only be enabled using the CLI
+
+## S3 Access Logs
+
+- For audit purposes we may want to log all access to S3 buckets
+- We can enable so that any request made to some S3 bucket(s), from any account, authorized or denied, will be logged into another S3 bucket so we can analyze it later (using AWS Athena for example)
+- **Note:** never set the logging bucket to be the bucket that you are monitoring -- if you do this, then it will create a logging loop and your bucket will grow infinetly
+
+## S3 Replication -- Cross Region Replication (CRR) and Same Region Replication (SRR)
+
+- In order for CRR or SRR to work you **must enable versioning in source and destination buckets**
+- Buckets can be in different accounts
+- Copying is asynchronous
+- Must give proper IAM permissions to S3 (so that first bucket has permissions to copy to second bucket)
+- CRR use cases: compliance, lower latency access across regions, replication across accounts
+- SRR use cases: log aggregation, live replication between production and test accounts
+
+### S3 Replication -- Notes
+
+- **After activating only new objects are replicated** (so its not retroactive)
+- `DELETE` operations are not replicated
+- There is no "chaining" of replication:
+  - If bucket `1` has replication into bucket `2` and bucket `2` has replication into bucket `3`, when we write to bucket `1` it does not replicate into bucket `3` (so not transitive)
+
+## S3 Pre-Signed URLs
+
+- Can generate pre-signed URLs using SDK or CLI
+  - For uploads (easy, can use CLI)
+  - For downloads (harder, must use the SDK)
+- Valid for a default of `3600` seconds -- can change timeour with `--expires-in <time-by-seconds>` argument
+- Users given a pre-signed URL inherit the permissions of the person who generated the URL for `GET` / `PUT`
+- Example use cases:
+  - Allow only logged-in users to download a premium video on your S3 bucket
+  - Allow an ever changing list of users to download files by generating URLs dynamically
+  - Allow a user to upload a file to a precise location temporarily (e.g., a profile picture)
+
+ ## S3 Storage Classes
+ 
+ - Standard -- General Purpose
+ - Standard-Infrequent Access (IA)
+ - One Zone-Infrequent Access
+ - Intelligent Tiering
+ - Glacier
+ - Glacier Deep Archive
+
+### Standard -- General Purpose
+
+- High durability of objects across multiple AZs
+- Can sustain `2` concurrent facility failures
+- Use cases: mobile & gaming applications, big data analytics, content distribution
+
+### Standard-Infrequent Access (IA)
+
+- High durability of objects across multiple AZs
+- Suitable for data that is less frequently accessed (but required rapid access when needed)
+- Slightly lower cost than S3 Standard tier
+- Can sustain `2` concurrent facility failures
+- Use cases: data store for disaster recovery, backups, etc..
+
+ ### One Zone-Infrequent Access
+ 
+ - Same as IA tier but data is stored in a **single AZ** -- so decreased availability (will be lost if AZ is destroyed)
+ - Cost is 20% lower than IA tier
+ - Use cases: storing secondary backups copies of on-premise data or data that we can re-create
+
+### Intelligent Tiering
+
+- High durability of objects across multiple AZs
+- Same low latency and high throughput performance of S3 standard
+- Small monthly monitoring and auto-tiering fee
+- Automatically moves objects between two access tiers based on changing access patterns
+
+### Glacier
+
+- Low cost object storage meant for archiving / backup
+- Data is retained long term (`10`s of years)
+- Alternative to on-premise magnetic tape storage
+- High durability
+- Storage cost per month is $0.004 / GB + retrieval cost
+- Each item in Glacier is not called an object, but, instead, an **archive** and can be up to `40` TB
+
+### Glacier & Glacier Deep Archive
+
+- Amazon Glacier - `3` retrieval options:
+  - Expedited (`1` to `5` minutes)
+  - Standard (`3` to `5` hours)
+  - Bulk (`5` to `12` hours)
+  - Minimum storage duration of `90` days
+- Amazon Glacier Deep Archive -- for long term storage (cheaper):
+  - Standard (`12` hours)
+  - Bulk (`48` hours)
+  - Minimum storage duration of `180` days
+
+### S3 Storage Tiers Summary
+
+![]()
