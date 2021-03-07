@@ -1735,5 +1735,11 @@ Query String Option (e.g., S3 pre-signed URLs)
 
 ![]()
 
+# Advanced S3 & Athena
 
+## S3 MFA Delete
 
+- MFA (multi factor authentication) forces user to generate a code on a device (usually mobile) before doing **important** operations on S3
+- To use MFA Delete versioning must be enabled on the S3 bucket
+- You will need MFA to:
+  - P
