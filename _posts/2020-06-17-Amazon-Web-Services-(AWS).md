@@ -1627,6 +1627,9 @@ For this some AWS CLI command have the `--dry-run` option to simulate API calls.
 - This IP is an internal IP to AWS (it will not work from your computer) it will only work from the EC2 instance (Note: you cannot retrieve the AIM Policy from the instance metadata URL)
 - Metadata = info about the EC2 instance
 - Userdata = launch script of the EC2 instance
+- Good to know:
+  - You can retrieve the role name attached to your EC2 instance using the metadata service but not the policy itself
+  - You can also retrieve the temporary security credentials that the EC2 instance is using to make API calls based on its attached IAM Role through the instance metadata endpoint
 
 ## MFA with CLI
 
@@ -1712,3 +1715,25 @@ Read [here](The difference between an AWS role and an instance profile) on more 
   - Lambda Roles for Lambda functions
   - Ultimatelly, the idea is that we assign a role to each service and the service assumes the role with temporary credentials and is able to perform API calls depending on what the role defines (read more [here](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html)
 - If working **outside of AWS** use environmental variables / named profiles
+
+## Signing AWS API requests
+
+- When you call the AWS HTTPS API you sign the request (so that AWS can identify you) using your AWS credentials (access key & secret key)
+- **Note:** some requests to Amazon S3 don't need to be signed
+- If you use the SDK or CLI, the HTTP requests are already signed **for you**
+- As an AWS Certified Developer you only need to know at a *high level* how AWS HTTP requests are signed using Signature v4 (SigV4) -- an AWS protocol
+
+![]()
+
+### SigV4 Requests Examples
+
+HTTP Header Option:
+
+![]()
+
+Query String Option (e.g., S3 pre-signed URLs)
+
+![]()
+
+
+
