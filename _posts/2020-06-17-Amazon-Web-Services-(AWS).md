@@ -1844,3 +1844,23 @@ Query String Option (e.g., S3 pre-signed URLs)
 ### S3 Storage Tiers Summary
 
 ![]()
+
+## S3 Lifecycle Rules
+
+- You can transition objects between storage classes
+- For infrequent accessed objects, move them to `STANDARD_IA`
+- For archived objects that we don't need in real time move to `GLACIER` or `DEEP_ARCHIVE`
+- Moving objects can be **automated** using a **lifecycle configuration**
+
+![]()
+
+- **Transition actions:** it defines when objects are transitioned to another storage. For example:
+  - Move objects to Standard IA class `60` days after creation
+  - Move to Glacier class `6` months after that
+- **Expiration actions:** configure objects to expire (delete) after some time. For example:
+  - Access log files can be set to be deleted after `N` days
+  - **Can be used to delete old versions of files (if versioning is enabled)** -- for example, delete old versions of files after `60` days
+  - Can be used to delete incomplete multi-part uploads
+- Rules can be created for a certain prefix (e.g., prefix of `s3://mybucket/mp3/*`)
+- Rules can be created for certain object tags (e.g., `Department: Finance`)
+
