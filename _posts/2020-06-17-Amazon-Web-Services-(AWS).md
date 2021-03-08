@@ -1864,3 +1864,74 @@ Query String Option (e.g., S3 pre-signed URLs)
 - Rules can be created for a certain prefix (e.g., prefix of `s3://mybucket/mp3/*`)
 - Rules can be created for certain object tags (e.g., `Department: Finance`)
 
+## S3 Baseline Performance
+
+- S3 automatically scales to high request rates (latency `100` - `200` ms)
+- Your application can achieve at least `3500 PUT/COPY/POST/DELETE` and `5500 GET/HEAD` requests per second per prefix in a bucket
+
+### S3 KMS Limitation
+
+- If you use `SSE-KMS` you may be impacted by the KMS limits
+- When you **upload** it calls the `GenerateDataKey` KMS API and when you **download** it calls the `Decrypt` KMS API
+- The KMS quota for requests per second for these operations is either `5500`, `10000`, or `30000` depending on the region
+- As of today you cannot request a quota increase for KMS
+
+### S3 Increasing Upload Performance
+
+- **Multi-Part upload:**
+  - Recommended for files greater than `100` MB and must use for files greater than `5` GB
+  - The idea of multi-part upload is that we split file into smaller pieces which allows us to upload in parallel -- this speeds up transfers
+
+![]()
+
+- **S3 Transfer Acceleration (upload only):**
+  - Increase transfer speed by transferring file to an AWS edge location (via public internet) which will forward the data to the S3 bucket in the target region (via private AWS network -- which is faster)
+  - Compatible with multi-part upload
+  - The idea is that we minimize the amt. of public internet which we go through (which is slower) and maximize the amt. of private AWS internet that we go through (which is faster)
+
+![]()
+
+### S3 Increasing Download Performance
+
+Use S3 **Byte-Range Fetches** to parallelize `GET`s by requesting specific range of bytes in our file -- we can pick and choose what sections we are downloading.
+
+![]()
+
+## S3 Select & Glacier Select
+
+- Retrieve less data using SQL by performing **server side filtering**
+- Can filter S3 data by rows and columns (simple SQL statements only -- no aggregations, etc..)
+- Less network transfer, less CPU cost client-side
+- For more complex querying we can use AWS Athena
+
+![]()
+
+## S3 Event Notifications
+
+- Trigger certain actions (to three possible targets: SNS, SQS, or Lambda) when there is a state change on some S3 bucket (e.g., `S3:ObjectCreated`, `S3:ObjectRemoved`, `S3:Replication`, etc..)
+- Object name filtering possible (e.g., `\*.jpg`)
+- Classic use case: generate thumbnails of images uploaded to S3
+- S3 event notifications typically take a few seconds to be delivered but can sometimes take a minute or longer
+- If two writes are made to a single non-versioned bucket at the same time, it is possible that only a single event notification will be sent
+- If you want to ensure that an event notification is sent for every successful write, you must enable versioning on your bucket
+
+![]()
+
+## AWS Athena
+
+- **Serverless** service to perform analytics **directly against S3 files**
+- Uses SQL to query the files
+- Has a JDBC / ODBC driver
+- Charged per query and amount of data scanned
+- Supports CSV, JSON, ORC, Avro, and Parquet (built on Presto)
+- Can be used to query VPC Flow Logs, ELB Logs, CloudTrail trails, build BI / analytics / reporting tools, etc..
+
+## S3 Object Lock & Glacier Vault Lock
+
+- **S3 Object Lock**
+  - Adopt a WORM (Write Once Read Many) model
+  - Block an object version for a specified amount of time
+- **Glacier Vault Lock**
+  - Adopt a WORM (Write Once Read Many) model
+  - Lock the policy for future edits (can no longer be changed)
+  - Helpful for compliance and data retention
