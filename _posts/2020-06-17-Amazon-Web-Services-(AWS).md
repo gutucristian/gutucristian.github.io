@@ -1935,3 +1935,65 @@ Use S3 **Byte-Range Fetches** to parallelize `GET`s by requesting specific range
   - Adopt a WORM (Write Once Read Many) model
   - Lock the policy for future edits (can no longer be changed)
   - Helpful for compliance and data retention
+
+# AWS CloudFront
+
+## CloudFront Overview
+
+- Content Delivery Network (CDN)
+- Improves read performance by caching content at **Edge Locations** (`216` globally)
+- Provides DDoS protection, integration with Shield, AWS Web Application Firewall (WAF)
+- Can expose external HTTPS and can talk with internal HTTPS backend
+
+### CloudFront Origins
+
+- **S3 bucket**
+  - For distributing files and caching them at the edge
+  - Enhanced security with CloudFront Origin Access Identity (OAI)
+  - CloudFront can be used as an ingress (to upload files to S3)
+- **Custom Origin (HTTP)**
+  - Application Load Balancer
+  - EC2 Instance
+  - S3 Website (must first enable the bucket as a static website)
+  - Any HTTP backend you want
+
+![]()
+
+### CloudFront S3 as an Origin
+
+![]()
+
+### ALB or EC2 as an Origin
+
+![]()
+
+### Geo Restriction
+
+- We can **whitelist** and **blacklist** certain countries in CloudFront based on business requirements
+- Country is determined by a `3rd` party Geo-IP database
+
+### CloudFront vs S3 Cross Region Replication
+
+- CloudFront:
+  - **Global Edge Network**
+  - Files are **cached** for some predefined TTL
+  - Good for **static content** that must be **available everywhere**
+- S3 Cross Region Replication:
+  - Must be setup for **each region** you want replication to happen in (i.e., not global)
+  - Files are updated in **near real time**
+  - Read only
+
+## CloudFront Caching
+
+- Cache cann be based on:
+  - Headers
+  - Session Cookies
+  - Query String Parameters
+- The cache lives at each CloudFront **Edge Location**
+- Our goal is to maximize the amount of cache hits and minimize requests to origin
+- We can control the cache TTL (`0` seconds to `1` year) -- which can be set by the origin using `Cache-Control` header, `Expires` header...
+- We can also invalidate part of the cache using the `CreateInvalidation` API
+
+### Maximize cache hits by separating **static** and **dynamic** distributions
+
+![]()
