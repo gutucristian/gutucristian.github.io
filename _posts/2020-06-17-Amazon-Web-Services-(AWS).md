@@ -2028,3 +2028,47 @@ Use S3 **Byte-Range Fetches** to parallelize `GET`s by requesting specific range
 At a high level, use S3 Pre-Signed URL if you want to distribute file securely to user w/o having CloudFront layer (so going to S3 directly), else use CloudFront Signed URL.
 
 ![]()
+
+# CloudFront
+
+## Docker
+
+- Apps are packaged into **containers** that can be run ony OS
+- Apps run the same regardless of where they run
+- In Docker, resources are shared with the host and we can have many containers on one server
+
+![]()
+
+### Docker Image
+
+- A docker image is a set of **layers** that describe a container
+- **A running instance of an image is a container**
+- Docker images are stored in Docker repositories (e.g., DockerHub, AWS Elastic Container Registry)
+
+### Docker Container Management
+
+- To manage containers we need a container management platform
+- In AWS we have three choices:
+  - AWS Elastic Container Service (ECS)
+  - Fargate (Amazon's own serverless container management platform)
+  - EKS (Amazon's managed Kubernetes)
+
+## ECS Clusters
+
+- ECS Clusters are a logical grouping of EC2 instances
+- ECS instances run the ECS agent (Docker containers)
+- An instance of the ECS agents runs on each EC2 instance in the ECS cluster and (among other things) is responsible for registering the container instances to the ECS cluster (read more [here](https://www.allthingsdistributed.com/2015/07/under-the-hood-of-the-amazon-ec2-container-service.html))
+- The EC2 instances run a special AMI made specifically for ECS
+
+### Bootstrapping Container Instances with Amazon EC2 User Data
+
+When you launch an Amazon ECS container instance, you have the option of passing user data to the instance. The data can be used to perform common automated configuration tasks and even run scripts when the instance boots. For Amazon ECS, the most common use cases for user data are to pass configuration information to the Docker daemon and the Amazon ECS container agent.
+
+The Linux variants of the Amazon ECS-optimized AMI look for agent configuration data in the /etc/ecs/ecs.config file when the container agent starts. You can specify this configuration data at launch with Amazon EC2 user data.
+
+To set only a single agent configuration variable, such as the cluster name, use echo to copy the variable to the configuration file:
+
+{% highlight bash linenos %}
+  #!/bin/bash
+  echo "ECS_CLUSTER=MyCluster" >> /etc/ecs/ecs.config
+{% endhighlight %}
