@@ -1997,3 +1997,34 @@ Use S3 **Byte-Range Fetches** to parallelize `GET`s by requesting specific range
 ### Maximize cache hits by separating **static** and **dynamic** distributions
 
 ![]()
+
+## Cloud Front Security
+
+- As mentioned in Geo Restriction, we can **whitelist** and **blacklist** certain countries in CloudFront based on business requirements
+- **Viewer Protocol Policy:**
+  - Redirect HTTP to HTTPS
+  - Or use HTTPS only
+- **Origin Protocol Policy (HTTP or S3):**
+  - You can set it to be HTTPS, or
+  - You can set it to Match Viewer policy which means that if request came in as HTTP (or HTTPS) it will go to origin also as HTTP (or HTTPS)
+- **Note:** S3 bucket websites do not support HTTPS
+
+## CloudFront Signed URL / Signed Cookie
+
+- Say you want to distribute paid shared content to premium users over the world
+- We can use CloudFront Signed URL / Cookie and need to attach a policy that defines:
+  - URL expiration
+  - Allowed IP ranges to access the data from
+  - Trusted signers (which AWS accounts can create signed URLs)
+- Signed URL = access to individual files (one signed URL per file)
+- Signed Cookies = access to multiple files (one signed cookie for many files)
+
+### CloudFront Signed URL Diagram
+
+![]()
+
+### CloudFront Signed URL vs S3 Pre-Signed URL
+
+At a high level, use S3 Pre-Signed URL if you want to distribute file securely to user w/o having CloudFront layer (so going to S3 directly), else use CloudFront Signed URL.
+
+![]()
