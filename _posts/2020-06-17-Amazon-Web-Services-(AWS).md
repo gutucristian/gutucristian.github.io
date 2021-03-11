@@ -2118,3 +2118,81 @@ A Service is used to guarantee that you always have some number of Tasks running
 - We don't have to provision EC2 instances
 - We just create task definitions and AWS will run the containers for us
 - To scale we just increase the task number -- we no longer have to worry about the underlying infrastructure as we did with EC2
+
+## ECS IAM Roles
+
+- **EC2 Instance Profile:**
+ - An instance profile defines “who am I?” Just like an IAM user represents a person, an instance profile represents EC2 instances. The only permissions an EC2 instance profile has is the power to **assume a role** (read more [here](https://medium.com/devops-dudes/the-difference-between-an-aws-role-and-an-instance-profile-ae81abd700d))
+  - Used by the ECS Agent to make API calls to ECS service, send container logs to CloudWatch, to pull Docker images from ECR, etc..
+- **ECS Task Role:**
+  - Allow each task to have a specific role
+  - Use different task roles for different ECS service you run
+  - Task roles are defined in the **task definition**
+- Important parts here:
+  - We want to have an IAM role at the EC2 instance level to help the ECS Agent
+  - We want task roles at the task level, so that each task has just enough permissions but not more than it needs
+
+![]()
+
+For the exam you need to remember:
+
+1. Your ECS instance role that gets attached to your EC2 instance allows your ECS agent to function correctly
+2. For each task that we create we should create a separate IAM Task Role
+
+## Task 
+
+- When a task of type EC2 is launched, ECS must determine where to place it with the constraints of **CPU, memory,** and **available port**
+- Similarly, when a service scales in, ECS needs to determine which tasks to terminate
+- To assist with this, you can define a **task placement strategy** and **task placement constraints**
+- Note this only applies to ECS with ECS not for Fargate -- Fargate does all of this for us since its serverless and we don't manage any infrastructure
+
+![]()
+
+## ECS Task Placement Process
+
+Task placement strategies are a best effort.
+
+When AWS ECS places tasks it uses the following process to select container instances:
+
+1. Identify the instance that satisfy the CPU, memory, and port requirement in the task definition (so basically which instances can we even place the task on in the first place)
+2. Identify the instances that satisfy the task placement **constraints**
+3. Identify the instances that satisfy the task placement **strategy**
+4. Select the instance for task placement
+
+## ECS Task Placement Strategies
+
+- **Binpack:**
+  - Place tasks such that we use the amount of resource (i.e., tries to pack all Tasks in an existing instance to fill it up before putting in a new one)
+  - This minimizes number of instance and, thus, cost
+- **Random:**
+  - Places the tasks randomly
+- **Spread:**
+  - Spreads the tasks evenly based on the specified **value**
+  - This value can be an ECS Availability Zone, instance id, etc..
+
+Note that we can mix task placement strategies.
+
+## ECS Task Placement Constraints
+
+- **distinctInstance:** place each task on a different container instance
+- **memberOf:** places task on instances that satisfy the expression (e.g., place task only on instances that are of type `t2.*`)
+  - Uses the **Cluster Query Language**
+
+## ECS -- Service Auto Scaling
+
+- CPU and RAM are tracked in CloudWatch at the ECS service level
+- **Target Tracking:** target a specific average CloudWatch metric
+- **Step Scaling:** scale based on CloudWatch alarms
+- **Scheduled Scaling:** scale based on a schedule b/c of predictable changes
+- Note: ECS Service Scaling (task level) is not the same as EC2 Auto Scaling (instance level). In other words, if the serice scaling sees that it needs to scale the task count up (to meet some new demand) but we don't have enough underlying EC2 resources in our cluster to handle this, then we won't be able to increase the task count. This is because the the number of EC2 instances **will not**, by default, scale up
+- With Fargate Auto Scaling, the issue of underlying hardware not being able to support scaling no longer is a problem because Fargate is serverless and it manages all the infrastructure for us
+
+## ECS -- Cluster Capacity Provider
+
+- A Capacity Provider is used in association with a cluster to determine the infrastructure that a task runs on
+  - For ECS with Fargate, the FARGATE and FARGATE_SPOT capacity providers are added automatically
+  - For ECS on EC2, you need to associate the capacity provider with an auto scaling group (this will allow your auto scaling group to automatically add EC2 instances when needed)
+- When you run a task or service you define a capacity provider strategy to prioritize in which provider to run
+- This allows the capacity provider to automatically provision infrastructure for you
+
+![]()
