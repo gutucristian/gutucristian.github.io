@@ -2072,3 +2072,49 @@ To set only a single agent configuration variable, such as the cluster name, use
   #!/bin/bash
   echo "ECS_CLUSTER=MyCluster" >> /etc/ecs/ecs.config
 {% endhighlight %}
+
+## ECS Task Definition
+
+A task definition is metadata in JSON form that tells ECS how to run a Docker container in our cluster.
+
+It contains important information like:
+ - Image Name
+ - Port Binding for Container and Host
+ - Memory and CPU required
+ - Environment variables
+ - Networking information
+
+## ECS Task
+
+A Task is created when you run a Task directly, which launches container(s) (defined in the task definition) until they are stopped or exit on their own, at which point they are not replaced automatically. Running Tasks directly is ideal for short running jobs, perhaps as an example things that were accomplished via CRON.
+
+## ECS Service
+
+A Service is used to guarantee that you always have some number of Tasks running at all times. If a Task's container exits due to error, or the underlying EC2 instance fails and is replaced, the ECS Service will replace the failed Task. This is why we create Clusters so that the Service has plenty of resources in terms of CPU, Memory and Network ports to use. To us it doesn't really matter which instance Tasks run on so long as they run. A Service configuration references a Task definition. A Service is responsible for creating Tasks.
+
+## ECS Service with Load Balancer
+
+- This time we don't specify a host port. Instead, we just specify a container port and the host port will be random
+- The load balancer (only works with ALB and NLB not CLB) uses **dynamic port forwarding** to spread the load dynamically across the containers
+
+![]()
+
+## ECR
+
+- ECR is a private Docker image repository
+- Access is controlled through IAM (if we have permissions error, then it is an IAM policy issue)
+- Docker Push & Pull from ECR:
+  - `docker push <full-ecr-image-url>`
+  - `docker pull <full-ecr-image-url>`
+- AWS CLI ECR login commands:
+
+![]()
+
+## Fargate
+
+- Before, when we launched an ECS Cluster we had to create our EC2 instances and if we needed to scale we had to add more EC2 instances
+- So we managed the infrastructure..
+- With Fargate, it's all **serverless**
+- We don't have to provision EC2 instances
+- We just create task definitions and AWS will run the containers for us
+- To scale we just increase the task number -- we no longer have to worry about the underlying infrastructure as we did with EC2
