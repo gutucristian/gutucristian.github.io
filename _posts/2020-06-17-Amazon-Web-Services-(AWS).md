@@ -2064,7 +2064,7 @@ At a high level, use S3 Pre-Signed URL if you want to distribute file securely t
 
 When you launch an Amazon ECS container instance, you have the option of passing user data to the instance. The data can be used to perform common automated configuration tasks and even run scripts when the instance boots. For Amazon ECS, the most common use cases for user data are to pass configuration information to the Docker daemon and the Amazon ECS container agent.
 
-The Linux variants of the Amazon ECS-optimized AMI look for agent configuration data in the /etc/ecs/ecs.config file when the container agent starts. You can specify this configuration data at launch with Amazon EC2 user data.
+The Linux variants of the Amazon ECS-optimized AMI look for agent configuration data in the `/etc/ecs/ecs.config` file when the container agent starts. You can specify this configuration data at launch with Amazon EC2 user data.
 
 To set only a single agent configuration variable, such as the cluster name, use echo to copy the variable to the configuration file:
 
@@ -2196,3 +2196,50 @@ Note that we can mix task placement strategies.
 - This allows the capacity provider to automatically provision infrastructure for you
 
 ![]()
+
+## ECS Summary and Exam Tips
+
+- ECS is used to run Docker containers and has three flavors
+- ECS "Classic": provision EC2 instances to run containers onto
+- Fargate: ECS Serverless (removes need to provision and manage EC2 infrastructure)
+- EKS: Managed Kubernetes by AWS
+
+### ECS Classic
+
+- EC2 instances must be created
+- We must configure the file `/etc/ecs/ecs.config` with the cluster name so that ECS agent knows what cluster instance is part of
+- The EC2 must run an ECS agent (which allows us to register an EC2 instance with the cluster)
+- The EC2 instance can run multiple containers of the same type:
+  - You must **not** specify a *host port* (only *container port*)
+  - You should use an **Application Load Balancer** with the **dynamic port mapping**
+  - The EC2 instance security group must allow traffic from the ALB on all ports for dynamic port forwarding to work
+- ECS tasks must have IAM Roles to execute actions against AWS
+- Security groups operate at the **instance level** not the task level
+
+### ECR is used to store Docker Images
+
+- ECR is tightly integrated with IAM
+- AWS CLI v1 login command: `$(aws ecr get-login --no-include-email --region us-east-1)`
+- AWS CLI v2 login command: `aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin MY-REGISTRY-URL`
+- Docker `push` and `pull`:
+  - `docker push MY-REGISTRY-URL`
+  - `docker pull MY-REGISTRY-URL`
+- In case an EC2 instance (or you) cannot pull a Docker image check IAM
+
+### Fargate
+
+- Fargate is serverless (no EC2 to manage)
+- AWS provisions containers for us and assigns ENI
+- Fargate containers are provisioned based on the container spec (task definition)
+- Fargate tasks must have corresponding IAM Roles in order to execute actions against AWS
+
+### ECS Other
+
+- ECS does integrate with CloudWatch Logs:
+  - You need to setup logging at the task definition level
+  - Each container will have a different log stream
+  - The EC2 Instance Profile needs to have the correct IAM permissions
+- Use IAM Task Roles for your tasks
+- Task Placement Strategies: binpack, random, spread
+- **Service Auto Scaling** with target tracking, step scaling, or scheduled
+- **Cluster Auto Scaling** can be achieved through Capacity Provider by associating it with an Auto Scaling Group
