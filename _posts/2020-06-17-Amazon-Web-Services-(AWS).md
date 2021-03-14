@@ -2243,3 +2243,107 @@ Note that we can mix task placement strategies.
 - Task Placement Strategies: binpack, random, spread
 - **Service Auto Scaling** with target tracking, step scaling, or scheduled
 - **Cluster Auto Scaling** can be achieved through Capacity Provider by associating it with an Auto Scaling Group
+
+# Elastic Bean Stalk
+
+- AWS Elastic Beanstalk is an easy-to-use **service for deploying and scaling web applications and services**
+- There is no additional charge for Elastic Beanstalk - you pay only for the AWS resources needed to store and run your applications
+- Three popular architecture models used with Elastic Beanstalk:
+  - Single instance deployment (good for development environments)
+  - Load Balancer + Auto Scaling Group (good for production or pre-production web applications)
+  - ASG only (great for non-web apps in production -- e.g., workers, etc..)
+- Elastic Beanstalk has three components:
+  - Application
+  - Application version (each deployment gets assigned a version)
+  - Environment name (can be whatever you want -- e.g., dev, test, prod)
+- You deploy application versions to environments and can **promote** them to the next environment
+- Has feature to rollback to previous application version
+
+![]()
+
+- If you create an RDS instance with Beanstalk, then if you delete your RDS environment your RDS instance will also be deleted (if you want RDS to be decoupled from EB, then create a separate RDS instance outside of Beanstalk and point to it instead)
+- You cannot change load balancer type after creating an EB environment -- if you want to change it you will have to create another environment
+- With EB we can configure instances to log to S3, CloudWatch
+- We can also configure X-Ray to trace all infrastructure communications
+- We can pass environment variables to instances
+- Regarding instances, we can specify root volume type, security groups
+- In terms of capacity, we can define an ASG for out instances, EC2 fleet composition (e.g., on demand, spot instances, etc..), AMI ID, instance type, number of AZs to launch in, AZ placement, scaling policies / triggers
+- We can define which load balancer we would like to use (e.g., ALB, CLB, NLB) as well as security groups for load balancers
+- For the load balancers we can configure settings so that it's logs go into a dedicated S3 bucket
+- We also need to define how Elastic Beanstalk should deploy our infrastructure (there are various deployment modes)
+- We can define databases EB should launch for us
+
+## Elastic Beanstalk Deployment Modes
+
+![]
+
+1. **All at once (deploy all in one go):** fastest, but instances aren't available to serve traffic for a bit (downtime)
+2. **Rolling:** update a few instances at a time (bucket) and then move onto the next bucket once the first bucket is healty (for a short period of time, the application will be operating below full capacity)
+3. **Rolling with additional batches:** like rolling, but spins up new instances to move the batch (so that old application is still available and operating at full capacity)
+4. **Immutable:** spins up new instances in a completely new ASG, deploys version to these instances, and then swaps all the instances when everything is healthy
+
+### All at Once Deployment
+
+- Fastest deployment type
+- Application has downtime
+- Good for development environments
+- No additional cost
+
+![]()
+
+### Rolling Deployment
+
+- Application is running below capacity for some time
+- Can set the bucket size
+- Application is running both versions simultaneously
+- If you set a small bucket size, it will be a very long deployment
+
+![]()
+
+### Rolling Deployment With Additional Batches
+
+- Application is always running at capacity (sometimes above capacity)
+- Can set the bucket size
+- Application is running both versions simultaneously
+- Small additional cost
+- Additional batch is removed at end of the deployment
+- Longer deployment
+- Good for production environment
+
+![]()
+
+### Immutable Deployment
+
+- Zero downtime
+- High cost, double capacity
+- New code is deployed to new intances on a temporary ASG
+- Quick rollback in case of failures (just terminate the new ASG)
+- Great for production environment
+
+![]()
+
+### Blue Green Deployment
+
+- Not a direct feature of EB
+- Zero downtime and release facility
+- Create a new stage environment and deploy v2 there
+- The new environment (green) can be validated independently and roll back if issues arise
+- Route 53 can be setup with weighted policies to redirect a little bit of traffic to the stage environment (green) to test
+- Using EB we can swap URLs when done with the environment testing so that new environment gets URL of old one -- thereby leaving users unaffected (Note: "swap" here refers to a `CNAME` swap)
+
+![]()
+
+## Elastic Beanstalk CLI
+
+- We can install an additional CLI called "EB ClI" which makes working with Beanstalk from the CLI easier
+- It is helpful for your automated deployment pipelines
+
+## Elastic Beanstalk Deployment Process
+
+- Describe dependencies
+- Package code as zip
+- Via console: you can upload zip file (creates a new app version) and then deploy
+- CLI: create a new app version using CLI (uploads zip) and then deploy
+- Note when app artifact is uploaded as zip, it actually goes to S3 and EB picks it up from there
+- EB will deploy the zip on each EC2 instance, resolve dependencies, and start the application
+- Note: this process can also be automated with CodePipeline and CodeBuild such that CodePipeline detects when there was a change to our source code (either on CodeCommit, GitHub, BitBucket) and packages the code & uploads the artifact to S3. From S3, CodeBuild can pick it up and run some predefined script to test / build our project and upload the new artifact again to S3. From there, CodePipeline can be configured so that Elastic Beanstalk picks up the artifact from S3 and then deploys it to our desired infrastructure as describe by our `.config` files in the `ebextensions` directory in our artifact
