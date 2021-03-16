@@ -2347,3 +2347,121 @@ Note that we can mix task placement strategies.
 - Note when app artifact is uploaded as zip, it actually goes to S3 and EB picks it up from there
 - EB will deploy the zip on each EC2 instance, resolve dependencies, and start the application
 - Note: this process can also be automated with CodePipeline and CodeBuild such that CodePipeline detects when there was a change to our source code (either on CodeCommit, GitHub, BitBucket) and packages the code & uploads the artifact to S3. From S3, CodeBuild can pick it up and run some predefined script to test / build our project and upload the new artifact again to S3. From there, CodePipeline can be configured so that Elastic Beanstalk picks up the artifact from S3 and then deploys it to our desired infrastructure as describe by our `.config` files in the `ebextensions` directory in our artifact
+
+## Elastic Beanstalk Lifecycle Policy
+
+- Elastic Beanstalk can store at most `1000` application versions
+- If you don't remove old versions you won't be able to deploy anymore
+- To phase out old application versions use a **lifecycle policy**
+  - Based on time (old versions are removed)
+  - Based on space (when you have too many versions)
+- Versions that are currently used won't be deleted
+- There is an option not to delete the source bundle in S3 to prevent data loss
+
+## Elastic Beanstalk extensions
+
+- All the parameters set in the UI can be configured with code using files
+- Requirements:
+  - Configuration files must all end with `.config` and they must all be in the `.ebextensions/` directory in the root of your source code
+  - Able to modify some default settings using the `option_settings`
+  - Ability to add any resource (e.g., RDS, ElastiCache, DynamoDB, etc..)
+- **Note:** resources managed by `.ebextensions/` get deleted if the environment goes away
+
+## Elastic Beanstalk Under the Hood
+
+- Under the hood Elastic Beanstalk relies on CloudFormation
+- CloudFormation is used to provision other AWS services (infrastrucure as code)
+- Use case: you can define CloudFormation resources in your `.ebextensions/` to provision any AWS resource
+
+## Elastic Beanstalk Cloning
+
+- You can clone an environment with the same exact configuration
+- All resources and configurations are preserved. For example:
+  - Load balancer type and configuration
+  - RDS database type (but the data **is not** preserved)
+  - Environment variables, etc..
+
+## Elastic Beanstalk Migration: Load Balancer
+
+After creating an Elastic Beanstalk environment **you cannot change the Elastic Load Balancer type** (only the configuration).
+
+To migrate:
+  1. Create a new environment with the same configuration except the Load Balancer (to do this we can't use the "clone" feature described above since that would copy the same exact LB type and configuration -- so we have to create a new EB environment with the desired configuration)
+  2. Deploy your application onto the new environment
+  3. Perform a CNAME swap or Route 53 update
+
+## RDS with Elastic Beanstalk
+
+- RDS can be provisioned with Beanstalk which is great for a dev / test environment
+- This is not great for prod as the database lifecycle is tied to the Beanstalk environment lifecycle
+- The best way to do it for a production environment is to separately create an RDS database and provide our EB application with the connection string instead
+
+### How to Decouple RDS if it is Already In Our Beanstalk Stack
+
+1. Create a snapshot or RDS DB instance (as a safeguard -- so we have backed data in case something goes wrong)
+2. Go to the RDS console and protect the existing RDS instance (that is part of our EB stack) from deletion
+3. Create a new EB stack environment without RDS and point you application to the RDS instance from step (2)
+4. Perform a CNAME swap so that the new EB load balancer takes the URL of our original EB load balancer -- this way consumers are not affected since the load balancer endpoint does not change (this is a blue / green deployment approach)
+5. Terminate the old environment. Because we enabled RDS delete termination protection in step (2) the RDS instance will not be deleted
+6. Because RDS has delete protection, the EB CloudFormation stack will be in a `DELETE_FAILED` state so we have to delete CloudFormation stack manually
+
+![]()
+
+## Elastic Beanstalk with Docker
+
+### EB Single Container Mode
+
+- Run your application as a **single Docker container**
+- Either provide:
+  - **Dockerfile:** Elastic Beanstalk **will build and run** the Docker container
+  - **Dockerrun.aws.json:** describe where **already built** Docker image is
+- **Note:** EB in single Docker container **does not use ECS**
+
+### EB Multi Docker Container
+
+- Multi Docker helps run multiple containers per EC2 instance in EB
+- This will create for you:
+  - ECS Cluster
+  - EC2 instances configured to use the ECS Cluster
+  - Load Balancer (in high availability mode)
+  - Task definitions and execution
+- Requires a config **Dockerrun.aws.json** at the root of the source code
+- **Dockerrun.aws.json** is used to generate the **ECS task definition**
+- Your Docker images must be pre-built and stored in AWS ECR or Docker Hub for example
+
+![]()
+
+## Elastic Beanstalk and HTTPS
+
+- **Beanstalk with HTTPS:**
+  - Load the SSL certificate onto the Load Balancer
+  - Configure it from the code using `.ebextensions/securitylistener-alb.config`
+  - SSL certificate can be provisioned using ACM (AWS Certificate Manager) or CLI
+  - Must configure a security group rule to allow incoming traffic on port `443` (HTTPS port)
+- **Beanstalk redirect HTTP to HTTPS:**
+  - Configure your instances to redirect HTTP to HTTPS, or
+  - Configure the ALB with a rule
+  - Make sure health checks are not redirected (so they keep giving `200 OK`)
+
+## Webserver vs Worker Environment
+
+- If your application performs tasks that are long to complete, offload these tasks to a dedicated **worker environment**
+- **Decoupling** your application into two tiers is common
+- Example: processing a video, generating a zip file, etc..
+- You can define periodic tasks in a file **cron.yaml**
+
+![]()
+
+## Elastic Beanstalk -- Custom Platform (Advanced)
+
+- Custom Platforms are very advanced they allow to define from scratch:
+  - OS
+  - Additional software
+  - Scrips that EB should run on these platforms
+- **Use case:** app language is incompatible with Beanstalk and doesn't use Docker
+- To create you own platform:
+  - Define an AMI using **Platform.yaml** file
+  - Build that platform using the **Packer software (open source tool to create AMIs)**
+- Custom Platform vs Custom Image (AMI):
+  - Custom Image is tweak an **existing** EB platform
+  - Custom Platform is to create **an entirely new** EB platform
