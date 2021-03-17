@@ -2465,3 +2465,123 @@ To migrate:
 - Custom Platform vs Custom Image (AMI):
   - Custom Image is tweak an **existing** EB platform
   - Custom Platform is to create **an entirely new** EB platform
+
+# AWS CI/CD: CodeCommit, CodePipeline, CodeBuild, CodeDeploy
+
+- CI/CD stands for Continuous Integration / Continuous Deployment
+- We know how to create AWS resources manually (Console)
+- We know how to interact with AWS programatically (CLI)
+- We've seen how to deploy code to AWS using Elastic Beanstalk
+- But all of this is very manual
+- We would like to push our code to some repository and have it deployed automatically to AWS (maybe even run tests, deploy to different stages, and have manual approval where needed)
+- This section focuses on automating the deployments we've been doing so far
+- We will learn about:
+  - AWS CodeCommit: storing code
+  - AWS CodePipeline: automating our pipeline from code to Elastic Beanstalk
+  - AWS CodeBuild: building and testing our code
+  - AWS CodeDeploy: deploying the code to EC2 fleets (not Beanstalk)
+
+## Continuous Integration
+
+- Developers push the code to a code repository often (e.g., GitHub, CodeCommit, BitBucket)
+- A testing / build server checks the code as soon as it's pushed (e.g., CodeBuild, Jenkins, etc..)
+- The developer gets feedback about the tests and checks that have passed / failed
+
+![]()
+
+## Continuous Deployment
+
+- Ensure that the software can be released reliably whenever needed
+- Ensures deployment happen often and quick
+- Automated Deployment:
+  - CodeDeploy
+  - Jenkins CD
+  - Spinnaker, etc..
+
+ ![]()
+ 
+ ## Technology Stack for CI/CD
+ 
+ ![]()
+
+## CodeCommit
+
+- **Version Control** is the ability to track and manage the various changes and versions of an application across its lifetime
+- There are many version control systems. The most popular one today is **git**
+- A **git** repository can live on a developers machine, but it usually lives in a central repository
+- Common version control hosting platforms:
+  - GitHub
+  - BitBucket
+- And AWS CodeCommit:
+  - private git repos
+  - no size limit on repos
+  - fully managed , highly available
+  - secure
+  - integrates with Jenkins, CodeBuild, etc..
+
+## CodeCommit Security
+
+- Interactions are done using git
+- Authentication in git:
+  - SSH keys: AWS users can configure SSH keys in their IAM Console
+  - HTTPS: done through the AWS CLI Authentication helper or Generating HTTPS credentials
+  - MFA can be enabled for extra security
+- Authorization in git:
+  - IAM Policies manage user / roles rights to repos
+- Encryption:
+  - Repos are automatically encrypted at rest using KMS
+  - Encrypted in transit (can only use HTTPS or SSH)
+- Cross account access:
+  - DO NOT share your SSH keys
+  - DO NOT share your AWS credentials
+  - Use IAM Role in you AWS account and the person needing in the other account would use AWS STS to assume role (using AssumeRole API)
+
+## CodeCommit Notifications
+
+- You can trigger notifications in CodeCommit using AWS SNS (Simple Notification Service) or AWS Lambda or AWS CloudWatch Event Rules -- these are all called **targets** for the notification
+- Use cases for notifications SNS / AWS Lambda notifications:
+  - Generally used for cases when something changed / happened to the code itself
+  - Deletion of branches
+  - Trigger for pushes that happens in master branch
+  - Notify external build system
+  - Trigger AWS Lambda to perform codebase analysis
+- Use cases for CloudWatch Event Rules:
+  - Trigger for pull request updates
+  - commit comments events (e.g., something added a comment)
+  - CloudWatch Event Rules goes into an SNS topic
+
+## CodeCommit Notifictions vs Triggers
+
+Notifications should be used for literal notification and not for taking action based on them.
+
+Triggers are supposed to **initiate action**. So, if I need to invoke some service based on this event on which trigger is based, I would do that and hence the option to integrate Lambda service. In a way to add automation after codecommit events.
+
+## CodePipeline
+
+- Continuous delivery
+- Source: GitHub, CodeCommit, S3, etc..
+- Build: CodeBuild, Jenkins, etc..
+- Load testing: 3rd party tools
+- Deploy: AWS CodeDeploy, Beanstalk, CloudFormation, ECS, etc..
+- CodePipeline is for orchestrating all these services to provide a continuous delivery pipeline -- hence the name
+- Made of **stages**:
+  - Each stage can have **sequential and or parallel actions**
+  - Stage examples: Build / Test / Deploy / Load Test / etc..
+  - Manual approval can be defined at any stage (except source pull)
+
+### CodePipeline Artifacts
+
+- Each pipeline stage can create **artifacts**
+- Artifacts are stored in S3 and passed on to the next stage
+- Basically: each stage creates artifacts and can output them for the next stage to use
+
+![]()
+
+### CodePipeline Troubleshooting
+
+- CodePipeline state changes happen in **AWS CloudWatch Events** which can in turn create SNS notifications
+  - Ex: you can create events for failed pipelines
+  - Ex: you can create events for cancelled stages
+- If CodePipeline fails a stage, your pipeline stops and you can get info in the console
+- AWS CloudTrail can be used to audit AWS API calls
+- If pipeline can't perform an action (e.g., can't deploy to Elastic Beanstalk), make sure the IAM service role for the pipeline has enough permissions (i.e., policy is incorrect or incomplete)
