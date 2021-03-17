@@ -2591,8 +2591,35 @@ Triggers are supposed to **initiate action**. So, if I need to invoke some servi
 - Fully managed build service
 - Alternative to build tool like Jenkins
 - Continuous scaling (no servers to manage or provision -- no build queue)
-- As you have build requests coming in, CodeBuild goes ahead and build for you -- no waiting
+- As you have build requests coming in, CodeBuild goes ahead and builds for you -- no waiting
 - You pay per time it takes to complete the build
 - Leverages Docker under the hood for reproducible build
 - Possibility to extend capabilities leveraging our own Docker images
 - Secure: integration with KMS for encryption of build artifacts, IAM for build permissions, and VPC for network security, CloudTrail for API calls logging
+- Can source code from different places (e.g., GitHub, CodeCommit, CodePipeline, S3, etc..)
+- Build instructions can be defined in code (in the **buildspec.yml** file)
+- CodeBuild logs are sent to S3 & AWS CloudWatch logs (this is comething you have to configure.. but the idea is that once the build is complete the **underlying container goes away** and all you have left to debug the build is the logs)
+- Use CloudWatch Alarms to detect failed builds and trigger notifications
+- Can also leverage SNS notifications, CloudWatch Events, and AWS Lambda
+
+![]()
+
+### CodeBuild BuildSpec
+
+- **buildspec.yml** file must be defined at the **root** of your source code directory
+- In **buildspec.yml** you can define build environment parameters:
+  - Either as plaintext variables, or
+  - Using secure secrets via AWS SSM Parameter store
+- Build phases (allows us to specify commands to run in each phase):
+  - **Install:** install dependencies you need for the build
+  - **Pre build:** final commands to execute just before build starts
+  - **Build:** actual build commands
+  - **Post build:** finishing touches (e.g., zip output artifact)
+- Artifacts: what to upload to S3 (encrypted with KMS)
+- Cache: files to cache (usually dependencies) to S3 for future build speedup
+
+### CodeBuild Local Build
+
+- In case you need to troubleshoot beyond logs
+- You can run CodeBuild locally on your desktop (after installing Docker)
+- For this you will need to leverage the CodeBuild Agent
