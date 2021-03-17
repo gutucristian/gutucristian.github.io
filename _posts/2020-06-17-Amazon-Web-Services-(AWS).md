@@ -2565,7 +2565,7 @@ Triggers are supposed to **initiate action**. So, if I need to invoke some servi
 - Deploy: AWS CodeDeploy, Beanstalk, CloudFormation, ECS, etc..
 - CodePipeline is for orchestrating all these services to provide a continuous delivery pipeline -- hence the name
 - Made of **stages**:
-  - Each stage can have **sequential and or parallel actions**
+  - Each stage can have **sequential and or parallel actions** (note that **action groups and actions go within a stage**)
   - Stage examples: Build / Test / Deploy / Load Test / etc..
   - Manual approval can be defined at any stage (except source pull)
 
@@ -2585,3 +2585,14 @@ Triggers are supposed to **initiate action**. So, if I need to invoke some servi
 - If CodePipeline fails a stage, your pipeline stops and you can get info in the console
 - AWS CloudTrail can be used to audit AWS API calls
 - If pipeline can't perform an action (e.g., can't deploy to Elastic Beanstalk), make sure the IAM service role for the pipeline has enough permissions (i.e., policy is incorrect or incomplete)
+
+## CodeBuild
+
+- Fully managed build service
+- Alternative to build tool like Jenkins
+- Continuous scaling (no servers to manage or provision -- no build queue)
+- As you have build requests coming in, CodeBuild goes ahead and build for you -- no waiting
+- You pay per time it takes to complete the build
+- Leverages Docker under the hood for reproducible build
+- Possibility to extend capabilities leveraging our own Docker images
+- Secure: integration with KMS for encryption of build artifacts, IAM for build permissions, and VPC for network security, CloudTrail for API calls logging
