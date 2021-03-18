@@ -2623,3 +2623,113 @@ Triggers are supposed to **initiate action**. So, if I need to invoke some servi
 - In case you need to troubleshoot beyond logs
 - You can run CodeBuild locally on your desktop (after installing Docker)
 - For this you will need to leverage the CodeBuild Agent
+
+### CodeBuild in VPC
+
+- By default your CodeBuild containers are launched outside your VPC
+- Therefore by default it cannot access resources in a VPC
+- You can specify a VPC configuration:
+  - VPC ID
+  - Subnet IDs
+  - Security Group IDs
+- Then your build can access resources in your VPC
+- Use cases: if you want to run integration tests using CodeBuild, query data, internal load balancers
+
+## CodeDeploy
+
+- Use when you want to deploy your application automatically to many EC2 instances
+- The EC2 instances are **not managed by Elastic Beanstalk**
+- There are other ways to do this using tools like Ansible, Terraform, Chef, Puppet, etc..
+- **Each EC2 Machine (or on premise machine) must be running the CodeDeploy Agent**
+- The agent is continuously polling AWS CodeDeploy for work to do
+- CodeDeploy sends **appspec.yml** file
+- Application is pulled from GitHub or S3
+- EC2 will run the deployment instructions
+- CodeDeploy Agent will report of success / failure of deployment on the instance
+
+![]()
+
+### CodeDeploy Other
+
+- EC2 instances are grouped by deployment group (dev / test / prod)
+- CodeDeploy can be chained into CodePipeline and use artifacts from there
+- CodeDeploy can re-use existing setup tools, works with any application, auto scaling integration
+- Note: Blue / Green deployments only works with EC2 instances (does not work with on premise)
+- Support for AWS Lambda deployments
+- **CodeDeploy only deploys applications -- it does not provision any resources**
+
+### CodeDeploy Primary Components
+
+- **Application:** unique name
+- **Compute platform:** EC2 / On-Premise or Lambda
+- **Deployment configuration:** deployment rules for success / failures
+  - EC2 / On-Premise: you can specify the min number of healthy instances for the deployment
+  - AWS Lambda: specify how traffic is routed to your updated Lambda functions
+- **Deployment group:** group of tagged instances (allows to deploy gradually)
+- **Deployment type:** in-place deployment or blue / green
+- **IAM instance profile:** need to give EC2 permissions to pull from S3 / GitHub
+- **Application Revision:** application code + **appspec.yml** file
+- **Service role:** role for CodeDeploy to perform what it needs
+- **Target revision:** target deployment application version
+
+### CodeDeploy AppSpec
+
+- File section: how to source and copy from S3 / GitHub to filesystem
+- Hooks: set of instructions to do to deploy the new version. The order is:
+  - ApplicationStop
+  - DownloadBundle
+  - BeforeInstall
+  - AfterInstall
+  - ApplicationStart
+  - **ValidateService (really important -- kind of like a health check to see if deploy was successful)**
+
+### AWS CodeDeploy Deployment Config
+
+- Configs:
+  - One at a time: one instance at a time, if one instance fails, then the deployment stops
+  - Half at a time: 50%
+  - All at once: quick so good for dev (but can cause downtime)
+  - Custom
+- Failures:
+  - Instances stay in a "failed state"
+  - New deployments will first be deployed to failed state instances
+  - To rollback: redeploy old deployments or enable automated rollback for failures
+- Deployment Targets:
+  - Set of EC2 instances with tags (when we deploy we specify to what instances based on the tags they have attached)
+  - Or we can deploy directly to an ASG
+  - Or we can have a mix of ASG / Tags
+  - We can also use a customization in scripts with `DEPLOYMENT_GROUP_NAME` environment variable to control deployment based on environment
+
+### CodeDeploy for EC2 and ASG
+
+For EC2:
+
+- Define how to deploy the application using **appspec.yml** and a **deployment strategy**
+- Can use hooks to verify the deployment after each deployment phase 
+
+For ASG:
+
+- In place updates:
+  - updates current existing EC2 instances
+  - instances newly created by an ASG will also get automated deployments
+- Blue / green deployment:
+  - A new auto-scaling group is created (settings are copied)
+  - Choose how long to keep old instances
+  - Must be using an ELB
+  - After new ASG is created ALB points to new ASG and old one is taken down
+
+### CodeDeploy -- roll backs
+
+- You can specify automated rollback options
+- Roll back when deployment fails
+- Roll back with alarm thresholds are met
+- You can also disable roll backs
+- **If a roll back happens, CodeDeploy redeploys the last known good revision as a _new deployment_ (will get a new version id)**
+
+## CodeStar
+
+- CodeStar in an integrated solution that regroups: GitHub, CodeCommit, CodeBuild, CodeDeploy, CloudFormation, CodePipeline, CloudWatch
+- Helps quickly create CI/CD ready projects for EC2, Lambda, Beanstalk
+- Issue tracking integration with JIRA / GitHub Issues
+- Ability to integrate with AWS Cloud9
+- Pay only for underlying resources
