@@ -1522,14 +1522,14 @@ Read in more detail [here](https://docs.aws.amazon.com/AmazonElastiCache/latest/
 - Preflight Request: a request that browser does before the actual request is sent to check that the cross origin allows us to make a request to it
 - Preflight Response: returns back to us information regarding whether we are allows to perform the cross origin request to the specified endpoint along with all of the allowed methods
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/CORSDiagram.png)
 
 ## S3 CORS
 
 - If a client does a cross origin request on our S3 bucket, we need to enable the correct CORS headers
 - You can allow for a specific origin (or `*` for all origins)
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/S3CORS.png)
 
 ## S3 Consistency Model -- Before December 2020
 
@@ -1599,7 +1599,7 @@ Read more from [here](https://blog.kylegalbraith.com/2021/01/12/the-s3-consisten
   - IAM Roles can come with a policy authorizing exactly what the EC2 instance should be able to do
   - Anytime your EC2 instance needs to perform something, never put your credentials on it, always use an IAM Role
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/AWSCLIOnEC2.png)
 
 ## IAM Policy Simulator
 
@@ -1641,7 +1641,7 @@ To do so, you must run the **STS GetSessionToken** API call:
 
 Which would return something like:
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/MFAWithCLI.png)
 
 That has a new access key and id a session token (which we will need to use in all the API calls to AWS) and an expiration date time.
 
@@ -1723,17 +1723,17 @@ Read [here](The difference between an AWS role and an instance profile) on more 
 - If you use the SDK or CLI, the HTTP requests are already signed **for you**
 - As an AWS Certified Developer you only need to know at a *high level* how AWS HTTP requests are signed using Signature v4 (SigV4) -- an AWS protocol
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/AWSSigV4.png)
 
 ### SigV4 Requests Examples
 
 HTTP Header Option:
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/SigV4HTTPHeaderOption.png)
 
 Query String Option (e.g., S3 pre-signed URLs)
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/SigV4HTTPQueryStringOption.png)
 
 # Advanced S3 & Athena
 
@@ -1843,7 +1843,7 @@ Query String Option (e.g., S3 pre-signed URLs)
 
 ### S3 Storage Tiers Summary
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/S3StorageClassesComparison.png)
 
 ## S3 Lifecycle Rules
 
@@ -1852,7 +1852,7 @@ Query String Option (e.g., S3 pre-signed URLs)
 - For archived objects that we don't need in real time move to `GLACIER` or `DEEP_ARCHIVE`
 - Moving objects can be **automated** using a **lifecycle configuration**
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/S3LifeCycleRules.png)
 
 - **Transition actions:** it defines when objects are transitioned to another storage. For example:
   - Move objects to Standard IA class `60` days after creation
@@ -1882,20 +1882,20 @@ Query String Option (e.g., S3 pre-signed URLs)
   - Recommended for files greater than `100` MB and must use for files greater than `5` GB
   - The idea of multi-part upload is that we split file into smaller pieces which allows us to upload in parallel -- this speeds up transfers
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/S3MultiPartUpload.png)
 
 - **S3 Transfer Acceleration (upload only):**
   - Increase transfer speed by transferring file to an AWS edge location (via public internet) which will forward the data to the S3 bucket in the target region (via private AWS network -- which is faster)
   - Compatible with multi-part upload
   - The idea is that we minimize the amt. of public internet which we go through (which is slower) and maximize the amt. of private AWS internet that we go through (which is faster)
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/S3TransferAcceleration.png)
 
 ### S3 Increasing Download Performance
 
 Use S3 **Byte-Range Fetches** to parallelize `GET`s by requesting specific range of bytes in our file -- we can pick and choose what sections we are downloading.
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/S3ByteRangeFetches.png)
 
 ## S3 Select & Glacier Select
 
@@ -1904,7 +1904,7 @@ Use S3 **Byte-Range Fetches** to parallelize `GET`s by requesting specific range
 - Less network transfer, less CPU cost client-side
 - For more complex querying we can use AWS Athena
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/S3SelectAndGlacierSelect.png)
 
 ## S3 Event Notifications
 
@@ -1915,7 +1915,7 @@ Use S3 **Byte-Range Fetches** to parallelize `GET`s by requesting specific range
 - If two writes are made to a single non-versioned bucket at the same time, it is possible that only a single event notification will be sent
 - If you want to ensure that an event notification is sent for every successful write, you must enable versioning on your bucket
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/S3EventNotifications.png)
 
 ## AWS Athena
 
@@ -1957,15 +1957,15 @@ Use S3 **Byte-Range Fetches** to parallelize `GET`s by requesting specific range
   - S3 Website (must first enable the bucket as a static website)
   - Any HTTP backend you want
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/CloudFrontOverview.png)
 
 ### CloudFront S3 as an Origin
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/CloudFrontS3AsAnOrigin.png)
 
 ### ALB or EC2 as an Origin
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/CloudFrontALBorEC2AsOrigin.png)
 
 ### Geo Restriction
 
@@ -1994,9 +1994,11 @@ Use S3 **Byte-Range Fetches** to parallelize `GET`s by requesting specific range
 - We can control the cache TTL (`0` seconds to `1` year) -- which can be set by the origin using `Cache-Control` header, `Expires` header...
 - We can also invalidate part of the cache using the `CreateInvalidation` API
 
+![](https://s3.amazonaws.com/gutucristian.com/CloudFrontCaching.png)
+
 ### Maximize cache hits by separating **static** and **dynamic** distributions
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/CloudFrontMaximizeCacheHits.png)
 
 ## Cloud Front Security
 
@@ -2021,13 +2023,13 @@ Use S3 **Byte-Range Fetches** to parallelize `GET`s by requesting specific range
 
 ### CloudFront Signed URL Diagram
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/CloudFrontSignedURLDiagram.png)
 
 ### CloudFront Signed URL vs S3 Pre-Signed URL
 
-At a high level, use S3 Pre-Signed URL if you want to distribute file securely to user w/o having CloudFront layer (so going to S3 directly), else use CloudFront Signed URL.
+At a high level, use S3 Pre-Signed URL if you want to distribute file securely to user without having CloudFront layer (so going to S3 directly), else use CloudFront Signed URL.
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/CloudFrontSignedURLvsS3PreSignedURL.png)
 
 # CloudFront
 
@@ -2037,7 +2039,7 @@ At a high level, use S3 Pre-Signed URL if you want to distribute file securely t
 - Apps run the same regardless of where they run
 - In Docker, resources are shared with the host and we can have many containers on one server
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/Docker.png)
 
 ### Docker Image
 
@@ -2097,7 +2099,7 @@ A Service is used to guarantee that you always have some number of Tasks running
 - This time we don't specify a host port. Instead, we just specify a container port and the host port will be random
 - The load balancer (only works with ALB and NLB not CLB) uses **dynamic port forwarding** to spread the load dynamically across the containers
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/ECSALBWithDynamicPortForwarding.png)
 
 ## ECR
 
@@ -2108,7 +2110,7 @@ A Service is used to guarantee that you always have some number of Tasks running
   - `docker pull <full-ecr-image-url>`
 - AWS CLI ECR login commands:
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/AWSCLIECRLoginCommands.png)
 
 ## Fargate
 
@@ -2132,7 +2134,7 @@ A Service is used to guarantee that you always have some number of Tasks running
   - We want to have an IAM role at the EC2 instance level to help the ECS Agent
   - We want task roles at the task level, so that each task has just enough permissions but not more than it needs
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/ECSIAMRoles.png)
 
 For the exam you need to remember:
 
@@ -2146,7 +2148,7 @@ For the exam you need to remember:
 - To assist with this, you can define a **task placement strategy** and **task placement constraints**
 - Note this only applies to ECS with ECS not for Fargate -- Fargate does all of this for us since its serverless and we don't manage any infrastructure
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/ECSTaskPlacement.png)
 
 ## ECS Task Placement Process
 
@@ -2195,7 +2197,7 @@ Note that we can mix task placement strategies.
 - When you run a task or service you define a capacity provider strategy to prioritize in which provider to run
 - This allows the capacity provider to automatically provision infrastructure for you
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/ECSClusterCapacityProvider.png)
 
 ## ECS Summary and Exam Tips
 
@@ -2259,7 +2261,6 @@ Note that we can mix task placement strategies.
 - You deploy application versions to environments and can **promote** them to the next environment
 - Has feature to rollback to previous application version
 
-![]()
 
 - If you create an RDS instance with Beanstalk, then if you delete your RDS environment your RDS instance will also be deleted (if you want RDS to be decoupled from EB, then create a separate RDS instance outside of Beanstalk and point to it instead)
 - You cannot change load balancer type after creating an EB environment -- if you want to change it you will have to create another environment
@@ -2275,7 +2276,7 @@ Note that we can mix task placement strategies.
 
 ## Elastic Beanstalk Deployment Modes
 
-![]
+![](https://s3.amazonaws.com/gutucristian.com/EBDeploymentModes.png)
 
 1. **All at once (deploy all in one go):** fastest, but instances aren't available to serve traffic for a bit (downtime)
 2. **Rolling:** update a few instances at a time (bucket) and then move onto the next bucket once the first bucket is healty (for a short period of time, the application will be operating below full capacity)
@@ -2289,7 +2290,7 @@ Note that we can mix task placement strategies.
 - Good for development environments
 - No additional cost
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/EBAllAtOnceDeployment.png)
 
 ### Rolling Deployment
 
@@ -2298,7 +2299,7 @@ Note that we can mix task placement strategies.
 - Application is running both versions simultaneously
 - If you set a small bucket size, it will be a very long deployment
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/EBRollingDeployment.png)
 
 ### Rolling Deployment With Additional Batches
 
@@ -2310,7 +2311,7 @@ Note that we can mix task placement strategies.
 - Longer deployment
 - Good for production environment
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/EBRollingDeploymentWithAdditionalBatches.png)
 
 ### Immutable Deployment
 
@@ -2320,7 +2321,7 @@ Note that we can mix task placement strategies.
 - Quick rollback in case of failures (just terminate the new ASG)
 - Great for production environment
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/EBImmutableDeployment.png)
 
 ### Blue Green Deployment
 
@@ -2331,7 +2332,7 @@ Note that we can mix task placement strategies.
 - Route 53 can be setup with weighted policies to redirect a little bit of traffic to the stage environment (green) to test
 - Using EB we can swap URLs when done with the environment testing so that new environment gets URL of old one -- thereby leaving users unaffected (Note: "swap" here refers to a `CNAME` swap)
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/EBBlueGreenDeployment.png)
 
 ## Elastic Beanstalk CLI
 
@@ -2390,6 +2391,8 @@ To migrate:
   2. Deploy your application onto the new environment
   3. Perform a CNAME swap or Route 53 update
 
+![](https://s3.amazonaws.com/gutucristian.com/EBMigrationLoadBalancer.png)
+
 ## RDS with Elastic Beanstalk
 
 - RDS can be provisioned with Beanstalk which is great for a dev / test environment
@@ -2405,7 +2408,7 @@ To migrate:
 5. Terminate the old environment. Because we enabled RDS delete termination protection in step (2) the RDS instance will not be deleted
 6. Because RDS has delete protection, the EB CloudFormation stack will be in a `DELETE_FAILED` state so we have to delete CloudFormation stack manually
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/EBDecoupleRDS.png)
 
 ## Elastic Beanstalk with Docker
 
@@ -2429,7 +2432,7 @@ To migrate:
 - **Dockerrun.aws.json** is used to generate the **ECS task definition**
 - Your Docker images must be pre-built and stored in AWS ECR or Docker Hub for example
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/EBMultiDocker.png)
 
 ## Elastic Beanstalk and HTTPS
 
@@ -2450,7 +2453,7 @@ To migrate:
 - Example: processing a video, generating a zip file, etc..
 - You can define periodic tasks in a file **cron.yaml**
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/EBWebServerVSWorkerEnvironment.png)
 
 ## Elastic Beanstalk -- Custom Platform (Advanced)
 
@@ -2487,7 +2490,7 @@ To migrate:
 - A testing / build server checks the code as soon as it's pushed (e.g., CodeBuild, Jenkins, etc..)
 - The developer gets feedback about the tests and checks that have passed / failed
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/ContinuousIntegration.png)
 
 ## Continuous Deployment
 
@@ -2498,11 +2501,11 @@ To migrate:
   - Jenkins CD
   - Spinnaker, etc..
 
- ![]()
+ ![](https://s3.amazonaws.com/gutucristian.com/ContinuousDeployment.png)
  
  ## Technology Stack for CI/CD
  
- ![]()
+ ![](https://s3.amazonaws.com/gutucristian.com/CICDTechStack.png)
 
 ## CodeCommit
 
@@ -2575,7 +2578,7 @@ Triggers are supposed to **initiate action**. So, if I need to invoke some servi
 - Artifacts are stored in S3 and passed on to the next stage
 - Basically: each stage creates artifacts and can output them for the next stage to use
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/CodePipelineArtifacts.png)
 
 ### CodePipeline Troubleshooting
 
@@ -2602,7 +2605,7 @@ Triggers are supposed to **initiate action**. So, if I need to invoke some servi
 - Use CloudWatch Alarms to detect failed builds and trigger notifications
 - Can also leverage SNS notifications, CloudWatch Events, and AWS Lambda
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/CodeBuildOverview.png)
 
 ### CodeBuild BuildSpec
 
@@ -2647,7 +2650,7 @@ Triggers are supposed to **initiate action**. So, if I need to invoke some servi
 - EC2 will run the deployment instructions
 - CodeDeploy Agent will report of success / failure of deployment on the instance
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/CodeDeploy.png)
 
 ### CodeDeploy Other
 
