@@ -2736,3 +2736,83 @@ For ASG:
 - Issue tracking integration with JIRA / GitHub Issues
 - Ability to integrate with AWS Cloud9
 - Pay only for underlying resources
+
+# CloudFormation
+
+- CloudFormation (CF) enables **infrastructure as code** on AWS
+- It allows us to outline our AWS infrastructure in a declaritive way using CF templates written in **yaml** or **JSON** format
+- For example we can write a template provision:
+  - A security group
+  - Some EC2 instances using this security group
+  - An Elastic IP for these EC2 instances
+  - An S3 bucket
+  - And a load balancer in front of these machines
+- CF creates provisions all of these resources for us in the **right order** with the **exact configuration** we specified
+
+### Benefits of CloudFormation
+
+- Infrastructure as Code
+- Our infra is reproducible -- we can easily take it down and bring it back up with no manual work
+- Since infra is easily taken down and brough back up, we can implement saving strategy in development environments by scheduling automatic deletion of templates at, for instance, 5 PM and recreated at 8 AM
+- Each resource within the CF stack is tagged with an identifier so we can easily track its cost
+- Since CF template is declarative we just need to specify the resource we need there is no need to figure out order and orchesration -- AWS will do all of this for us
+- We can have as many CD stacks as we want, thus, allowing us to modularize our templates (separation of concerns principle). For instance we can have separate stacks for creating:
+  - VPC
+  - Network
+  - Application
+
+### How CloudFormation Works
+
+- Templates have to be uploaded in S3 and then referenced from CF
+- To update a template we cannot edit previous ones -- we must upload a new one (CF will figure out the template change set and update accordingly)
+- Stacks are identified by a name
+- **Deleting a stack deletes every single artifact that was created by CF**
+
+### Deploying CloudFormation templates
+
+- Manual option using CF Designer in AWS Console
+- Automated way:
+  - First build template(s) (in YAML or JSON format)
+  - Use the AWS CLI to deploy the templates
+
+### CloudFormation Building Blocks
+
+1. **Resources: your AWS resouces declared in the template (MANDATORY section of every CF template)**
+2. Parameters: the dynamic inputs for your template
+3. Mappings: the static variables for your template
+4. Outputs: references to what has been created
+5. Conditionals: list of conditions to perform resource creation
+6. Metadata
+
+Teplate helpers:
+  - References
+  - Functions
+
+## CloudFormation Resource
+
+- Resources are the core of your CF template and they are MANDATORY
+- Resources sections contains all the different AWS components that will be created and configures as part of this remplate
+- Resources are declared and can reference each other
+- AWS figures out creation, updates, and deleteion for us
+- Resource types identifiers are of the form: `AWS::aws-product-name::data-type-name`
+
+![]()
+
+## CloudFormation Parameters
+
+- Parameters are a way to provide inputs to our CF templates
+- They are important for making our CF templates generic and reusable
+ 
+ ![]()
+ 
+ ## Parameter Settings
+ 
+ Parameters can be controlled by these values:
+ 
+ ![]()
+ 
+To reference a parameter or a resource use the `Fn::Ref` function (shorthand in YAML is `!Ref`).
+
+### CloudFormation Pseudo Parameters
+
+AWS CF offers pseudo parameters in any CF template -- essentially values that are exposed by AWS that we can use in our template. They are:
