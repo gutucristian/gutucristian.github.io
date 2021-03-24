@@ -9,7 +9,7 @@ My name is Cristian Gutu and I am recent Computer Science graduate from the __Un
 
 Currently I work as a __Software Engineer__ on __Prudential’s Platform Engineering Team__.
 
-I am primarily responsible for designing and implementing strategic, high-performance data pipelines supporting the flow of millions of records between producer and consumer systems across the organization. By leveraging a micro-services based pub-sub architecture, each pipeline is designed to move away from traditional monolithic point-to-point integrations to a more resilient micro-services based event streaming pattern enabling real-time analytics, event based notifications, and data feed subscriptions.
+I am primarily responsible for designing and implementing strategic, high-performance data pipelines supporting the flow of millions of records between producer and consumer systems across the organization. By leveraging a micro-services based pub-sub architecture, each pipeline is designed to move away from traditional monolithic point-to-point integrations to a more resilient microservices based event streaming pattern enabling real-time analytics, event based notifications, and data feed subscriptions.
 
 I am interested in full stack development, DevOps, AWS, and distributed systems -- with work experience in all of these areas. 
 
