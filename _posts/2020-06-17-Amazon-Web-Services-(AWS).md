@@ -2816,3 +2816,49 @@ To reference a parameter or a resource use the `Fn::Ref` function (shorthand in 
 ### CloudFormation Pseudo Parameters
 
 AWS CF offers pseudo parameters in any CF template -- essentially values that are exposed by AWS that we can use in our template. They are:
+
+## CloudFormation Mappings
+
+Mappings are fixed variables in your CloudFormation template. Example:
+
+!()[]
+
+### Accessing Mapping Values
+
+- We use `Fn::FindInMap` to return a named value from a specific key
+- In YAML file we can use `!` shortcut instead of `Fn::` so: `!FindInMap [ MapName, TopLevelKey, SecondLevelKey ]`
+
+For example, we can have a map and get the specific AMI id for an EC2 instance based on the AWS Region which the template is running in:
+
+![]()
+
+## CloudFormation Outputs
+
+- The Outputs section declares _optional_ outputs that we can import into other stacks (if we export them first!)
+- They are useful for modularizing our templates and for separation of concernts. For example, we can have a CF template that build the network infrastructure and outputs variables such as VPC ID and Subnet IDs
+- **Note:** you CANNOT delete a CF stack if its outputs are being referenced by another CF stack
+
+For example we can have a CF template that outputs a security group (note the output section has `!Ref` which point to the actual secuirty group resource in the template):
+
+## CloudFormation Imports
+
+Having the output from above, we can create a second CF template that leverages the security group. For example, we can use `Fn::ImportValue` or (if using YAML) just `!ImportValue` to import that security group:
+
+![]()
+
+## CloudFormation Conditions
+
+- Conditions are used to control the creation of resources or outputs based on a condition
+- Common conditions in CF templates are based on:
+  - Environment type (e.g., dev, prod, qa)
+  - AWS Region
+  - Parameter values
+- Each condition can reference another condition, parameter value or mapping
+
+### Using a Condition
+
+Conditions can be applies to resources / output / etc..
+
+![]()
+
+## CloudFormation Intrinsic Functions
