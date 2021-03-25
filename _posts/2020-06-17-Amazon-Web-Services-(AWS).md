@@ -2862,3 +2862,112 @@ Conditions can be applies to resources / output / etc..
 ![]()
 
 ## CloudFormation Intrinsic Functions
+
+### `Fn::Ref`
+
+- The `Fn::Ref` function can be leveraged to reference:
+  - Parameters: returns the value of the parameter
+  - Resources: returns the **ID** of the underlying resource (e.g., EC2 ID)
+- Shorthand in YAML is `!Ref`
+
+![]()
+
+### `Fn::GetAtt`
+
+- Attributes are attached to any resource you create
+- Check out the documentation to see what attributes are available for specific resources
+
+For example, below we can get the AZ of our EC2 instance resource by using `!GetAtt EC2Instance.AvailabilityZone`:
+
+![]()
+
+### `Fn::FindInMap` Accessing Mapping Values
+
+- We use `Fn::FindInMap` to return a named value from a specific key
+- In YAML file we can use `!` shortcut instead of `Fn::` so: `!FindInMap [ MapName, TopLevelKey, SecondLevelKey ]`
+
+For example, we can have a map and get the specific AMI id for an EC2 instance based on the AWS Region which the template is running in:
+
+![]()
+
+### `Fn::ImportValue`
+
+- Import values that are exported at **outputs** in other templates
+- For this we use `Fn::ImportValue` or (if using YAML) just `!ImportValue`
+
+![]()
+
+### `Fn::Join`
+
+Join values with a delimeter: `!Join [ delimeter, [ comma-delimeter list of values ] ]`
+
+Ex: `!Join [ ":", [ a, b, c ] ]` creates "a:b:c"
+
+### `Fn::Sub`
+
+The intrinsic function Fn::Sub substitutes variables in an input string with values that you specify.
+
+The following example uses a mapping to substitute the ${Domain} variable with the resulting value from the Ref function.
+
+`{ "Fn::Sub": [ "www.${Domain}", { "Domain": {"Ref" : "RootDomainName" }} ]}`
+
+or using YAML:
+
+```
+Name: !Sub
+  - www.${Domain}
+  - { Domain: !Ref RootDomainName }
+```
+
+### Condition Functions
+
+Conditions can use any of the following:
+- `Fn::And`
+- `Fn::Equals`
+- `Fn::If`
+- `Fn::Not`
+- `Fn::Or`
+
+![]()
+
+## CloudFormation Rollbacks
+
+- If Stack Creation Fails:
+  - Default: everything rolls back (i.e., gets deleted). We can look at the log
+  - Option to disable rollback and troubleshoot what happened
+
+- Stack Update Fails:
+  - The stack automatically rolls back to the previous known working state
+  - Ability to see in the log what happened and error messages
+
+## CloudFormation ChangeSets, NestedStacks, and StackSet
+
+### ChangeSet
+
+- When you update a stack, AWS CF basically computes a **change set** (i.e., difference) between the old stack and the new one
+- Once change set is created, you can view it, and execute it -- this will update your stack
+
+### Nested stacks
+
+- Nested stacks are part of other stacks
+- They allow you to isolate repeated patterns / common components in separate stacks and call them from other stacks
+- Example:
+  - Load Balancer configuration that is re-used
+  - Security Group that is re-used
+- Nested stacks are considered best practice
+- To update a nested stack, always update the parent (root stack)
+
+### Cross vs Nested Stacks
+
+- **Cross Stacks**
+  - Usually used in cases where stacks have **different lifecycles** (i.e., logically they are used for different tasks)
+  - Use **Outputs Export** to export from one stack and **Fn::ImportValue** to import resource in another
+  - When you need to pass export values to many stacks (e.g., VPC Id, RDS Id, etc..)
+
+![]()
+
+- **Nested Stacks**
+  - Helpful when components must be re-used
+  - For nested stacks primary use case is for reuse of modular components, like a template of a resource you use in lots of stacks to save copy pasting and updating the stacks independently
+
+![]()
