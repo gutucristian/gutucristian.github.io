@@ -2971,3 +2971,52 @@ Conditions can use any of the following:
   - For nested stacks primary use case is for reuse of modular components, like a template of a resource you use in lots of stacks to save copy pasting and updating the stacks independently
 
 ![]()
+
+# AWS CloudWatch, X-Ray, and CloudTrail
+
+## AWS CloudWatch Overview
+
+- AWS CloudWatch exposes:
+  - **Metrics:** to collect and track key metrics
+  - **Logs:** to collect, monitor, analyze, and store log files
+  - **Events:** to send notifications when certain events happen in AWS
+  - **Alarms:** to react in real-time to metrics / events
+- AWS X-Ray:
+  - Troubleshooting application performance and errors
+  - **Distributed tracing** of microservices
+- AWS CloudTrail:
+  - Internal monitoring of API calls being made
+  - Audit changes to AWS Resources by your users
+
+## AWS CloudWatch Metrics
+
+- Difference AWS service hosts expose different **metrics**. A **metric** is a variable that we can opt to monitor for a given AWS service (e.g., EC2 host exposes metrics like CPUUtilization, NetworkIn, NetworkOut, etc..)
+- Metrics belong to **namespaces**
+- **Dimension** is an **attribute of a metric** (e.g., EC2 instance id, environment, etc..)
+- We can have up to `10` dimensions per metric
+- Metrics can have **timestamps**
+- We can create CloudWatch dashboards of metrics
+
+### AWS CloudWatch EC2 Detailed Monitoring
+
+- EC2 instance metrics send metrics "every `5` minutes"
+- With **detailed monitoring** enabled (for a cost) you can get data "every `1` minute"
+- Detailed monitoring is useful in cases when you have a CloudWatch Alarm based on a metric and want it to go in alarm state more promptly (i.e., `1` min lag vs `5` min allows us to react quicker) to trigger your ASG to scale in or out
+- **Note:** EC2 Memory (i.e., RAM) usage is not a default metric provided by AWS, so if you are interested in it, then you will need to push it to CloudWatch from inside the instance as a **custom metric**
+
+Side note:
+- **Detailed Monitoring is an EC2 feature** that allows the default, EC2 *host-reported metrics* at a `1` **minute interval** instead of the default 5 minute interval
+- **High-Resolution Metrics are always custom metrics**, which can be published as frequently as a `1` **second interval**
+- See ![reference](https://acloud.guru/forums/aws-cda-2018/discussion/-L_sup5MFrFbXUGKZ_77/high%20resolution%20metrics%20and%20detailed%20monitoring)
+
+### AWS CloudWatch Custom Metrics
+
+- Possibility to define and send your own custom metrics to CloudWatch (e.g., EC2 host RAM usage)
+- Ability to use dimensions (attributes) to **segment metrics**
+  - Instance.id
+  - Environment.name
+- Metric resolution:
+  - Standard: `1` minute
+  - **High Resolution:** up to `1` second (API call parameter to enable high resolution is called **StorageResolution**) -- higher cost
+- To send custom metric data to CloudWatch use the **PutMetricData** API call
+- Use **exponential back off** in case of throttle errors
