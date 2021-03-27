@@ -3178,3 +3178,60 @@ Side note:
 - To enable on AWS Lambda:
   - Ensure it has an IAM execution role with the proper policy (AWS X-RayWriteOnlyAccess)
   - Ensure that X-Ray is imported and configured in the code
+
+### X-Ray Instrumentation in your code
+
+- **Instrumentation** means the measure of a product's performance, diagnose errors, and to write trace information
+- To instrument your application code, you use the **X-Ray SDK**
+- You can modify your application code to customize and annotate the data that the SDK sends to X-Ray using interceptors, filters, handlers, and middleware
+
+### X-Ray Concepts
+
+- **Segments:** each application / service will send them
+- **Subsegments:** if you need more details in your segment
+- **Trace:** segments collected together to form an end-to-end trace
+- **Sampling:** decrease the amount of requests sent to X-Ray, reduce cost
+- **Annotations:** Key Value pairs used to **index** traces and use with **filters**
+- **Metadata:** Key Value pairs, **not indexed**, not used for searching
+- The X-Ray daemon / agent has a config to send traces cross account. For this, you need to make sure the IAM permissions are correct
+
+### X-Ray Sampling Rules
+
+- With sampling rules, you control the amount of data that you record (the more data you record the more you pay)
+- You can modify sampling rules w/o changing your code
+- By default, the X-Ray SDK records the first request **each second** and **five percent** of any additional requests
+- The amount of requests that are captured before only a percentage is captured is called the **reservoir**
+- The rate at which additional requests is captured beyond the **resorvoir** is reffered to as the **rate**
+- You can create your own rules with the **reservoir** and **rate** as custom values
+
+### X-Ray Write API (used by the X-Ray daemon)
+
+The AWSXrayWriteOnlyAccess is a managed IAM policy that the daemon needs to have in order to be able to perform all the required writes it needs to do.
+
+![]()
+
+### X-Ray Read API (used by X-Ray daemon)
+
+![]()
+
+### X-Ray with Elastic Beanstalk
+
+- AWS Elastic Beanstalk platforms include the X-Ray daemon
+- You can run the daemon by setting an option in the Elastic Beanstalk console or with a configuration file (in `.ebextensions/xray-daemon.config`)
+- Make sure to assogm the correct IAM permissions for your instance role so that the X-Ray daemon can function correctly
+- Make sure your application code is **instrumented** with the X-Ray SDK
+- **Note:** the X-Ray daemon is not provided for multicontainer Docker
+
+![]()
+
+### X-Ray & ECS -- Integration Options
+
+![]()
+
+### ECS + X-Ray: Example Task Definition with Side Car Pattern
+
+Take away:
+- Map container port of the `xray-daemon` task to `2000` with protocol as UDP
+- Then set an environment variable in the task defining our actual application called `AWS_XRAY_DAEMON_ADDRESS` with a value of `xray-daemon:2000` and create a link between them two using the `links` section (from a networking standpoint)
+
+![]()
