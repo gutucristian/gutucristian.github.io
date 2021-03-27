@@ -3020,3 +3020,39 @@ Side note:
   - **High Resolution:** up to `1` second (API call parameter to enable high resolution is called **StorageResolution**) -- higher cost
 - To send custom metric data to CloudWatch use the **PutMetricData** API call
 - Use **exponential back off** in case of throttle errors
+
+## AWS CloudWatch Alarms
+
+- Alarms are used to **trigger notifications for metrics**
+- Alarms can be configured to control Auto Scaling, EC2 Actions, and send events to SNS (which can be further used to send emails, texts, etc..)
+- Various options (we can perform many customizations such as sampling, % max, % min, etc..)
+- Alarm States:
+  - OK (not doing anything)
+  - INSUFFICIENT_DATA (not enough data to determine if alarm is in OK or ALARM state)
+  - ALARM (when alarm theshold is being passed)
+- Period: 
+  - Length of time in seconds to evaluate the metric
+  - High resolution custom metrics: can only choose `10` seconds or `30` seconds
+
+## AWS CloudWatch Logs
+
+- Applications can send logs to CloudWatch using the SDK
+- CloudWatch can collect logs from:
+  - Elastic Beanstalk: collection of logs from application
+  - ECS: collection of logs from containers
+  - AWS Lambda: collection of function logs
+  - VPC Flow Logs: VPC specific logs
+  - API Gateway
+  - CloudTrail
+  - CloudWatch log agents (for example, we can install a CloudWatch log agent on EC2 machines or even on-premise servers to synch local logs to CloudWatch -- note that proper IAM permissions are required)
+  - Route53: log DNS queries
+- CloudWatch logs can go to:
+  - Batch exporter to S3 for retrieval
+  - Stream to ElasticSearch cluster for further analysis
+- Logs storage architecture:
+  - **Log groups:** arbitray name, usually representing the application name
+  - **Log stream:** instances within application / log files / individual container logs for each app instance running in an ECS cluster (e.g., for an application using CodeBuild, we would have a **log group** for the application and for each build there would be a separate **log stream**)
+- Can define log expiration policy (e.g., never expire, expire after `30` days, etc..)
+- Using the AWS CLI we can tail CloudWatch logs
+- Again, to send logs to CloudWatch the application or the agent will need to have the correct IAM permissions
+- Security: encryption of logs using KMS at the group level
