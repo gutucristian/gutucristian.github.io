@@ -3273,4 +3273,150 @@ Pattern 1: **Synchronous communication**. In other words, there is point to poin
 
 ![]()
 
-Pattern 2: **Asynchronous communication**. In this case the applications are not directly tied to each other through implementation. Instead, there is a buffer between them (e.g., some queue like SQS or a pub sub system like SNS) which can be used a middle layer for communication. In the buying service and shipping service example from above, the buying service would post an event to this queue indicating that an item was bought and the shipping service would pick this event up from the queue and process it. There are many benefits to this approach but the biggest two are (1) less point to point integrations and (2) system handles much better in cases where we may be experiencing spikes in load. For instance, if a lot of people are buying things (e.g., some holiday) then the shipping service is not overwhelmed with requests from the buying service. Instead requests pile up in the queue and the shipping service picks up one by one and processes as usual. Such design also opens up possibilities for introducing things like AWS CloudWatch metrics to track the queue size as well as a AWS CloudWatch alarm to trigger an ASG when a certain threshhold is surpassed so that additional shipping service consumers can be spun up to handle the increase in load and then scaled down when queue size goes back to below theshhold. Such design we call **decouple systems** because each component is not tied to any other component and even if, for instance, the buying service goes down 
+Pattern 2: **Asynchronous communication**. In this case the applications are not directly tied to each other through implementation. Instead, there is a buffer between them (e.g., some queue like SQS or a pub sub system like SNS) which can be used a middle layer for communication. In the buying service and shipping service example from above, the buying service would post an event to this queue indicating that an item was bought and the shipping service would pick this event up from the queue and process it. There are many benefits to this approach but the biggest two are (1) less point to point integrations and (2) system handles much better in cases where we may be experiencing spikes in load. For instance, if a lot of people are buying things (e.g., some holiday) then the shipping service is not overwhelmed with requests from the buying service. Instead requests pile up in the queue and the shipping service picks up one by one and processes as usual. Such design also opens up possibilities for introducing things like AWS CloudWatch metrics to track the queue size as well as a AWS CloudWatch alarm to trigger an ASG when a certain threshhold is surpassed so that additional shipping service consumers can be spun up to handle the increase in load and then scaled down when queue size goes back to below theshhold. Such designs we call **decoupled systems** because each component is not tied to any other component and even if the buying service goes down the shipping service could still operate.
+
+![]()
+
+## AWS SWS -- Standard Queue Service
+
+- Fully managed, used to decouple applications
+- Attributes:
+  - Unlimited throughput (i.e., unlimited number of messages in queue)
+  - Default retention of messages is `4` days, maximum is `14` days
+  - Low latency (less than `10` ms on publish and receive)
+  - **Limitation of 256KB per message sent**
+- Can have duplicate messages (at least once delivery beaviour)
+- Can have out of order messages (best effort ordering) -- there is an option in SWS to avoid this issue
+
+![]()
+
+## SQS Producing Messages
+
+- Produced to SQS using the SDK (**SendMessage** API)
+- The message is **persisted** in SQS until a consumer deletes it
+- Message retention deafult is `4` days can be set up to `14` days
+
+## SQS Consuming Messages
+
+- Consumers can be running on EC2 instances, AWS Lambda, on-premise servers
+- Poll SQS for messages (we can receive up to `10` messages at a time)
+- After processing the message, the consumer **must delete the message using the DeleteMessage API** -- this guarantees that no other consumer will see this message and therefore the message processing is complete
+
+![]()
+
+### SQS Consumer Parallel Processing with Multiple EC2 instances
+
+![]()
+
+### SQS with Auto Scaling Group
+
+In this example with a SQS queue and a group or EC2 instances in an ASG that poll the SQS queue and process messages in parallel. One of the default CloudWatch Metrics exposed to us by AWS for SQS is the queue length (`ApproximateNumberOfMessages`). We could set up a CloudWatch Alarm with our ASG such that whenever the queue length goes over a certain threshold the instance count in our ASG is scaled out by some amount -- thus allowing us to process messages at a higher throughput.
+
+![]()
+
+### SQS To **Decouple** Application Tiers
+
+![]()
+
+## SQS Security 
+
+- Encryption:
+  - In-flight encryption using HTTPS API
+  - At-rest encryption using KMS keys
+  - Client-side encryption for the client want to perform encryption / decryption themselves
+
+SQS Access Control:
+1. Either through IAM policies, or
+2. By using **access policies** (similar to S3 buckets)
+  - Useful for cross account access to SQS queues
+  - Useful for allowing other services (SNS, S3) to write to an SNS queue
+
+What is the difference between the two ?
+
+IAM policies vs. S3 bucket policies
+
+IAM policies specify what actions are allowed or denied on what AWS resources (e.g. allow ec2:TerminateInstance on the EC2 instance with instance_id=i-8b3620ec). **You attach IAM policies to IAM users, groups, or roles, which are then subject to the permissions you’ve defined.** In other words, **IAM policies define what a principal can do in your AWS environment.**
+
+**S3 bucket policies (applies to SQS as well), on the other hand, are attached only to S3 buckets**. S3 bucket policies **specify what actions are allowed or denied for which principals on the bucket that the bucket policy is attached to** (e.g. allow user Alice to PUT but not DELETE objects in the bucket). S3 bucket policies are a type of **access control list, or ACL** (here I mean “ACL” in the generic sense, not to be confused with S3 ACLs, which is a separate S3 feature discussed later in this post).
+
+Note: You attach S3 bucket policies at the bucket level (i.e. you can’t attach a bucket policy to an S3 object), but the permissions specified in the bucket policy apply to all the objects in the bucket.
+
+IAM policies and S3 bucket policies are both used for **access control** and they’re both written in JSON using the AWS access policy language, so they can be confused.
+
+Read more [here](https://aws.amazon.com/blogs/security/iam-policies-and-bucket-policies-and-acls-oh-my-controlling-access-to-s3-resources/).
+
+## SQS Message Visibility Timeout
+
+- After a message is polled by a consumer it temporarily becomes **invisible** to other consumers
+- By default, the message visibility timeout is `30` seconds
+- That means the consumer has `30` seconds to process the message before it is again marked as **visible** to other consumers and, thus, might be processed **again** by some other consumer who is polling the queue
+- If a consumer knows that it will take longer to process a message in can use the **ChangeMessageVisibility** API call to get more time. **Note** that if visibility timeout is high (hours) and consumer crashes, then it will take a lot of time before the timeout expires and the message has a chance to be re-processed again. On the other hand, if we set visibility timeout too low, we may get duplicate processing
+
+![]()
+
+## SQS Dead Letter Queues
+
+If a consumer fails to process a message within the visibility timeout the message goes back to the queue. Observe that this can be come an infinite loop if the consumer fails to process the message in the given time **if something is wrong with the message itself**. In such cases we need to set a threshold for how many times a message can go back into the queue after the visibility timeout expires.
+
+After the **MaximumReceives** threshold is exceeded, the message goes into the dead letter queue (DLQ). 
+
+**Note:** make sure to process the messages in the DLQ before they expire (good to set retention periof of `14` days in the DLQ)
+
+![]()
+
+## SQS Delay Queues
+
+- This is a configuration that allows us to introduce an artificial delay so that there is a lag between when the message is written into the queue and when it actuall becomes **visible** to consumers
+- The delay can be configured up to `15` minuted. Default is `0` seconds
+- Can override the default on send using the **DelaySeconds** parameter
+
+## SQS -- Long Polling
+
+- When a consumer requests messages from the queue it can optionally "wait" for messages to arrive if there are none already in the queue
+- This is called long polling
+- **Long polling decreases the number of API calls made to SQS thereby increasing the efficiency of your application**
+- The wait time can be between `1` second to `20` seconds
+- Long polling is preferable to short polling
+- Can be enabled at the queue level or at the API level using **WaitTimeSeconds**
+
+## SQS Extended Client
+
+- Message size limit is `256KB` in SQS, so how do we send larger messages ?
+- For Java clients, we can use the SQS Entended Client library
+
+Alternatively, we can cnofigure the producer to send a small metadata message (instead of the large file) to SQS which point to the large file on S3. The consumer consumes this message and knows exactly where to pick up the message from S3.
+
+![]()
+
+## SQS -- Must Know API
+
+- CreateQueue (e.g., we can set MessageRetentionPeriod), DeleteQueue (explicit delete for each record)
+- PurgeQueue: delete all the message in the queue
+- SendMessage (DelaySeconds), ReceiveMessage, DeleteMessage
+- ReceiveMessageWaitTimeSeconds: for using with long polling (i.e., how much we are willing to wait)
+- ChangeMessageVisibility: change the message visibility timeout
+- Batch APIs for SendMessage, DeleteMessage, ChangeMessageVisibility (all of which help decrease out cost since we are reducing back and forth)
+
+## SQS FIFO Queues
+
+- FIFO: First In First Out (i.e., consumer will consume messages in order based on when they where published into the queue)
+- In FIFO mode, we have limited throughput: `300` msg/s without batching and `3000` msg/s with batching
+- Exactly once send capability is available (by removing duplicates) -- but we have to provide additional information (a **deduplication ID** used to identify duplicate message published during **deduplication interval**) for this to work when publishing a message
+- **Note:** queue name has to end with ".fifo" for FIFO capability to be enabled
+
+## SQS FIFO -- Deduplication
+
+- De-duplication interval is `5` minutes (meaning that if you send the same message twice in that same interval, then the second message will be refused)
+- Two de-duplication methods:
+  - Content based deduplication: will do a SHA-256 hash of the message body
+  - Deduplication ID -- if another message is published with this deduplication ID then it is considered a duplicate
+
+## SQS FIFO -- Message Grouping
+
+- For FIFO property to work with SQS, the producer will need to specify the same value of **MessageGroupID** in an SQS FIFO queue
+- **You can only have one consumer per MessageGroupID**
+- To get ordering at the level of a subset of messages, specify different values for **MessageGroupID**
+  - Messages that share the same MessageGroupID will be in order within that group
+  - Each Group ID can have a different consumer **but only one consumer per group ID**
+
+![]()
