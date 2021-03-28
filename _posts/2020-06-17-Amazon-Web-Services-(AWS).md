@@ -3261,3 +3261,16 @@ Take away:
   - Automated Trace Analysis & Central Service Map Visualization tool
   - Request tracking across distributed systems
   - Identify latency, errors, bottlenecks
+
+# AWS Integrations and Messaging: SQS, SNS, and Kinesis
+
+## Introduction to Messaging
+
+- When we have a distributed application architecture using microservices, inevitably, they will need to communicate with each other
+- In this case, there are two patterns of communications where (generally) one is better than the other
+
+Pattern 1: **Synchronous communication**. In other words, there is point to point interaction directly between the applications themselves. We would call this a **coupled system** and generally frown upon it. E.g., in the example below the buying service would have to communicate directly with the shipping service to tell it what was just bought
+
+![]()
+
+Pattern 2: **Asynchronous communication**. In this case the applications are not directly tied to each other through implementation. Instead, there is a buffer between them (e.g., some queue like SQS or a pub sub system like SNS) which can be used a middle layer for communication. In the buying service and shipping service example from above, the buying service would post an event to this queue indicating that an item was bought and the shipping service would pick this event up from the queue and process it. There are many benefits to this approach but the biggest two are (1) less point to point integrations and (2) system handles much better in cases where we may be experiencing spikes in load. For instance, if a lot of people are buying things (e.g., some holiday) then the shipping service is not overwhelmed with requests from the buying service. Instead requests pile up in the queue and the shipping service picks up one by one and processes as usual. Such design also opens up possibilities for introducing things like AWS CloudWatch metrics to track the queue size as well as a AWS CloudWatch alarm to trigger an ASG when a certain threshhold is surpassed so that additional shipping service consumers can be spun up to handle the increase in load and then scaled down when queue size goes back to below theshhold. Such design we call **decouple systems** because each component is not tied to any other component and even if, for instance, the buying service goes down 
