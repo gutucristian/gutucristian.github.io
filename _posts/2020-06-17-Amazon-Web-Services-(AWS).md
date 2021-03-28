@@ -3413,10 +3413,184 @@ Alternatively, we can cnofigure the producer to send a small metadata message (i
 
 ## SQS FIFO -- Message Grouping
 
-- For FIFO property to work with SQS, the producer will need to specify the same value of **MessageGroupID** in an SQS FIFO queue
+- For FIFO property to work with SQS, the producer will need to specify the same value of **MessageGroupID** in an SQS FIFO queue. If you don't specify a group ID, messages will still be consumed in FIFO style but we will only be able to have **one consumer**
 - **You can only have one consumer per MessageGroupID**
 - To get ordering at the level of a subset of messages, specify different values for **MessageGroupID**
   - Messages that share the same MessageGroupID will be in order within that group
   - Each Group ID can have a different consumer **but only one consumer per group ID**
+
+![]()
+
+## AWS SNS
+
+- A Pub / Sub service that allows consumers to "subscribe" to a topic and producers to "publish" to a topic. Consumers who are subscribed to a topic, automatically receive the message when a new one is published **without having to poll** the topic
+
+This is different from SQS in that:
+1. Multiple consumers can consume the same data by "subscribing"
+2. Subscribers(s) do not poll the topic, instead the publisher is the one who notifies the subscriber(s) with new available data
+
+- All subscribers to the topic will get the messages
+- Up to 10 million subscribers per topic
+- 100,000 topic limit
+- Subscribers can be:
+  - SQS
+  - HTTP / HTTPS
+  - Lambda
+  - Emails
+  - SMS messages
+  - Mobile notifications
+
+### SNS Integrates with a lot of AWS services
+
+- Many AWS services can send data directly to SNS for notifications
+- CloudWatch (for alarms)
+- Auto Scaling Groups notifications
+- Amazon S3 (on bucket events)
+- CloudFormation (upon state changes => failed to build, etc..)
+- And more..
+
+### SNS -- How to Publish
+
+- Topic Publish (using the SDK)
+  - Create a topic
+  - Create a subscription (or many)
+  - Publish to the topic
+
+- Direct Publish (for mobile apps SDK)
+  - Create a platform application
+  - Create a platform endpoint
+  - Publish to the platform endpoint
+  - Works with Google GCM, Apple APNS, Amazon ADM
+
+### SNS + SQS: Fan Out
+
+- Push once in SNS topic receive in all SQS queues that are subscribed to that topic
+- Fully decoupled design & no data loss
+- This design leverages mechanism of SQS to add data persistence and delayed processing on top of the pub sub feature of SNS
+- Make sure your SQS queue **access policy** allows for SNS to write to the topics
+- **Note: SNS cannot send messages to SQS FIFO queues (AWS limitation)**
+
+![]()
+
+### S3 Event Fan Out Example Use Case
+
+- For the same **event type** in S3 (e.g., object create) and **prefix** (e.g., `/images`) we can only have **one S3 Event rule**
+- If you want to send the same S3 event to many SQS queues, use fan out
+
+![]()
+
+## AWS Kinesis
+
+- Kinesis is a managed alternative to Apache Kafka
+- Great for application logs, metrics, IoT, clickstreams.. (i.e., real time big data)
+- Great for streaming processing frameworks (Spark, NiFi, etc..)
+- Data is automatically replicated to `3` AZs
+- **Kinesis Streams:** low latency streaming ingest at scale
+- **Kinesis Analysis:** perform real-time analytics on streams using SQL
+- **Kinesis Firehose:** load streams into S3, Redshift, ElasticSearch, etc..
+- Good read: [Apache Kafka vs AWS Kinesis](https://www.upsolver.com/blog/comparing-apache-kafka-amazon-kinesis)
+
+![]()
+
+### Kinesis Streams Overview
+
+- Streams are divided into "shards" (i.e., partitions)
+- If we want to scale our stream processing, we need more shards
+- Data retenetion is `1` day by default, but can go up to `7` days
+- Ability to reprocess / replay data (big difference compared to SQS where once the data is read succesfully it is deleted)
+- Multiple applications can consume the same stream (before we achieved this using SNS + SQS fan out pattern)
+- Real time processing with scale of throughput
+- Once the data is inserted in Kinesis, it cannot be delete (immutability) -- log based architecture (similar to Kafka)
+
+### Kinesis Streams Shards
+
+- One stream is made of many shards (i.e., partitions)
+- 1 MB/s or 1000 messages/s at write PER SHARD
+- 2 MB/s at read PER SHARD
+- Billing is per shard provisioned, can have as many shards as you want
+- Batching available or per message calls
+- The number of shards can evolve over time (resharding / merging)
+- **Records are ordered per shard**
+
+![]()
+
+### Kinesis Producer -- Put records
+
+- PutRecord API + Partition key that gets hashed
+- Records with the same key go to the same partition (helps with ordering for a specific key)
+- Messages sent get a "sequence number"
+- Choose a partition key that is highly distributed to prevent **hot partition** issue. For example, pick a key that has high distribution across your data universe (e.g., user ID)
+- Use batch write with PutRecords to reduce cost and increase throughput
+- **ProvisionThroughputExceeded** exception is raised when we send / read more data than limit allows for the shard in question. If this happens, make sure you don't have a hot shard in which case too much data is going to one partition only
+
+### Kinesis Consumers
+
+- Can use normal CLI
+- Can use Kinesis Client Library (KCL)
+  - KCL uses DynamoDB to checkpoint offsets for each partition in a topic for a consumer
+  - KCL uses DynamoDB to track other workers and share the work amongst shards
+
+![]()
+
+### Kinesis KCL in Depth
+
+- KCL is a Java library that helps read records from a Kinesis Stream with distributed applications sharing the read workload
+- If we have `4` shards but only two consumers then each consumer (i.e., KCL instance) will be load balanced to read from two shards
+- If we have `n` shards, the maximum number of KCL instances we can have is also `n`
+- **Rule: each shard can be read by only one KCL instance, but each KCL instance can read multiple shards**
+- Progress with respect to reading a topic for a given consumer group (which can be made up of numerous KCL instances) is checkpointed in DynamoDB (need IAM access)
+- KCL can run on EC2 instances, Elastic Beanstalk, on premise applications
+- Records are read in order at the shard level (but not necessarily across shards -- same as Kafka ordering guarantee)
+
+![]()
+
+![]()
+
+### Kinesis Security
+
+- Control access / authorization using IAM policies
+- Encryption in flight using HTTPS
+- Encryption at rest using KMS
+- Possibility to encrypt / decrypt data client side
+- VPC Endpoints available for Kinesis to access within VPC
+
+### Kinesis Analytics
+
+- Perform real time analytics on Kinesis Streams using SQL
+- Kinesis Data Analytics:
+  - Auto scaling
+  - Managed (no servers to provision)
+  - Continuous
+- Pay for actual consumption rate
+- Can create streams out of real time queries
+
+### Kinesis Firehose
+
+- Fully Managed Service, no administration
+- Near real time
+- Load data into Redshift, S3, Splunk, ElasticSearch
+- Automatic scaling
+- Pay for amount of data going through Firehose
+
+## SQS vs SNS vs Kinesis
+
+![]()
+
+## Data Ordering for Kinesis vs SQS FIFO
+
+## Ordering Data in Kinesis
+
+- Kinesis topic can be split into numerous partitions / shards
+- Ordering of data is based on record key
+- The shard a record goes into is based on: `key % number of shards`
+- Therefore each key goes into the same shard
+
+### Ordering Data into SQS
+
+- For SQS standard, there is no ordering
+- For SQS FIFO, if you don't use a group ID, messages are consumed in the order they are sent **with only one consumer**
+- If you want to scale the number of consumers and have messages grouped then you will need to give a group ID when you write a message (e.g., group id "a", group id "b"). This allows us to have more consumers in total but still only one consumer per group id (**note** how this is different from Kafka and Kinesis where topic data is split into shards / partitions and we can have more than one consumer consuming because of these shards)
+
+### Example
 
 ![]()
