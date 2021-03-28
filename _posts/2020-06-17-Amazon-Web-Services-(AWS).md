@@ -3235,3 +3235,29 @@ Take away:
 - Then set an environment variable in the task defining our actual application called `AWS_XRAY_DAEMON_ADDRESS` with a value of `xray-daemon:2000` and create a link between them two using the `links` section (from a networking standpoint)
 
 ![]()
+
+## AWS CloudTrail
+
+- Provides governance, compliance and audit for your AWS account
+- Enabled by default
+- Get a history of events / API calls made within your AWS account by:
+  - Console
+  - SDK
+  - CLI
+  - AWS Services
+- Can put logs from CloudTrail into CloudWatch logs
+- If a resource is deleted in AWS, look into CloudTrail first
+
+## CloudTrail vs CloudWatch vs X-Ray
+
+- CloudTrail:
+  - Audit API calls made by users / services / AWS console
+  - Useful to detect unauthorized calls or root cause of changes
+- CloudWatch:
+  - CloudWatch Metrics for monitoring difference service metrics (some are exposed by AWS by default or we can send custom metrics)
+  - CloudWatch Logs for storing application logs
+  - CloudWatch Alarms to send notifications in case of unexpected metrics
+- X-Ray:
+  - Automated Trace Analysis & Central Service Map Visualization tool
+  - Request tracking across distributed systems
+  - Identify latency, errors, bottlenecks
