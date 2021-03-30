@@ -3668,3 +3668,63 @@ Note: Lambda maximum execution time is `15` minutes
   - Amazon Lex
   - Amazon Alexa
   - Amazon Kinesis Data Firehose
+
+## Lambda Integration with ALB
+
+- To expose a Lambda function as an HTTP(S) endpoint we can use an Application Load Balancer (ALB) or API Gateway
+- The Lambda function must be registered in a target group if we want to expose it with an ALB
+
+### ALB HTTP Request Transformation to JSON
+
+ALB transforms HTTP request before it sends it to Lambda. HTTP query string parameters, headers, and body (along with additional information) are passed down as a JSON object:
+
+![]()
+
+### Response from Lambda Function
+
+![]()
+
+### ALB Multi-Header Values
+
+- ALB can support multi header values
+- When you enable multi value headers, HTTP headers and query string parameters that are sent with multiple values are shown as arrays within the Lambda event and response object
+
+![]()
+
+## Lambda@Edge
+
+- Lets say you deployed a CDN using CloudFront
+- What if you wanted to run a global AWS Lambda alongside it? Maybe to implemente some request filtering before requests reach your application
+- For this you can use Lambda@Edge. Namely, it allows you to deploy Lambda functions not in a specific region but in each region around the world alonside you CloudFront CDN (one of the many benefits is that you can customize the CDN content)
+
+### Lambda@Edge Explained
+
+- You can use Lambda and CloudFront edge locations to change the CloudFront request and response. There are `2` different ways to modify a request and `2` different way to modify a response.
+
+To modify requests:
+1. After CloudFront receives a request from a viewer (i.e., the user) -- called viewer request
+2. Before CloudFront forwards the request to the origin -- origin request
+
+To modify response:
+1. After CloudFront receives the response from the origin -- origin response
+2. Before CloudFront forwards the response to the viewer -- viewer response
+
+What this implies is that we can generate a response to viewers without ever sending the reques to the origin by just using the **viewer request** and **viewere response** lambda functions.
+
+![]()
+
+### Lambda@Edge Global Application
+
+![]()
+
+### Lambda@Edge Use Cases
+
+- Website Security and Privacy
+- Dynamic Web Application at the Edge
+- Search Engine Optimization
+- Route across origins and Data Centers
+- Bot Mitigation at the Edge
+- Real time image transformation
+- User Authentication and Authorization before they reach the origin
+- User prioritization
+- User tracking and analytics
