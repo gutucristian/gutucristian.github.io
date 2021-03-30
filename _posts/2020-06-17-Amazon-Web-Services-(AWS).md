@@ -3594,3 +3594,77 @@ This is different from SQS in that:
 ### Example
 
 ![]()
+
+# AWS Lambda
+
+- Serverless is a new paradigm in which developers don't have to manage servers anymore
+- Initially serverless was just FaaS (Function as a Service)
+- These days serverless is more than just functions (includes managed databases, storage, messaging, etc..)
+- Serverless does not mean there are no server, it means you are not the one who is managing them
+
+## Serverless services in AWS
+
+- Lambda
+- DynamoDB
+- AWS Cognito
+- API Gateway
+- S3
+- SNS & SQS
+- Kinesis Data Firehose
+- Aurora Serverless
+- Step Functions
+- Fargate
+- etc..
+
+![]()
+
+## AWS Lambda Overview
+
+### Why AWS Lambda
+
+![]()
+
+Note: Lambda maximum execution time is `15` minutes
+
+### Benefits of Lambda
+
+- Pay per request and compute time
+- Free tier of `1,000,000` AWS Lambda requests and `400,000` GBs of compute time
+- Integrated with the whole AWS suite of services
+- Easy monitoring through AWS CloudWatch
+- Easy to get more resources (up to 3GM of RAM per function)
+- **Increasing RAM will also improve CPU and network -- there is no way to increase CPU w/o also increasing RAM**
+- **Important for exam:** Docker is not for AWS Lambda it is for ECS / Fargate
+
+### AWS Lambda Main Integrations
+
+![]()
+
+### AWS Lambda Example 1
+
+![]()
+
+### AWS Lambda Example 2 (CRON Job)
+
+![]()
+
+## Lambda Synchronous Invocations
+
+- Synchronous invocations can be made from: CLI, SDK, via API Gateway or ALB
+  - We wait for the result
+  - Error handling must happend client side (retries, exponential backoff, etc..)
+
+### Lambda -- Services that Are Invoked Synchronously
+
+- User Invoked:
+  - Elastic Load Balancing
+  - Amazon API Gateway
+  - Amazon CloudFront (Lambda@Edge)
+  - Amazon S3 Batch
+- Service Invoked:
+  - Amazon Cognito
+  - AWS Step Functions
+- Other Services:
+  - Amazon Lex
+  - Amazon Alexa
+  - Amazon Kinesis Data Firehose
