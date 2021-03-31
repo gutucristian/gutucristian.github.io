@@ -3728,3 +3728,53 @@ What this implies is that we can generate a response to viewers without ever sen
 - User Authentication and Authorization before they reach the origin
 - User prioritization
 - User tracking and analytics
+
+## Lambda Asynchronous Invocations
+
+- When an asynchronous invocation is made to Lambda the events are placed in an **Event Queue** inside the Lambda service
+- Lambda picks up requests from this queue and processes them 
+- Lambda attempts to retry on errors
+  - `3` retries in total
+  - Lambda waits `1` minute after 1st failed retry, then `2` minutes after that (for 3rd retry)
+- If retry fails after 3rd time, the event is lost unless we specifically define for it to go into a **DLQ** (dead letter queue) which can be either SNS or SQS. Note: you will need to give Lambda the correct IAM permissions for it to be able to write / invoke a call to SNS or SQS
+- Note that because of the retry, it means your function might be invoked on the same data multiple times. As such make sure the processing is **idempotetnt** (i.e., having it run multiple times on the same data will not change the result / outcome)
+- Asynchronous invocations allow you to speed up the processing if you don't need to wait for the result (e.g., you need `1000` files processed)
+- Some services are asynch by default so you have no choice
+
+![]()
+
+### AWS Services Which Invoke Lambda Asynchronously
+
+- **S3**
+- **SNS**
+- **CloudWatch Events / EventBridge**
+- CodeCommit (CodeCommit trigger: new branch, new tag, new push)
+- CodePipeline (invoke a Lambda function during the pipeline, Lambda must callback)
+- CloudWatch logs
+- Simple Email Service (SES)
+- CloudFormation
+
+## CloudWatch Events / EventBridge
+
+![]()
+
+## Lambda and S3 Event Notifications
+
+- Sample S3 events that can trigger Lambda function: `S3:ObjectCreated`, `S3:ObjectRemoved`, `S3:ObjectRestore`, `S3:Replication`, etc..
+- Object name filtering possible (e.g., `*.jpg`)
+- Classic use case: generate thumbnails of images uploaded to S3
+- S3 event notifications typically deliver to target in seconds but can sometimes take a minute or longer
+- If two writes are made to a single **non-versioned** object at the same time, it is possible that only a **single** event notification will be sent
+- If you want **to ensure that an event notification is sent for every successful write**, you can **enable versioning** on your bucket
+
+![]()
+
+## Lambda Event Source Mapping
+
+## Lambda Invocation Types Summary
+
+Three ways to invoke lambda:
+
+1. Synchronous
+2. Asynchronous
+3. Event Source Mapping
