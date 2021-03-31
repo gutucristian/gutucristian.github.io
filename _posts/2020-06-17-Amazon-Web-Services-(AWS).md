@@ -3771,10 +3771,91 @@ What this implies is that we can generate a response to viewers without ever sen
 
 ## Lambda Event Source Mapping
 
+Applies to:
+- Kinesis Data Streams
+- SQS & SQS FIFO queue
+- DynamoDB Streams
+
+Common denominator for all of the above: Lambda needs to **poll** for records from these sources.
+
+**As such, the Lambda function is invoked synchronously.**
+
+### Streams & Lambda (Kinesis & DynamoDB)
+
+- An event source mapping creates an iterator for each shard and processes items in order
+- Start with new items from the beggining of from timestamp
+- Processed items are not removed from the stream (other consumers can read them)
+- For low traffic scenarios, we can use a **batch window** mode to accumulate records before processing
+- We can also set up Lambda to process multiple batches in parallel
+- You can process multiple batches in parallel:
+  - Up to `10` Lambda batche processors per shard (note that a **Kinesis stream** (equivalent to a Kafka topic) can have muliple shards)
+  - In orderd processing is still guaranteed for each partition key. In other words, records with same key will go to same processor
+
+![]()
+
+### Streams & Lambda -- Error Handling
+
+- By default, if your function returns an error, the entire batch is reprocessed until the function succeeds, or the items in the batch expire
+- To ensure in-order processing, processing for the affected shard is paused until the error is resolved
+- You can configure the event source mapping to:
+  - Discard old events
+  - Restrict the number of retries
+  - Split the batch on error (to possibly fix Lambda timeout issue -- remember Lambda will time out after `15` minutes running)
+- Discared events can go to a **Destination**
+
+### Lambda Event Source Mapping With SQS & SQS FIFO 
+
+- Event Source Mapping will poll SQS (**Long Polling**)
+- Specify **batch size** (1-10 messages)
+- Recommended: set the queue visibility timeout to `6x` the timeout of the Lambda function
+- **To use DLQ:**
+  - **Set-up on the SQS queue not Lambda (DLQ for Lambda is only for async invocations)**
+  - Or use Lambda destinations for failures
+
+![]()
+
+### Queues & Lambda
+
+- Lambda also supports in-order processing for FIFO queues and **scales up to the number of active message groups**
+- For standard queues, items are not necessarily processed in order
+- Lambda scales up to process a standard queue as quickly as possible
+- When an error occurs, batches are returned to the queue as individual items and might be processed in a different grouping than the original batch
+- Lambda deletes items from the queue after they are processed successfully
+- You can configure the source queue to send items to a dead letter queue if they can't be processed
+
+### Lambda Event Mapper Scaling Summary
+
+- **Kinesis Data Streams & DynamoDB Streams**
+  - One Lambda invocation per stream shard
+  - If you use parallelization, up to `10` batches processed per shard simultaneously
+- **SQS Standard Queue:**
+  - Lambda adds `60` more instances per minute to scale up
+  - Up to `1000` batches of messages processed simultaneously
+- **SQS FIFO:**
+  - Messages with the same GroupID will be processed in order
+  - The Lambda function scales to the number of active consumers
+
 ## Lambda Invocation Types Summary
 
 Three ways to invoke lambda:
 
 1. Synchronous
 2. Asynchronous
-3. Event Source Mapping
+3. Event Source Mapping (Also synchronous)
+
+## Lambda Destination
+
+- Can configure to send a result to a **destination**
+- For **Asynchronous invocations:** can define destinations for successful and failed events to:
+  - SQS
+  - SNS
+  - Lambda
+  - EventBridge Bus
+- Note: AWS recommends you use destinations instead of DLQ as destinatios have more targets (but both can be used at same time)
+
+- For **Event Source Mapping**: for discarded event batches you can use SQS or SNS
+
+https://www.trek10.com/blog/lambda-destinations-what-we-learned-the-hard-way
+
+I guess that for synch Lambda invocations there is no destination since its synch and we wait to get the response. So if it failed we know that right away and can proceed accordingly (e.g., retry and so on). With asynch we fire and forget, so we don't know if request failed. So that is why async invocations have built in retry and destinations, so we can be aware of things that failed and pick them up later if neccessary.
+
