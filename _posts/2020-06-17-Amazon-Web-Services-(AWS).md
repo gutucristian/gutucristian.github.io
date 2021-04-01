@@ -3859,3 +3859,124 @@ https://www.trek10.com/blog/lambda-destinations-what-we-learned-the-hard-way
 
 I guess that for synch Lambda invocations there is no destination since its synch and we wait to get the response. So if it failed we know that right away and can proceed accordingly (e.g., retry and so on). With asynch we fire and forget, so we don't know if request failed. So that is why async invocations have built in retry and destinations, so we can be aware of things that failed and pick them up later if neccessary.
 
+## Lambda Execution Role (IAM Role)
+
+- Grants the Lambda function permissions to access AWS services / resources
+- Sample managed policies for Lambda:
+  - AWSLambdaBasicExecutionRole -- upload logs to CloudWatch
+  - AWSLambdaKinesisExecutionRole -- read from Kinesis
+  - AWSLambdaDynamoDBExecutionRole -- read from DynamoDB streams
+  - AWSLambdaSQSQueueExecutionRole -- read from SQS
+  - AWSLambdaVPCAccessExecutionRole -- deploy lambda function to VPC
+  - AWSXRayDaemonWriteAccess -- upload trace data to X-Ray
+
+- **Note: when you use an event source mapping to invoke your function, Lambda uses the execution role to read event data**
+- Best practice: create one Lambda Execution Role per function
+
+### Side Info on Event Source Mapping
+
+An event source mapping is an AWS Lambda resource that reads from an event source and invokes a Lambda function. You can use event source mappings to process items from a stream or queue in services that don't invoke Lambda functions directly. Lambda provides event source mappings for the following services.
+
+Services that Lambda reads events from:
+- Amazon DynamoDB
+- Amazon Kinesis
+- Amazon MQ
+- Amazon Managed Streaming for Apache Kafka
+- self-managed Apache Kafka
+- Amazon Simple Queue Service
+
+An event source mapping uses permissions in the function's execution role to read and manage items in the event source. Permissions, event structure, settings, and polling behavior vary by event source. For more information, see the linked topic for the service that you use as an event source.
+
+[Read more here](https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventsourcemapping.html)
+
+## Lambda Resource Based Policies
+
+- To give other accounts and AWS services permission to use your Lambda resources
+- Similar to S3 bucket policies for S3 bucket
+- An IAM principla can access Lambda:
+  - If the IAM policy attached to the **principal** authorizes it (e.g., user access)
+  - OR if the resource-based policy authorizes it (e.g., service access)
+- When an AWS service like S3 calls your Lambda function, the resource-based policy is what gives it access
+
+## Lambda Environment Variables
+
+- Environment variable is a key value pair in String form
+- Adjust the function behavior w/o updating the code
+- Helpful to store secrets (encrypted by KMS)
+- Env vars are available in our code
+- Secrets can be encrypted either by Lambda service key or our own Customer Master Key (CMK)
+
+## Lambda Monitoring
+
+- CloudWatch Logs:
+  - AWS Lambda execution logs are stored in CloudWatch Logs
+  - Make sure your AWS Lambda function has an execution role with an IAM policy that authorizes it to write to CloudWatch Logs (AWSLambdaBasicExecutionRole)
+- CloudWatch Metrics:
+  - AWS Lambda metrics are displayed in AWS CloudWatch Metrics
+  - Metrics include: invocation count, concurrent executions, error count, success rates, throttles, async delivery failures, iterator age (for Kinesis & DynamoDB streams), etc..
+
+## Lambda Tracing with X-Ray
+
+- Enable in Lambda configuration (**Active Tracing**)
+- Runs the X-Ray daemon for you
+- Need to **instrument** you code with AWS X-Ray SDK
+- Ensure Lambda function has correct IAM Execution Role so that X-Ray daemon can write
+  - The managed policy is called **AWSXRayDaemonWriteAccess**
+- Environment variables to communicate with X-Ray
+  - **\_X_AMZN_TRACE_ID:** contains the tracing header
+  - **AWS_XRAY_CONTENT_MISSING:** by default `LOG_ERROR`
+  - **AWS_XRAY_DAEMON_ADDRESS:** the X-Ray Daemon `IP_ADDRESS:PORT`
+
+## Lambda in VPC
+
+- **By default, your Lambda function is launched outside your own VPC (in an AWS-owned VPC)**
+- Therefore it cannot access resources in your VPC
+
+![]()
+
+### Configure Lambda to Be Able to Call Services in Your VPC
+
+- You must define the VPC ID, the Subnets, and the Security Groups
+- Lambda will create an ENI (Elastic Network Interface) in your subnets and to do this it will need the role: AWSLambdaVPCAccessExecutionRole
+- In figure below, for things to work (just like in EC2 instances) you will need to allow network access from Lambda Security Group
+
+![]()
+
+### Lambda inside VPC with Internet Access
+
+- Unlike EC2 instances which have internet access if they are in a **public VPC**, Lambda functions do not
+- **Deploying a Lambda function in a public subnet does not give it internet access or a public IP**
+- So what can we do? Well, we can deploy a Lambda function in a private subnet and give it internet access by routing outbound traffic to a using a **NAT Gateway / Instance** in a public subnet
+- You can use **VPC endpoints** to privately access AWS services without a NAT (essentially, by using VPC endpoint all requests from one AWS service to another service will go through AWS private internet)
+- **Note: Lambda CloudWatch logs works even without VPC endpoint or NAT Gateway
+
+![]()
+
+## Lambda Function Performance
+
+- **RAM:**
+  - Range from `128MB` to `3008MB` in `64MB` increments
+  - The more RAM you add the more vCPU credits you get
+  - At `1,792MB` a function has the equivalent of one full CPU
+  - After `1,792MB` you get more than one CPU and need to use multi-threading in your code to benefit from it
+- **If your app is CPU bound increase RAM**
+- **Timeout:** default `3` seconds, max is `900` seconds (`15` minutes)
+
+### Lambda Execution Context
+
+- The execution context is a temporary runtime environment that initializes any external dependencies of your lambda code
+- Great for db connections, HTTP clients, SDK clients
+- The execution context is maintained for some time in anticipation of another Lambda function invocation
+- The next function invocation can "re-use" the execution context and save time in initializing connection objects
+- The execution context includes the `/tmp` directory which is a space you can write files to which will be available across executions
+
+![]()
+
+### Lambda Functions `/tmp` space
+
+- If your Lambda function needs to download a big file to work, put it here
+- If your Lambda needs disk space, use this
+- Max size is `512MB`
+- The directory content remains when the execution context is frozen, providing a transient cache that can be used for multiple invocations (helpful to checkpoint your work)
+- `/tmp` is guaranteed to be available during the execution of your Lambda function. Lambda will reuse your function when possible, and when it does, the content of /tmp will be preserved along with any processes you had running when you previously exited. However, Lambda doesn't guarantee that a function invocation will be reused, so the contents of /tmp (along with the memory of any running processes) could disappear at any time. **For more permanent storage use S3 or DynamoDB**
+
