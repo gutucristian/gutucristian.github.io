@@ -3853,11 +3853,17 @@ Three ways to invoke lambda:
   - EventBridge Bus
 - Note: AWS recommends you use destinations instead of DLQ as destinatios have more targets (but both can be used at same time)
 
+![]()
+
 - For **Event Source Mapping**: for discarded event batches you can use SQS or SNS
 
 https://www.trek10.com/blog/lambda-destinations-what-we-learned-the-hard-way
 
-I guess that for synch Lambda invocations there is no destination since its synch and we wait to get the response. So if it failed we know that right away and can proceed accordingly (e.g., retry and so on). With asynch we fire and forget, so we don't know if request failed. So that is why async invocations have built in retry and destinations, so we can be aware of things that failed and pick them up later if neccessary.
+I guess that for synch Lambda invocations there is no destination since its synch and we wait to get the response. So if it failed we know that right away and can proceed accordingly (e.g., retry and so on). With asynch we fire and forget, so we don't know if request failed. So that is why async invocations have built in **retry** and **destinations**, so we can be aware of things that failed and pick them up later if neccessary.
+
+![]()
+
+Good read on async vs event source mapping: https://stackoverflow.com/questions/61018416/number-of-retries-in-aws-lambda
 
 ## Lambda Execution Role (IAM Role)
 
@@ -3980,3 +3986,34 @@ An event source mapping uses permissions in the function's execution role to rea
 - The directory content remains when the execution context is frozen, providing a transient cache that can be used for multiple invocations (helpful to checkpoint your work)
 - `/tmp` is guaranteed to be available during the execution of your Lambda function. Lambda will reuse your function when possible, and when it does, the content of /tmp will be preserved along with any processes you had running when you previously exited. However, Lambda doesn't guarantee that a function invocation will be reused, so the contents of /tmp (along with the memory of any running processes) could disappear at any time. **For more permanent storage use S3 or DynamoDB**
 
+## Lambda Concurrency and Throttling
+
+- Concurrency limit: up to `1000` concurrent executions (per AWS Region per AWS account)
+- Can set a **reserved concurrency** at the function level (i.e., concurrent execution limit for some function)
+- Each invocation over the concurrentcy limit will be throttled
+  - If sync invocation of Lambda function then it will return ThrottleError `429`
+  - Is async invocation of Lambda function it will retry automatically and then eventually will go to DLQ (unless no longer throttled at some point during one of the retries)
+- Open support ticket if you need higher limit
+
+### Lambda Concurrency Issue
+
+If you don't reserve (i.e., limit) concurrency, the following can happen:
+
+![]()
+
+### Concurrency and Async Invocations
+
+- If the function does not have enough concurrency available to process all events, additional requests are throttled
+- For throttling errors and system errors, Lambda returns the event to the event queue (remember all async invocations go into an internal Lambda service event queue) and attempts to run the function again for up to `6` hours
+- The retry interval increases exponentially from `1` second after the first attempt to a max of `5` minutes
+
+### Lambda Cold Starts & Provisioned Concurrency
+
+- **Cold Start:**
+  - When a new lambda functions is called the code is loaded and code outside handler is executed
+  - If the initialization is large (code outside handler), for instance a lot of db connections, the process can be long
+  - First request served by new instances has higher latency than rest
+- **Provisioned Concurrency:**
+  - Concurrency is allocated before the function is invoked (in advance) -- proactive mode
+  - As such, the cold start issue is eliminated and all invocations have low latency
+  - Application Auto Scaling can manage concurrency (schedule or target utilization)
