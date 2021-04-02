@@ -4069,3 +4069,30 @@ If you don't reserve (i.e., limit) concurrency, the following can happen:
 - Aliases enable stable configuration our event triggers / destinations
 - Aliases have their own ARNs
 - **Aliases cannot reference other aliases**
+
+## Lambda & CodeDeploy
+
+- **CodeDeploy** can help automate traffic shift for Lambda aliases during deploy
+- Feature is integrated with AWS SAM framework
+- **Linear:** grow traffic `N` minutes until 100%
+  - `Linear10PercentEvery3Minutes`
+  - `Linear10PercentEvery10Minutes`
+- **Canary:** try `X` percent then 100%
+  - `Canary10Percent5Minutes`
+  - `Canary10Percent30Minutes`
+- **AllAtOnce:** immediate
+- Can create Pre & Post Traffic hooks to check the health of a lambda function
+
+## Lambda Limits (**per region**)
+
+- Execution:
+  - Memory allocation: 128 MB - 3008 MB (64 MB increments)
+  - Maximum execution time: 900 seconds (15 minutes)
+  - Max env variables (4KB)
+  - Disk capacity in the "function container" 512MB
+  - Up to 1000 concurrent executions per account per region
+- Deployment:
+  - Lambda function deployment size (compressed zip) max size 50MB -- for bigger need to use S3
+  - Size of uncompressed deployment (code + dependencies) is 250MB
+  - Can use /tmp directory to load other files at startup (assuming Lambda func is in same execution context as the last one that ran)
+  - Default quota value for all of a Lambda function's environment variables is 4 KB
