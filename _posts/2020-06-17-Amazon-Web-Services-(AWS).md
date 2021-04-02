@@ -4017,3 +4017,55 @@ If you don't reserve (i.e., limit) concurrency, the following can happen:
   - Concurrency is allocated before the function is invoked (in advance) -- proactive mode
   - As such, the cold start issue is eliminated and all invocations have low latency
   - Application Auto Scaling can manage concurrency (schedule or target utilization)
+
+## Lambda Function Dependecies
+
+- If your Lambda function depends on external dependecies you will need ot install the packages alongside your code and zip it together
+- Upload the zip to Lambda if less than `50MB` else to `S3` first
+- Native libraries work if they are compiled on Amazon Linux
+
+## Lambda and CloudFormation
+
+- First option is to literally inline the function in the CloudFormation template
+- Use the Code.ZipFile property
+- The downside of inlining is that we cannot include function dependencies
+
+![]()
+
+### Lambda and CloudFormation using S3
+
+- You can store the zipped Lambda code in S3
+- You will have to refer to the S3 zip location in the CloudFormation template. Required info:
+  - S3Bucket
+  - S3Key: full path to zip
+  - S3ObjectVersion if versioned bucket
+- **If you update the code in S3 but don't update S3Bucket, S3Key, and S3ObjectVersion, then CF won't update your function**
+
+![]()
+
+## Lambda Layers
+
+- We can use Lambda layers for custom runtimes not supported by Lambda as of now (e.g., C++, Rust)
+- A more common use case is to use layers to package and externalize function dependencies so that we can re-use them without having ot package them with our function code every time (e.g., creating a lambda layer for the `flatten_json` Python package)
+
+![]()
+
+## Lambda Versions
+
+- When you work on a Lambda function we work on **$LATEST**
+- When we are ready to publish a Lambda function, we create a new **version**
+- Lambda function versions are **immutable**
+- Versions have increasing version numbers (e.g., v1, v2, v3, etc..)
+- Versions get their own ARN (Amazno Resource Number)
+- Version = code + configuration (e.g., env vars) -- nothing can be changed, **again** versions are immutable
+- Each version of the lambda function can be accessed
+
+### Lambda Aliases
+
+- Aliases are "pointers" to lambda functions
+- We can define a "dev", "test", "prod" aliases and have then point at different lambda versions
+- Aliases are **mutable**
+- Aliases enable Blue / Green deployment by assigning weights to lambda functions (e,g., configure PROD alias to point %5 traffic to v2 and %95 to v1)
+- Aliases enable stable configuration our event triggers / destinations
+- Aliases have their own ARNs
+- **Aliases cannot reference other aliases**
