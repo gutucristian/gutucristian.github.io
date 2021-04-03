@@ -4112,3 +4112,77 @@ If you don't reserve (i.e., limit) concurrency, the following can happen:
   - **Use layers where necessary**
 - **Avoid using recursive code -- never have a Lambda function call itself**
 
+# DynamoDB
+
+## DynamoDB Overview
+
+- Traditional applications leveragey RDBMS databases
+- RDBMS dbs use SQL query language
+- SQL has strong requirements about how data should be modeled
+- SQl allows joins, aggregations, computations, etc..
+- Vertical scaling (means increasing hardware)
+
+### NoSQL databases
+
+- NoSQL databases are non-relationsl databases & distributed
+- Do not support join
+- All data is present in one "row" or "document"
+- No aggregations
+- Scale horizontally
+
+### DynamoDB
+
+- Managed, highly available, replication across 3 AZ
+- NoSQL
+- Scales to massive worklaods
+- Integrates with IAM for security, authorization and administration
+- Enables event driven programming with DynamoDB Streams
+
+### DynamoDB Basics
+
+- Made of tables
+- Each table has a primary key (decided once at creation)
+- Each table can have infinite num of rows
+- Maz sze of one "row" or item is 400KB
+- Data types:
+  - Scalar types: String, Number, Binary, Boolean, Null
+  - Document types: list, map
+  - Set types: String set, Number set, Binary set
+
+### DynamoDB Primary Keys (a.k.a., partition key)
+
+- **Option 1:** partition key only (HASH)
+- Partition key must be unique for each item
+- Key must be diverse so data is well distributed
+- Ex: user id would be a diverse key that is well distributed since only one used can have the same id
+
+![]()
+
+### DynamoDB Primary Keys with Sort Key
+
+- **Option 2:** partition key + sort key
+- The combination of partition key + sort key must be unique for that row / record in the table
+- Data is grouped by partition key
+- Sort key is also often called **range key**
+- We can use the **sort key** to sort by that attribute for a particular group of records which are grouped by their **partition key**
+
+![]()
+
+## DynamoDB WCU & RCU -- Throughput
+
+- Table must have provisioned read and write capacity units (RCU and WCU)
+- **Read Capacity Units (RCU):** defines throughput for reads
+- **Write Capacity Units (WCU):** defines throughput for writes
+- There is an option to setup auto scaling of the throughput to meet demand
+- Throughput can be exceeded temporarily using **burst credit**
+- If no more burst credit is available you will get `ProvisionedThroughputException`
+- In case of `ProvisionedThroughputException` best practice is to do exponential back-off retry
+
+## DynamoDB -- Write Capacity Units
+
+- One **write capacity unit** represents **one write per seconds for an item up to 1 KB in size**
+- If the item size > 1KB then more WCU is required
+
+Examples:
+
+![]()
