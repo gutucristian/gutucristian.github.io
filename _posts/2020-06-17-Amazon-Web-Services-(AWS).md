@@ -4096,3 +4096,19 @@ If you don't reserve (i.e., limit) concurrency, the following can happen:
   - Size of uncompressed deployment (code + dependencies) is 250MB
   - Can use /tmp directory to load other files at startup (assuming Lambda func is in same execution context as the last one that ran)
   - Default quota value for all of a Lambda function's environment variables is 4 KB
+
+## Lambda Best Practices
+
+- **Perform heavy-duty work outside of your function handle**
+  - Connect to databases outside your function handler
+  - Initialize the AWS SDK outside your function handler
+  - Pull in dependencies or datasets outside of your function handler
+- **Use environment variables for:**
+  - Database connection strings, S3 bucket, etc.. (don't put these values in your code)
+  - Passwords, sensitive values.. (they can be encrypted using KMS)
+- **Minimize your deployment package size to irs runtime necessities**
+  - Break down your function if need be
+  - Remember the AWS Lambda limits
+  - **Use layers where necessary**
+- **Avoid using recursive code -- never have a Lambda function call itself**
+
