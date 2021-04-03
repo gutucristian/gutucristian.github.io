@@ -4143,7 +4143,7 @@ If you don't reserve (i.e., limit) concurrency, the following can happen:
 - Made of tables
 - Each table has a primary key (decided once at creation)
 - Each table can have infinite num of rows
-- Maz sze of one "row" or item is 400KB
+- Maz size of one "row" or item is 400KB
 - Data types:
   - Scalar types: String, Number, Binary, Boolean, Null
   - Document types: list, map
@@ -4287,10 +4287,186 @@ Example:
   - Increases the throughput and RCU consumed
   - Could also use **Limit** here to lessen the impact of parallel scans
 
-In summary (from AWS [docs](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/SQLtoNoSQL.ReadData.html)):
+**In summary (from AWS [docs](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/SQLtoNoSQL.ReadData.html)):**
 
 GetItem – Retrieves a single item from a table. This is the most efficient way to read a single item because it provides direct access to the physical location of the item. (DynamoDB also provides the BatchGetItem operation, allowing you to perform up to 100 GetItem calls in a single operation.)
 
 Query – Retrieves all of the items that have a specific partition key. Within those items, you can apply a condition to the sort key and retrieve only a subset of the data. Query provides quick, efficient access to the partitions where the data is stored. (For more information, see Partitions and Data Distribution.)
 
 Scan – Retrieves all of the items in the specified table. (This operation should not be used with large tables because it can consume large amounts of system resources.)
+
+## DynamoDB - LSI (Local Secondary Index)
+
+Some applications only need to query data using the base table's primary key. However, there might be situations where an alternative sort key would be helpful. To give your application a choice of sort keys, you can create one or more **local secondary indexes** on an Amazon DynamoDB table and issue Query or Scan requests against these indexes.
+
+- Up to five LSIs per table
+- The sort key consists of exactly one scalar attribute
+- The attribute that you choose must be a scalar String, Number, or Binary
+- **LSI must be defined at table creation time**
+
+## DynamoDB - GSI (Global Secondary Index)
+
+- To speed up queries on non key attributes use a GSI
+- GSI = partition key + optional sort key
+- The index is a new table and we can project attributes on it
+  - The partition key and sort key of the original table are always projected (KEYS_ONLY)
+  - Can specify extra attributes to project (INCLUDE)
+  - Can use all attributes from main table (ALL)
+- Must define RCU / WCU for the index
+- We can add / modify GSI (since this will create a new table all toghether) but not LSI (LSIs have to be defines at table creation time)
+
+## DynamoDB Indexes and Throttling
+
+- GSI:
+  - **If the writes are throttled on the GSI then the main table will also be throttled** even if the WCU on the main tables are fine
+  - Choose your GSI partition key carefully
+  - Seprate RCU and WCU from main table, assign your WCU capacity carefully
+
+- LSI:
+  - Uses the WCU and RCU of the maintable
+  - No special throttling considerations
+
+## DynamoDB Concurrency (**Optimistic Locking** with Version Number)
+
+Optimistic locking is a strategy to ensure that the client-side item that you are updating (or deleting) is the same as the item in Amazon DynamoDB. If you use this strategy, your database writes are protected from being overwritten by the writes of others, and vice versa.
+
+With optimistic locking, each item has an attribute that acts as a version number. If you retrieve an item from a table, the application records the version number of that item. You can update the item, but only if the version number on the server side has not changed. If there is a version mismatch, it means that someone else has modified the item before you did. The update attempt fails, because you have a stale version of the item. If this happens, you simply try again by retrieving the item and then trying to update it. Optimistic locking prevents you from accidentally overwriting changes that were made by others. It also prevents others from accidentally overwriting your changes.
+
+## DynamoDB DAX
+
+- DAX = DynamoDB Accelerator
+- Cache for DynamoDB, no application reqrite required -- enable with click of button
+- Writes go through DAX to DynamoDB
+- Allows for micro second latency for cached reads & queries
+- Solves the hot key problem (i.e., case of too many reads)
+- 5 minutes TTL for cache by default
+- Up to 10 DAX nodes in the cluster
+- Multi AZ (3 nodes min recommended for production)
+- Secure (Encryption a rest with KMS, can deploy DAX cluster in VPC, IAM, anything that happens in DAX is tracked by CloudTrail)
+
+### DAX vs ElastiCache
+
+Use DAX for simple cache for DynamoDB individual objects. If you store the same objects in ElastiCache and use that instead of DAX there is no real benefit and it just creates more work for you in terms of integration. That said, if you want to have control over what is cached then use ElastiCache.
+
+![]()
+
+## DynamoDB Streams
+
+- Changes in DynamoDB (CRUD) can end up in DynamoDB Stream (think of streams as a change log or change data capture concept.. something changes in our DB and this emits an event in our stream)
+- This stream can be read by Lambda & EC2 instance in real time and thus allows us to build things like:
+  - React to changes in real time
+  - Analytics
+  - Create derivative table / views
+  - Insert into ElasticSearch
+- As such, we can use streams to implement cross region replication
+- Streams data has 24 hour retention period
+- We can choose the info that will be written to the stream when data in the main table is modified:
+  - KEYS_ONLY: only the key attributes
+  - NEW_IMAGE: the entire item, as it appears after it was modified
+  - OLD_IMAGE: the entire item, as it appeared before it was modified
+  - NEW_AND_OLD_IMAGES: the the new and the old images of the item
+- DynamoDB streams are made of shards just like Kinesis Data Streams
+- You don't provision shards, AWS does it all
+- **Records are not retroactively populated in a stream after enabling it**
+
+### DynamoDB Streams and Lambda
+
+- You need to define an **Event Source Mapping** to read from a DynamoDB Stream
+- You need to ensure the Lambda function has the appropriate permissions
+- Once there is an Event Source Mapping your Lambda func will be invoked synchronously
+
+![]()
+
+## DynamoDB TTL
+
+- TTL = automatically delete an item after an expiry date / time
+- TTL is provided at no extra cost, deletions do not use WCU or RCU
+- TTL is a background task operated by the DynamoDB service itself
+- Helps reduce storaage and manage table size over time
+- TTL is enabled per row (you define a TTL column, and add a date time there)
+- DynamoDB typically deletes expired items within 48 hours of expiration
+- Deleted items due to TTL are also deleted in GSI / LSI
+- DynamoDB Streams can be used to recover expired items
+
+## DynamoDB CLI
+
+- `--projection-expression` : attributes to receive (filter is done on DynamoDB side, we receive only what we asked for)
+- `--filter-expression` : filter results (client side)
+
+General CLI pagination options for DynamoDB and S3:
+  - Optimization: 
+    - `--page-size` full dataset is still received but each the API call itself is returning less data back to use (e.g., helps to avoid timeouts)
+  - Pagination:
+    - `--max-items` : max num of results returned by the CLI (as part of result we also get a `NextToken` which we can use in `--starting-token`)
+    - `--starting-token`: specify the last received `NextToken` to get the next set of results
+
+## DynamoDB Transactions
+
+- Transaction = ability to perform CRUD operations at the same time or none at all
+- Is is a **all or nothing** type of operation
+- So **DynamoDB write modes:** standard, transactional
+- **DynamoDB read modes:** eventual consistency, strong consitency, transactional
+- Transactional reads and writes consume 2x more WCU and RCU
+
+## DynamoDB as Session State Cache VS Other Alternatives
+
+Its common to use DynamoDB to store session state.
+
+**When to use ElastiCache?**
+
+ElastiCache is in memory, but DynamoDB is serverless. Both are key / value stores. If exam asks for in memory then it probably means ElastiCache. If it asks for auto scaling feature then it is probably DynamoDB.
+
+**When to use EFS ?**
+
+EFS must be attached to each EC2 instance as a network drive in order for us to be able to share session state across all of them. This has a down side because EFS cannot be integrated with other services (like Lambda) which DynamoDB can. Also, EFS is a file system whereas DynamoDB is a database.
+
+**Can we use EBS ?**
+
+Depends. With EBS it is a block storage than can only be used for local caching for one instance. No sharing capabilities for caching.
+
+**What about S3 ?**
+
+In general S3 is not meant for caching of small objects. Also S3 has higher latency.
+
+## DynamoDB Write Sharding (Voting Pattern)
+
+![]()
+
+## DynamoDB Write Types
+
+- Concurrent writes
+- Conditional writes
+- Atomic writes
+- Batch writes
+
+![]()
+
+## DynamoDB Large Object Pattern
+
+If we want to write a large data into DynamoDB beyond max size (400 KB) we can write a small metadata to DynamoDB that points to where the large object is in S3 and then pick it up from S3 by using the metadata.
+
+## DynamoDB Indexing S3 Objects Metadata
+
+We can use DynamoDB to index S3 bucket object metadata. Then we can expose an API to allow us to search our S3 data efficiently.
+
+![]()
+
+## DynamoDB Table Cleanup and Copying a DynamoDB Table
+
+Some useful DynamoDB table operatinos to know about for the exam.
+
+![]()
+
+## DynamoDB Security and Other Features
+
+- Security:
+  - VPC Endpoints available to access DynamoDB w/o going through public internet (instead use AWS network)
+  - Access fully controlled by IAMN
+  - Encryption at rest using KMS
+  - Encryption in transit using SSL / TLS
+- Backup and Restore feature available:
+  - Point in time restore like RDS
+  - No performance imapct
+- Global Tables:
+  - Multi region, fully replicated, high performance
+- Amazon DMS can be used to migrate to DynamoDb from Mongo OracleDB, MySQL, S3, etc..
