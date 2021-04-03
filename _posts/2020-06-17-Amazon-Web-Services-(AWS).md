@@ -4186,3 +4186,111 @@ If you don't reserve (i.e., limit) concurrency, the following can happen:
 Examples:
 
 ![]()
+
+## DynamoDB -- Read Capacity Units
+
+With reading from DynamoDB we have two options:
+
+1. **Eventually consistent read:** if we read just after we write it is possible that we will get the old (i.e., previous) value because of replication lag
+2. **Strongly consistent read:** if we read just after we write we will get the correct data
+
+By default, DynamoDB uses eventually consistent reads, but `GetItem`, `Query`, and `Scan` provide a `ConsistentRead` parameter you can set to `True`
+
+Note: setting `ConsistentRead` to `True` will impact your RCU
+
+- A unit of read capacity represents **one strongly consistent read per second (or two eventually consistent reads per second) for items as large as 4 KB**
+
+Example:
+
+![]()
+
+### DynamoDB Partitions
+
+- Data is divided into partitions
+- Partition keys go through a hashing algorithm to know which partition to go to
+- To compute total num of partitions:
+  - By capacity: (TOTAL RCU / 3000) + (TOTAL WCU / 1000)
+  - By size: Total size / 10 GB
+  - Total Partitions: `CEIL(MAX(Capacity, Size))`
+- **WCU and RCU are spread evenly across partitions** 
+- If we exceed RCU or WCU for table we will get `ProvisionedThroughputExceededException`
+- Reasons:
+  - Hot key: one partition key is being read too many times
+  - Hot partition -- a particular partition is being read too much (remember the total table RCU and WCU is spread evenly across partitions)
+  - Very large items (remember RCU and WCU depend on item size)
+- Solutions:
+  - Exponential back-off when exception is encountered
+  - Choose a better partition key (i.e., primary key) for more distribution
+  - If purely an RCU issue, you may benefit from DynamoDB Accelerator (DAX) which is basically a cache to offload read burden from main DB
+
+## DynamoDB Basic APIs
+
+### Writing Data
+
+- **PutItem**: write data to DynamoDB (create data or full replace) -- consumes WCU
+- **UpdateItem:** update data in DynamoDB (partial update of attributes) -- possibility to use atomic counters and increase them
+- **Conditional Writes:**
+  - Accept a write / update only if conditions are respected, otherwise reject
+  - Helps with concurrent access to items
+  - No performance impact
+
+### Deleting Data
+
+- **DeleteItem:**
+  - Delete an individual row
+  - Ability to perform a coditional delete
+
+- **DeleteTable:**
+  - Delete a whole table and all its items
+  - Much quicker deletetion than calling `DeleteItem` on all items
+
+### Batching Writes
+
+- **BatchWriteItem:**
+  - Up to 25 **PutItem** and / or **DeleteItem** in one call
+  - Up to 16 MB of data written
+  - Up to 400 KB of data per item
+- Batching allows you to save in latency by reducing the number of API calls done against DynamoDB
+- Operations are done in parallel for better efficiency
+- It is possible for part of batch to fail in which case we have to retry the failed items (using exponential back-off)
+
+### Reading Data
+
+- **GetItem:**
+  - Returns single item based on the primary key
+  - primary key = HASH or HASH-RANGE (partition key + sort key)
+  - Eventually consistent read by default
+  - Option to use strongly consistent reads (this implies more RCU and might take longer to complete the read in general)
+  - **ProjectionExpression** can be specified to include only certain attributes (**note** this removes what we don't want at the source and returns to us only what we asked for thus also reducing latency)
+
+- **BatchGetItem:**
+  - Up to 100 items
+  - Up to 16 MB of data
+  - Items are retrieved in parallel to minimize latency
+
+- **Query** returns all of the items based on:
+  - PartitionKey value (must be **=** operator)
+  - Sort key value (=, <, <=, >, >=, between, begin) -- optional
+  - FilterExpression to further filter (client side filtering)
+- Returns:
+  - Up to 1 MB of data
+  - Or number of items specified in **Limit**
+- Allows you to do pagination of results
+- Can query table, local secondary index, or global secondary index
+
+- **Scan** scans the entire table and then fliter client side (most inefficient)
+- Returns up to 1 MB of data -- use pagination to keep on reading
+- Consumes a lot of RCU
+- Limit impact using **Limit** or reduce the size of the result and pause
+- For faster performance use parallel scans:
+  - Multiple instances scan multiple partitions at the same time
+  - Increases the throughput and RCU consumed
+  - Could also use **Limit** here to lessen the impact of parallel scans
+
+In summary (from AWS [docs](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/SQLtoNoSQL.ReadData.html)):
+
+GetItem – Retrieves a single item from a table. This is the most efficient way to read a single item because it provides direct access to the physical location of the item. (DynamoDB also provides the BatchGetItem operation, allowing you to perform up to 100 GetItem calls in a single operation.)
+
+Query – Retrieves all of the items that have a specific partition key. Within those items, you can apply a condition to the sort key and retrieve only a subset of the data. Query provides quick, efficient access to the partitions where the data is stored. (For more information, see Partitions and Data Distribution.)
+
+Scan – Retrieves all of the items in the specified table. (This operation should not be used with large tables because it can consume large amounts of system resources.)
