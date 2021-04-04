@@ -4470,3 +4470,51 @@ Some useful DynamoDB table operatinos to know about for the exam.
 - Global Tables:
   - Multi region, fully replicated, high performance
 - Amazon DMS can be used to migrate to DynamoDb from Mongo OracleDB, MySQL, S3, etc..
+
+# API Gateway
+
+![]()
+
+- At the most basic level, API Gateway is one way to expose Lambda functions, HTTP backends, or AWS Services to the outside world. There is no infrastucture to manage. But there is much more to API Gateway than that (also we can expose Lambda funcs with ALB)
+- Support for WebSocket Protocol
+- Handles API versioning
+- Handles difference API environments (e.g., dev, test, prod)
+- Handle security (Authentication and Authorization)
+- Create API keys, handle throttling
+- Swagger / Open API spec to define APIs
+- Transform and validate requests and responses
+- Generate SDK and API specifications
+- Cache API responses using build in cache
+
+### API Gateway -- Integrations High Level
+
+- **Lambda functions**
+  - Invoke Lambda func
+  - Easy way to expose REST API backed by Lambda
+- **HTTP**
+  - Expose HTTP endpoints in the backend
+  - Example: internal HTTP API on premise, ALB, etc..
+  - Why do this with API Gateway? Well we can add rate limiting, caching, user authentications, API keys, etc..
+- AWS Serice
+  - Expose any AWS API through API Gateway
+  - Example: start an AWS Step Function workflow, post a message to SQS
+
+### API Gateway -- Endpoint Types
+
+- **Edge Optimized (default):** for global clients
+  - Requests are routed through the CloudFront Edge locations (improves latency)
+  - The API Gateway still lives only in one region
+- **Regional:**
+  - For clients within same region
+- **Private:**
+  - Can only be accesed from your VPC using an interface VPC endpoint (ENI)
+  - Can use a resource policy to define access
+
+## API Gateway -- Deployment Stages
+
+- Making changes in API Gateway does not mean they are effective right away
+- You need to "deploy" these changes for them to take effect
+- Changes are deployed to "Stages"
+- Use any naming you want for stages
+- Each stage has it own config params
+- Stages can be rolled back to a previous version (stage deployment history is kept)
