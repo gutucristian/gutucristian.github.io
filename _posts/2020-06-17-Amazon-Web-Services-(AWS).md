@@ -4538,3 +4538,123 @@ Some useful DynamoDB table operatinos to know about for the exam.
 - So stage point to the alias and the alias points to the intended func
 
 ![]()
+
+## API Gateway -- Canary Deployment
+
+- Used to enable canary deployments for any stage (usually prod)
+- Choose the percent of traffic the canary channel receives
+- Metrics and logs are separate
+- Possibility to override stage variable for canary
+- This is blue / green deployment with AWS Lambda & API Gateway
+
+![]()
+
+## API Gateway -- Integration Types
+
+**AWS:** This type of integration lets an API expose AWS service actions. In AWS integration, you must configure both the integration request and integration response and set up necessary data mappings from the method request to the integration request, and from the integration response to the method response.
+
+**AWS_PROXY:** This type of integration lets an API method be integrated with the Lambda function invocation action with a flexible, versatile, and streamlined integration setup. This integration relies on direct interactions between the client and the integrated Lambda function.
+
+With this type of integration, also known as the Lambda proxy integration, you do not set the integration request or the integration response. API Gateway passes the incoming request from the client as the input to the backend Lambda function. The integrated Lambda function takes the input of this format and parses the input from all available sources, including request headers, URL path variables, query string parameters, and applicable body. The function returns the result following this output format.
+
+This is the preferred integration type to call a Lambda function through API Gateway and is not applicable to any other AWS service actions, including Lambda actions other than the function-invoking action.
+
+![]()
+
+**HTTP:** This type of integration lets an API expose HTTP endpoints in the backend. With the HTTP integration, also known as the HTTP custom integration, you must configure both the integration request and integration response. You must set up necessary data mappings from the method request to the integration request, and from the integration response to the method response.
+
+**HTTP_PROXY:** The HTTP proxy integration allows a client to access the backend HTTP endpoints with a streamlined integration setup on single API method. You do not set the integration request or the integration response. API Gateway passes the incoming request from the client to the HTTP endpoint and passes the outgoing response from the HTTP endpoint to the client.
+
+![]()
+
+**MOCK:** This type of integration lets API Gateway return a response without sending the request further to the backend. This is useful for API testing because it can be used to test the integration set up without incurring charges for using the backend and to enable collaborative development of an API.
+
+In collaborative development, a team can isolate their development effort by setting up simulations of API components owned by other teams by using the **MOCK** integrations. It is also used to return CORS-related headers to ensure that the API method permits **CORS** access. In fact, the API Gateway console integrates the **OPTIONS** method to support CORS with a mock integration.
+
+### Mapping Templates
+
+- Are used to modify request / response in non proxy integration modes
+- Can be used to rename / modify query string params, body content, add headers, and more..
+- Uses Velocity Template Language (VTL) begin the scenes
+- Can also be used to filter / clean results
+
+Example (transform JSON to XML for legacy backend):
+
+![]()
+
+Example (rename request query string params):
+
+![]()
+
+## Caching API responses
+
+- Default TTL is 300 seconds (min is 0 sec max is 3600 sec)
+- **Caches are defined per stage**
+- Possible to override cache settings **per method**
+- Cache encryption is possible
+- Cache capacity is between .5 GB to 237 GB
+- Expensive
+
+![]()
+
+### Cache Invalidation
+
+- Clients can invalidate the cache with header `CacheControl: max-age=0` (with proper IAM permissions)
+- If you don't impose `InvalidateCache` policy or choose require authorization check box in console any client can invalidate the API cache
+
+## API Gateway -- Usage Plans & API Keys
+
+- If you want to make an API available as an offering ($) to your customers
+- **Usage Plan:**
+  - who can aces one or more deployed API stages and methods
+  - how much and how fast they can access
+  - uses API keys to identify clients and meter access
+  - ability to configure throttling limits and quota for individual clients
+- **API Keys**:
+  - alphanumeric string values to distribute to your customers
+  - can use with usage plans to control access
+  - throttling limits are applied to the API keys
+  - quota limits is the overall number of maximum requests
+
+To configure a usage plan:
+1. Create one or more APIs, configure the methods to require an API key and deploy the APIs to stages
+2. Generate or import the API keys to distribute to application developers (your customers) who will be using your API
+3. Create the usage plan with the desired throttles and quota limits
+4. Associate the API stages and API keys with the usage plan
+
+Callers of the API must supply their assigned API key in the `x-api-key` header in the request to the API.
+
+## API Gateway -- Logging & Tracing
+
+- **CloudWatch Logs:**
+  - Enable CloudWatch logging at the Stage level (with Log Level)
+  - Can override settings on a per API basis (e.g., ERROR, DEBUG, INFO)
+  - Log contains information about request / response body
+
+- **X-Ray:**
+  - Enable tracing to get extra information about requests in API Gateway
+  - X-Ray API Gateway + Lambda gives you the full picture
+
+### API Gateway -- CloudWatch Metrics
+
+- Metrics are by stage, possibility to enable detailed metrics
+- **CacheHitCount** and **CacheMissCount** metrics: efficiency of the cache
+- **Count:** the total number of API requests in a given period
+- **IntegrationLatency:** the time between when API Gateway relays a request to the backend and when it receives a response from the backend
+- **Latency:** the time between when API Gateway receives a request from a client and when it returns a response to the client. Thus, the **latency** includes the **integration latency** and other API Gateway overhead.
+- **4XXError** (client side) and **5XXError** (server-side)
+
+### Gateway Throttling
+
+- **Account Limit**
+  - API Gateway throttles requests at 10k requests per second across all APIs in current account
+  - Above limit can be increased
+- In case of throttling => **429 Too Many Requests** (retriable error)
+- Can set limits per API **Stage and Method** to improve performance
+- Or you can define Usage Plans to throttle per customer
+
+**Just like Lambda concurrency, one API that is overloaded, if not limited, will cause the other APIs in the same account to be throttled.**
+
+### API Gateway -- Errors
+
+![]()
