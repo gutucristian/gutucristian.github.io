@@ -4518,3 +4518,23 @@ Some useful DynamoDB table operatinos to know about for the exam.
 - Use any naming you want for stages
 - Each stage has it own config params
 - Stages can be rolled back to a previous version (stage deployment history is kept)
+
+### API Gateway -- Stage Variables
+
+- Stage variables are like env vars for API Gateway
+- Use them to change often changing config values
+- They can be used in:
+  - Lambda function ARN
+  - HTTP Endpoint
+  - Parameter mapping templates
+- Use cases:
+  - Configure HTTP endpoints your stages talk to (dev, test, prod, etc..)
+  - Pass configuration params to AWS Lambda through mapping templates
+
+### API Gateway Stage Variables & Lambda Aliases
+
+- We create a **stage variable** to indicate the corresponding Lambda alias
+- Our API Gateway will automatically invoke the right Lambda function by passing the stage variable (which indicates the environment like DEV) into the Lambda function ARN which will, for instance, call the intended DEV alias lambda function
+- So stage point to the alias and the alias points to the intended func
+
+![]()
