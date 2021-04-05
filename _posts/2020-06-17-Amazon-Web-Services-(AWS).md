@@ -4922,6 +4922,6 @@ HTTP API vs REST API from exam perspective: HTTP API is a low cost alternative, 
 
 ### CUP Lambda Triggers
 
-- CUP can invoke a Lambda function synchronously on these triggers:
+CUP can invoke a Lambda function synchronously on these triggers:
 
 ![]()
