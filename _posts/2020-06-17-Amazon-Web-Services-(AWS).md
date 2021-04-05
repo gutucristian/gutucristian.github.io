@@ -4867,3 +4867,55 @@ A usage plan provides selected API clients with access to one or more deployed R
 API Gateway maintains a persistent connection between clients and API Gateway itself. There is no persistent connection between API Gateway and backend integrations such as Lambda functions. Backend services are invoked as needed, based on the content of messages received from clients.
 
 HTTP API vs REST API from exam perspective: HTTP API is a low cost alternative, only supports proxy integrations, there is no such thing as usage plan and API key.
+
+# AWS Serverless Application Model (SAM)
+
+## AWS SAM
+
+- Framework for developing and deploying serverless applications
+- All the configuration is YAML code
+- Ultimately, the simple YAML based configuration is reduced to a complex CloudFormation template outlining our infrastructure
+- Because the YAML configuration boils down to a CloudFormation template, it supports anything from CloudFormation. So: Outputs, Mappings, Parameters, Resources, etc...
+- Only two commands to deploy to AWS
+- SAM can use CodeDeploy to deploy Lambda functions
+- SAM can help you to run Lambda, API Gateway, DynamoDB locally
+
+### AWS SAM -- Recipe
+
+- **Transform Header indicates it's a SAM template:**
+  - Transform: `AWS::Serverless-2016-10-31`
+- **Write Code:**
+  - `AWS::Serverless::Function` (Lambda)
+  - `AWS::Serverless::Api` (API Gateway)
+  - `AWS::Serverless::SimpleTable` (DynamoDB)
+- **Package & Deploy:**
+  - `aws cloudformation package` / `sam package`
+  - `aws cloudformation deploy` / `sam deploy`
+
+# Cognito: Cognito User Pools, Cognito Identity Pools & Cognito Sync
+
+- We want to give our users an identity so that they can interact with our application
+- **Cognito User Pools:**
+  - Sign in functionality for app users
+  - Integrate with API Gateway & Application Load Balancer
+- **Cognito Identity Pools (Federated Identity):**
+  - Provide AWS credentials to users so they can access AWS resources directly
+  - Integrate with Cognito User Pools as an identity provider
+- **Cognito Sync**:
+  - Sync data from device to Cognito
+  - Is deprecated and replaced by AppSync
+- **Cognito vs IAM:** when you hear "hundreds of users", "mobile users", "authenticate with SAML" think Cognito. IAM is for all of the users you trust in your AWS environment but for all other users that log in / register with your application use Cognito.
+
+## Cognito User Pools (CUP) -- User Features
+
+- Create a serverless database of users for your web & mobile apps
+- Simple login: username (or email) & password
+- Password reset is possible
+- Email & Phone number verification capability
+- MFA capability
+- Federated Identities: users from Facebook, Google, SAML
+- There is a feature to block users if their credentials are compromised elsewhere
+- After login is successful we get back a JSON Web Token (JWT)
+- CUP integrates with **API Gateway** and **Application Load Balancer**
+
+![]()
