@@ -3827,7 +3827,7 @@ Common denominator for all of the above: Lambda needs to **poll** for records fr
 
 ![](https://s3.amazonaws.com/gutucristian.com/LambdaDestinationEventSourceMapping.png)
 
-### Lambda Event Source Mapping With SQS & SQS FIFO 
+### Lambda Event Source Mapping With SQS & SQS FIFO & DynamoDB
 
 - Event Source Mapping will poll SQS (**Long Polling**)
 - Specify **batch size** (1-10 messages)
@@ -3837,6 +3837,8 @@ Common denominator for all of the above: Lambda needs to **poll** for records fr
   - Or use Lambda destinations for failures
 
 ![](https://s3.amazonaws.com/gutucristian.com/LambdaEventSourceMappingWithSQS.png)
+
+![](https://s3.amazonaws.com/gutucristian.com/DynamoDBStreamsAndLambda.png)
 
 ### Queues & Lambda
 
@@ -4142,9 +4144,13 @@ If you don't reserve (i.e., limit) concurrency, the following can happen:
 
 # DynamoDB
 
+## Traditional Architecture
+
+![](https://s3.amazonaws.com/gutucristian.com/DBTraditionalArch.png)
+
 ## DynamoDB Overview
 
-- Traditional applications leveragey RDBMS databases
+- Traditional applications leverage RDBMS databases
 - RDBMS dbs use SQL query language
 - SQL has strong requirements about how data should be modeled
 - SQl allows joins, aggregations, computations, etc..
@@ -4213,7 +4219,7 @@ If you don't reserve (i.e., limit) concurrency, the following can happen:
 
 Examples:
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/DynamoDBWCUExample.png)
 
 ## DynamoDB -- Read Capacity Units
 
@@ -4230,7 +4236,7 @@ Note: setting `ConsistentRead` to `True` will impact your RCU
 
 Example:
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/DynamoDBRCUExample.png)
 
 ### DynamoDB Partitions
 
@@ -4332,6 +4338,8 @@ Some applications only need to query data using the base table's primary key. Ho
 - The attribute that you choose must be a scalar String, Number, or Binary
 - **LSI must be defined at table creation time**
 
+![](https://s3.amazonaws.com/gutucristian.com/DynamoDBLSI.png)
+
 ## DynamoDB - GSI (Global Secondary Index)
 
 - To speed up queries on non key attributes use a GSI
@@ -4376,7 +4384,7 @@ With optimistic locking, each item has an attribute that acts as a version numbe
 
 Use DAX for simple cache for DynamoDB individual objects. If you store the same objects in ElastiCache and use that instead of DAX there is no real benefit and it just creates more work for you in terms of integration. That said, if you want to have control over what is cached then use ElastiCache.
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/DybamoDBDAXvsElastiCache.png)
 
 ## DynamoDB Streams
 
@@ -4403,7 +4411,7 @@ Use DAX for simple cache for DynamoDB individual objects. If you store the same 
 - You need to ensure the Lambda function has the appropriate permissions
 - Once there is an Event Source Mapping your Lambda func will be invoked synchronously
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/DynamoDBStreamsAndLambda.png)
 
 ## DynamoDB TTL
 
@@ -4458,7 +4466,7 @@ In general S3 is not meant for caching of small objects. Also S3 has higher late
 
 ## DynamoDB Write Sharding (Voting Pattern)
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/DynamoDBWritePattern.png)
 
 ## DynamoDB Write Types
 
@@ -4467,7 +4475,7 @@ In general S3 is not meant for caching of small objects. Also S3 has higher late
 - Atomic writes
 - Batch writes
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/DynamoDBWriteTypes.png)
 
 ## DynamoDB Large Object Pattern
 
@@ -4477,13 +4485,13 @@ If we want to write a large data into DynamoDB beyond max size (400 KB) we can w
 
 We can use DynamoDB to index S3 bucket object metadata. Then we can expose an API to allow us to search our S3 data efficiently.
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/DynamoDBIndexingS3ObjectMetadata.png)
 
 ## DynamoDB Table Cleanup and Copying a DynamoDB Table
 
 Some useful DynamoDB table operatinos to know about for the exam.
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/DynamoDBTableOperations.png)
 
 ## DynamoDB Security and Other Features
 
