@@ -3289,7 +3289,7 @@ Pattern 2: **Asynchronous communication**. In this case the applications are not
 
 ![](https://s3.amazonaws.com/gutucristian.com/AsyncCommunication.png)
 
-## AWS SWS -- Standard Queue Service
+## AWS SQS -- Standard Queue Service
 
 - Fully managed, used to decouple applications
 - Attributes:
@@ -3484,14 +3484,14 @@ This is different from SQS in that:
 - Make sure your SQS queue **access policy** allows for SNS to write to the topics
 - **Note: SNS cannot send messages to SQS FIFO queues (AWS limitation)**
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/SNSSQSFanOut.png)
 
 ### S3 Event Fan Out Example Use Case
 
 - For the same **event type** in S3 (e.g., object create) and **prefix** (e.g., `/images`) we can only have **one S3 Event rule**
 - If you want to send the same S3 event to many SQS queues, use fan out
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/S3FanOutExample.png)
 
 ## AWS Kinesis
 
@@ -3504,7 +3504,7 @@ This is different from SQS in that:
 - **Kinesis Firehose:** load streams into S3, Redshift, ElasticSearch, etc..
 - Good read: [Apache Kafka vs AWS Kinesis](https://www.upsolver.com/blog/comparing-apache-kafka-amazon-kinesis)
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/Kinesis.png)
 
 ### Kinesis Streams Overview
 
@@ -3526,7 +3526,7 @@ This is different from SQS in that:
 - The number of shards can evolve over time (resharding / merging)
 - **Records are ordered per shard**
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/KinesisStreamShards.png)
 
 ### Kinesis Producer -- Put records
 
@@ -3537,6 +3537,8 @@ This is different from SQS in that:
 - Use batch write with PutRecords to reduce cost and increase throughput
 - **ProvisionThroughputExceeded** exception is raised when we send / read more data than limit allows for the shard in question. If this happens, make sure you don't have a hot shard in which case too much data is going to one partition only
 
+![](https://s3.amazonaws.com/gutucristian.com/KinesisPutRecords.png)
+
 ### Kinesis Consumers
 
 - Can use normal CLI
@@ -3544,7 +3546,7 @@ This is different from SQS in that:
   - KCL uses DynamoDB to checkpoint offsets for each partition in a topic for a consumer
   - KCL uses DynamoDB to track other workers and share the work amongst shards
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/KinesisConsumers.png)
 
 ### Kinesis KCL in Depth
 
@@ -3556,9 +3558,9 @@ This is different from SQS in that:
 - KCL can run on EC2 instances, Elastic Beanstalk, on premise applications
 - Records are read in order at the shard level (but not necessarily across shards -- same as Kafka ordering guarantee)
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/KCLInDepthEx1.png)
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/KCLInDepthEx2.png)
 
 ### Kinesis Security
 
@@ -3588,9 +3590,11 @@ This is different from SQS in that:
 
 ## SQS vs SNS vs Kinesis
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/SQSvsSNSvsKinesis.png)
 
 ## Data Ordering for Kinesis vs SQS FIFO
+
+![](https://s3.amazonaws.com/gutucristian.com/KinesisVsSQSOrderingExample.png)
 
 ## Ordering Data in Kinesis
 
@@ -3636,7 +3640,7 @@ This is different from SQS in that:
 
 ### Why AWS Lambda
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/WhyAWSLambda.png)
 
 Note: Lambda maximum execution time is `15` minutes
 
@@ -3652,15 +3656,15 @@ Note: Lambda maximum execution time is `15` minutes
 
 ### AWS Lambda Main Integrations
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/LambdaMainIntegrations.png)
 
 ### AWS Lambda Example 1
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/LambdaExample1.png)
 
 ### AWS Lambda Example 2 (CRON Job)
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/LambdaExample2.png)
 
 ## Lambda Synchronous Invocations
 
@@ -3688,11 +3692,13 @@ Note: Lambda maximum execution time is `15` minutes
 - To expose a Lambda function as an HTTP(S) endpoint we can use an Application Load Balancer (ALB) or API Gateway
 - The Lambda function must be registered in a target group if we want to expose it with an ALB
 
+![](https://s3.amazonaws.com/gutucristian.com/LambdaWithALB.png)
+
 ### ALB HTTP Request Transformation to JSON
 
 ALB transforms HTTP request before it sends it to Lambda. HTTP query string parameters, headers, and body (along with additional information) are passed down as a JSON object:
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/LambdaALBHTTPReqTransformation.png)
 
 ### Response from Lambda Function
 
@@ -3703,7 +3709,7 @@ ALB transforms HTTP request before it sends it to Lambda. HTTP query string para
 - ALB can support multi header values
 - When you enable multi value headers, HTTP headers and query string parameters that are sent with multiple values are shown as arrays within the Lambda event and response object
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/LambdaALBMultiHeaderValues.png)
 
 ## Lambda@Edge
 
@@ -3725,11 +3731,11 @@ To modify response:
 
 What this implies is that we can generate a response to viewers without ever sending the reques to the origin by just using the **viewer request** and **viewere response** lambda functions.
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/LambdaAtEdgeExplained.png)
 
 ### Lambda@Edge Global Application
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/LambdaAtEdgeGlobalApplication.png)
 
 ### Lambda@Edge Use Cases
 
@@ -3755,7 +3761,7 @@ What this implies is that we can generate a response to viewers without ever sen
 - Asynchronous invocations allow you to speed up the processing if you don't need to wait for the result (e.g., you need `1000` files processed)
 - Some services are asynch by default so you have no choice
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/LambdaAsynchInvocations.png)
 
 ### AWS Services Which Invoke Lambda Asynchronously
 
@@ -3770,7 +3776,7 @@ What this implies is that we can generate a response to viewers without ever sen
 
 ## CloudWatch Events / EventBridge
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/LambdaWithCloudWatchEventsOrEventBridge.png)
 
 ## Lambda and S3 Event Notifications
 
@@ -3781,7 +3787,7 @@ What this implies is that we can generate a response to viewers without ever sen
 - If two writes are made to a single **non-versioned** object at the same time, it is possible that only a **single** event notification will be sent
 - If you want **to ensure that an event notification is sent for every successful write**, you can **enable versioning** on your bucket
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/LambdaS3EventNotifications.png)
 
 ## Lambda Event Source Mapping
 
@@ -3794,6 +3800,8 @@ Common denominator for all of the above: Lambda needs to **poll** for records fr
 
 **As such, the Lambda function is invoked synchronously.**
 
+![](https://s3.amazonaws.com/gutucristian.com/LambdaEventSourceMapping.png)
+
 ### Streams & Lambda (Kinesis & DynamoDB)
 
 - An event source mapping creates an iterator for each shard and processes items in order
@@ -3805,7 +3813,7 @@ Common denominator for all of the above: Lambda needs to **poll** for records fr
   - Up to `10` Lambda batche processors per shard (note that a **Kinesis stream** (equivalent to a Kafka topic) can have muliple shards)
   - In orderd processing is still guaranteed for each partition key. In other words, records with same key will go to same processor
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/StreamsAndLambdaKinesisAndDynamoDB.png)
 
 ### Streams & Lambda -- Error Handling
 
@@ -3817,6 +3825,8 @@ Common denominator for all of the above: Lambda needs to **poll** for records fr
   - Split the batch on error (to possibly fix Lambda timeout issue -- remember Lambda will time out after `15` minutes running)
 - Discared events can go to a **Destination**
 
+![](https://s3.amazonaws.com/gutucristian.com/LambdaDestinationEventSourceMapping.png)
+
 ### Lambda Event Source Mapping With SQS & SQS FIFO 
 
 - Event Source Mapping will poll SQS (**Long Polling**)
@@ -3826,7 +3836,7 @@ Common denominator for all of the above: Lambda needs to **poll** for records fr
   - **Set-up on the SQS queue not Lambda (DLQ for Lambda is only for async invocations)**
   - Or use Lambda destinations for failures
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/LambdaEventSourceMappingWithSQS.png)
 
 ### Queues & Lambda
 
@@ -3867,15 +3877,13 @@ Three ways to invoke lambda:
   - EventBridge Bus
 - Note: AWS recommends you use destinations instead of DLQ as destinatios have more targets (but both can be used at same time)
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/LambdaDestinationAsync.png)
 
 - For **Event Source Mapping**: for discarded event batches you can use SQS or SNS
 
 https://www.trek10.com/blog/lambda-destinations-what-we-learned-the-hard-way
 
 I guess that for synch Lambda invocations there is no destination since its synch and we wait to get the response. So if it failed we know that right away and can proceed accordingly (e.g., retry and so on). With asynch we fire and forget, so we don't know if request failed. So that is why async invocations have built in **retry** and **destinations**, so we can be aware of things that failed and pick them up later if neccessary.
-
-![]()
 
 Good read on async vs event source mapping: https://stackoverflow.com/questions/61018416/number-of-retries-in-aws-lambda
 
@@ -3952,15 +3960,15 @@ An event source mapping uses permissions in the function's execution role to rea
 - **By default, your Lambda function is launched outside your own VPC (in an AWS-owned VPC)**
 - Therefore it cannot access resources in your VPC
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/LambdaInAWSVPCByDefault.png)
 
 ### Configure Lambda to Be Able to Call Services in Your VPC
 
 - You must define the VPC ID, the Subnets, and the Security Groups
-- Lambda will create an ENI (Elastic Network Interface) in your subnets and to do this it will need the role: AWSLambdaVPCAccessExecutionRole
+- Lambda will create an ENI (Elastic Network Interface) in your subnets and to do this it will need the role: `AWSLambdaVPCAccessExecutionRole`
 - In figure below, for things to work (just like in EC2 instances) you will need to allow network access from Lambda Security Group
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/LambdaCallServicesInVPC.png)
 
 ### Lambda inside VPC with Internet Access
 
@@ -3970,7 +3978,7 @@ An event source mapping uses permissions in the function's execution role to rea
 - You can use **VPC endpoints** to privately access AWS services without a NAT (essentially, by using VPC endpoint all requests from one AWS service to another service will go through AWS private internet)
 - **Note: Lambda CloudWatch logs works even without VPC endpoint or NAT Gateway
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/LambdaInSubnetWithInternetAccess.png)
 
 ## Lambda Function Performance
 
@@ -3990,7 +3998,7 @@ An event source mapping uses permissions in the function's execution role to rea
 - The next function invocation can "re-use" the execution context and save time in initializing connection objects
 - The execution context includes the `/tmp` directory which is a space you can write files to which will be available across executions
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/LambdaExecutionContext.png)
 
 ### Lambda Functions `/tmp` space
 
@@ -4013,7 +4021,7 @@ An event source mapping uses permissions in the function's execution role to rea
 
 If you don't reserve (i.e., limit) concurrency, the following can happen:
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/LambdaConcurrencyIssue.png)
 
 ### Concurrency and Async Invocations
 
@@ -4044,7 +4052,7 @@ If you don't reserve (i.e., limit) concurrency, the following can happen:
 - Use the Code.ZipFile property
 - The downside of inlining is that we cannot include function dependencies
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/LambdaCFInline.png)
 
 ### Lambda and CloudFormation using S3
 
@@ -4055,14 +4063,14 @@ If you don't reserve (i.e., limit) concurrency, the following can happen:
   - S3ObjectVersion if versioned bucket
 - **If you update the code in S3 but don't update S3Bucket, S3Key, and S3ObjectVersion, then CF won't update your function**
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/LambdaCFS3.png)
 
 ## Lambda Layers
 
 - We can use Lambda layers for custom runtimes not supported by Lambda as of now (e.g., C++, Rust)
 - A more common use case is to use layers to package and externalize function dependencies so that we can re-use them without having ot package them with our function code every time (e.g., creating a lambda layer for the `flatten_json` Python package)
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/LambdaLayers.png)
 
 ## Lambda Versions
 
@@ -4074,6 +4082,8 @@ If you don't reserve (i.e., limit) concurrency, the following can happen:
 - Version = code + configuration (e.g., env vars) -- nothing can be changed, **again** versions are immutable
 - Each version of the lambda function can be accessed
 
+![](https://s3.amazonaws.com/gutucristian.com/LambdaVersions.png)
+
 ### Lambda Aliases
 
 - Aliases are "pointers" to lambda functions
@@ -4083,6 +4093,8 @@ If you don't reserve (i.e., limit) concurrency, the following can happen:
 - Aliases enable stable configuration our event triggers / destinations
 - Aliases have their own ARNs
 - **Aliases cannot reference other aliases**
+
+![](https://s3.amazonaws.com/gutucristian.com/LambdaAliases.png)
 
 ## Lambda & CodeDeploy
 
@@ -4096,6 +4108,8 @@ If you don't reserve (i.e., limit) concurrency, the following can happen:
   - `Canary10Percent30Minutes`
 - **AllAtOnce:** immediate
 - Can create Pre & Post Traffic hooks to check the health of a lambda function
+
+![](https://s3.amazonaws.com/gutucristian.com/LambdaAndCodeDeploy.png)
 
 ## Lambda Limits (**per region**)
 
@@ -4170,7 +4184,7 @@ If you don't reserve (i.e., limit) concurrency, the following can happen:
 - Key must be diverse so data is well distributed
 - Ex: user id would be a diverse key that is well distributed since only one used can have the same id
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/DynamoDBPrimaryKey.png)
 
 ### DynamoDB Primary Keys with Sort Key
 
@@ -4180,7 +4194,7 @@ If you don't reserve (i.e., limit) concurrency, the following can happen:
 - Sort key is also often called **range key**
 - We can use the **sort key** to sort by that attribute for a particular group of records which are grouped by their **partition key**
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/DynamoDBPrimaryKeyPlusSortKey.png)
 
 ## DynamoDB WCU & RCU -- Throughput
 
