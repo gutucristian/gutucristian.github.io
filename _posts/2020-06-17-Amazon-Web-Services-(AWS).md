@@ -3634,8 +3634,6 @@ This is different from SQS in that:
 - Fargate
 - etc..
 
-![]()
-
 ## AWS Lambda Overview
 
 ### Why AWS Lambda
