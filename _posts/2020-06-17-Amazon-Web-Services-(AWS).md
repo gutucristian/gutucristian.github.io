@@ -4507,7 +4507,7 @@ Some useful DynamoDB table operatinos to know about for the exam.
 
 # API Gateway
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/APIGateway.png)
 
 - At the most basic level, API Gateway is one way to expose Lambda functions, HTTP backends, or AWS Services to the outside world. There is no infrastucture to manage. But there is much more to API Gateway than that (also we can expose Lambda funcs with ALB)
 - Support for WebSocket Protocol
@@ -4571,7 +4571,7 @@ Some useful DynamoDB table operatinos to know about for the exam.
 - Our API Gateway will automatically invoke the right Lambda function by passing the stage variable (which indicates the environment like DEV) into the Lambda function ARN which will, for instance, call the intended DEV alias lambda function
 - So stage point to the alias and the alias points to the intended func
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/APIGatewayStageVarsAndLambdaAlias.png)
 
 ## API Gateway -- Canary Deployment
 
@@ -4581,7 +4581,7 @@ Some useful DynamoDB table operatinos to know about for the exam.
 - Possibility to override stage variable for canary
 - This is blue / green deployment with AWS Lambda & API Gateway
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/APIGatewayCanaryDeployment.png)
 
 ## API Gateway -- Integration Types
 
@@ -4593,13 +4593,17 @@ With this type of integration, also known as the Lambda proxy integration, you d
 
 This is the preferred integration type to call a Lambda function through API Gateway and is not applicable to any other AWS service actions, including Lambda actions other than the function-invoking action.
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/APIGatewayAWSProxyIntegration.png)
+
+Proxy integration example request and response payloads:
+
+![](https://s3.amazonaws.com/gutucristian.com/APIGatewayAWSProxyIntegrationReqData.png)
 
 **HTTP:** This type of integration lets an API expose HTTP endpoints in the backend. With the HTTP integration, also known as the HTTP custom integration, you must configure both the integration request and integration response. You must set up necessary data mappings from the method request to the integration request, and from the integration response to the method response.
 
 **HTTP_PROXY:** The HTTP proxy integration allows a client to access the backend HTTP endpoints with a streamlined integration setup on single API method. You do not set the integration request or the integration response. API Gateway passes the incoming request from the client to the HTTP endpoint and passes the outgoing response from the HTTP endpoint to the client.
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/APIGatewayHTTPProxy.png)
 
 **MOCK:** This type of integration lets API Gateway return a response without sending the request further to the backend. This is useful for API testing because it can be used to test the integration set up without incurring charges for using the backend and to enable collaborative development of an API.
 
@@ -4614,11 +4618,11 @@ In collaborative development, a team can isolate their development effort by set
 
 Example (transform JSON to XML for legacy backend):
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/MappingTemplateEx1.png)
 
 Example (rename request query string params):
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/MappingTemplateEx2.png)
 
 ## Caching API responses
 
@@ -4629,7 +4633,7 @@ Example (rename request query string params):
 - Cache capacity is between .5 GB to 237 GB
 - Expensive
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/APIGatewayCache.png)
 
 ### Cache Invalidation
 
@@ -4692,7 +4696,7 @@ Callers of the API must supply their assigned API key in the `x-api-key` header 
 
 ### API Gateway -- Errors
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/APIGatewayErrors.png)
 
 ## API Gateway - Cross-Origin Resource Sharing (CORS)
 
@@ -4705,7 +4709,7 @@ Cross-Origin Resource Sharing (CORS) is an HTTP-header based mechanism that allo
   - Access-Control-Allow-Origin
 - CORS can be enabled through the console
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/APIGatewayCORS.png)
 
 ## API Gateway Authentication and Authorization
 
@@ -4720,7 +4724,7 @@ Authorization: who has access to what
 - Good to provide access within AWS (EC2, Lambda, IAM users..)
 - Leverages "Sig v4" capability where IAM credential are in headers
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/APIGatewaySecurityIAMPermissions.png)
 
 ### API Gateway Security -- Resource Policies
 
@@ -4729,7 +4733,7 @@ Authorization: who has access to what
 - Allow for a specific source IP address
 - Allow for a VPC Endpoint
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/APIGatewaySecurityResourcePolicies.png)
 
 ### API Gateway Security -- Cognito User Pools
 
@@ -4739,7 +4743,7 @@ Authorization: who has access to what
 - Authentication = Cognito User Pools
 - Authorization = API Gateway Methods
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/APIGatewaySecurityCognitoUserPools.png)
 
 ### API Gateway Security -- **Lambda Authorizer (formerly Custom Authorizers)**
 
@@ -4952,10 +4956,10 @@ HTTP API vs REST API from exam perspective: HTTP API is a low cost alternative, 
 - After login is successful we get back a JSON Web Token (JWT)
 - CUP integrates with **API Gateway** and **Application Load Balancer**
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/CognitoUserPoolsIntegrations.png)
 
 ### CUP Lambda Triggers
 
 CUP can invoke a Lambda function synchronously on these triggers:
 
-![]()
+![](https://s3.amazonaws.com/gutucristian.com/CognitoUserPoolsTriggers.png)
