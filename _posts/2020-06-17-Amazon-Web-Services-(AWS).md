@@ -6,7 +6,7 @@ This study guide is a collection of my notes in preparation for the AWS Certifie
 
 - AWS has **Regions** (cluster of data centers) all around the world
 - Example region names: `us-east-1`, `us-east-2`, `eu-west-3`, etc...
-- Most AWS services are **region-scoped** (e.g., EC2). In other words, if, for example, you you use a service in region `us-east-1` (N. Virginia) your data will not be replicated or synchronized to other regions (e.g., `us-east-2`, etc..), so you would have to re-create your infrastructure
+- Most AWS services are **region-scoped** (e.g., EC2). In other words, if, for example, you use a service in region `us-east-1` (N. Virginia) your data will not be replicated or synchronized to other regions (e.g., `us-east-2`, etc..), so you would have to re-create your infrastructure
 - Some AWS services are **global services**. This means they are **not** linked to any particular region (e.g., Identity and Access Management or IAM)
 
 ## AWS Availability Zones (AZs)
@@ -42,7 +42,7 @@ At a high level, IAM has:
 
 **Important distinction:** Users is for physical people and Roles are for machines
 
-- IAM had a global view. In other words, when you create a User, Group, or Role in your AWS account it will be accross all regions
+- IAM has a global view. In other words, when you create a User, Group, or Role in your AWS account it will be accross all regions
 - Permissions are governed by Policies (JSON)
 - MFA (Multi Factor Authentication) can be setup
 - IAM has predefined "managed policies" (these are common policies that Amazon has already put together so we don't have to re-write them)
@@ -144,10 +144,10 @@ Security Groups Good to Know:
 - **If application gives a "connection refused" error**, then it's an **application error or it hasn't been launched**
 - Operate at instance level
 - Allow or deny traffic that a NACL allows in
-- Are implicit deny -- you can only add "allow" rules
+- Are **implicit deny -- you can only add "allow" rules**
 - By **default, all inbound traffic is denied, and all outbound traffic is allowed**
 - **Are stateful -- response traffic is automatically allowed**
-  - For example, if inbound allows TCP port `80` (HTTP) but denies all outbound traffic and we get a request from the outside to port `80`, a response will still be sent (even though Security Group says all outbound traffic is denied). This is because, by default, all response traffic is automatically allowed. However, we would not be able to initiate a request to the outside world from within the instance since per the Security Group all outbound traffic is denied ([reference](https://www.fugue.co/blog/cloud-network-security-101-aws-security-groups-vs-nacls))
+  - For example, if inbound allows TCP port `80` (HTTP) but denies all outbound traffic and we get a request from the outside to port `80`, a response will still be sent (even though Security Group says all outbound traffic is denied). This is because, by default, all **response** traffic is automatically allowed. However, we would not be able to initiate a request to the outside world from within the instance since per the Security Group all outbound traffic is denied ([reference](https://www.fugue.co/blog/cloud-network-security-101-aws-security-groups-vs-nacls))
 
 ![](https://s3.amazonaws.com/gutucristian.com/SecurityGroup1.png)
 
