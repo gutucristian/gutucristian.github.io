@@ -269,6 +269,10 @@ A note on why you need `#!/bin/bash`:
 - Has the highest cost, but no upfront payment
 - No long term commitment
 - Recommended for short-term and un-interrupted workloads where you can't predict how the application will behave
+- When you purchase a Reserved Instance, you determine the scope of the Reserved Instance. The scope is either regional or zonal
+  - Regional: When you purchase a Reserved Instance for a Region, it's referred to as a regional Reserved Instance
+  - Zonal: When you purchase a Reserved Instance for a specific Availability Zone, it's referred to as a zonal Reserved Instance
+  - [Reference](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/reserved-instances-scope.html)
 
 **EC2 Reserved Instances**
 
@@ -4470,8 +4474,11 @@ In general S3 is not meant for caching of small objects. Also S3 has higher late
 
 - Concurrent writes
 - Conditional writes
+  - DynamoDB optionally supports conditional writes for write operations (PutItem, UpdateItem, DeleteItem). A conditional write succeeds only if the item attributes meet one or more expected conditions. Otherwise, it returns an error. For example, you might want a PutItem operation to succeed only if there is not already an item with the same primary key. Or you could prevent an UpdateItem operation from modifying an item if one of its attributes has a certain value. Conditional writes are helpful in cases where multiple users attempt to modify the same item.
 - Atomic writes
+  - Atomic Counters is a numeric attribute that is incremented, unconditionally, without interfering with other write requests. You might use an atomic counter to track the number of visitors to a website
 - Batch writes
+  - Batch operations (read and write) help reduce the number of network round trips from your application to DynamoDB. In addition, DynamoDB performs the individual read or write operations in parallel. Applications benefit from this parallelism without having to manage concurrency or threading.
 
 ![](https://s3.amazonaws.com/gutucristian.com/DynamoDBWriteTypes.png)
 
