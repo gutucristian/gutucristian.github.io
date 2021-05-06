@@ -260,8 +260,8 @@ A note on why you need `#!/bin/bash`:
   - Convertible Reserved Instances: long workloads with flexible instances
   - Scheduled Reserved Instances: example -- every Thursday between `3` PM and `6` PM
 - **Spot Instances**: short workloads, much cheaper price, but can loose instance if spot price goes above your max bid (thus, less reliable)
-- **Dedicated Instances**: no other customers will share your hardware
-- **Dedicated Hosts**: book an entire physical server, control instance placement
+- **Dedicated Instances**: Your instance runs on some **dedicated hardware, but it is not lockdown to you**. If you stop/start instance, you can get some other hardware somewhere else. Basically, **the hardware is "yours" (you are not sharing it with others) for the time your instance is running**. You stop/start it, you may get different physical machine later on (maybe older, maybe newer, maybe its specs will be a bit different), and so on. So your instance is moved around on different physical servers - whichever is not occupied by others at the time
+- **Dedicated Hosts**: unlike dedicated instances, with dedicated host, the physical server is basically yours. It does not change, **it's always the same physical machine for as long as you are paying**
 
 **EC2 On Demand**
 
