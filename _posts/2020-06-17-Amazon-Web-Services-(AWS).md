@@ -269,10 +269,6 @@ A note on why you need `#!/bin/bash`:
 - Has the highest cost, but no upfront payment
 - No long term commitment
 - Recommended for short-term and un-interrupted workloads where you can't predict how the application will behave
-- When you purchase a Reserved Instance, you determine the scope of the Reserved Instance. The scope is either regional or zonal
-  - Regional: When you purchase a Reserved Instance for a Region, it's referred to as a regional Reserved Instance
-  - Zonal: When you purchase a Reserved Instance for a specific Availability Zone, it's referred to as a zonal Reserved Instance
-  - [Reference](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/reserved-instances-scope.html)
 
 **EC2 Reserved Instances**
 
@@ -287,6 +283,10 @@ A note on why you need `#!/bin/bash`:
 - **Scheduled Reserved Instances**:
   - Launch within the time window you reserve
   - Use when you require a fraction of day / week / month
+- When you purchase a Reserved Instance, you determine the scope of the Reserved Instance. The scope is either regional or zonal
+  - Regional: When you purchase a Reserved Instance for a Region, it's referred to as a regional Reserved Instance
+  - Zonal: When you purchase a Reserved Instance for a specific Availability Zone, it's referred to as a zonal Reserved Instance
+  - [Reference](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/reserved-instances-scope.html)
   
 **EC2 Spot Instance**
 
