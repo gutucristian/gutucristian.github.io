@@ -278,6 +278,7 @@ A note on why you need `#!/bin/bash`:
 - Reserve a specific instance type
 - Recommended for steady state usage applications (e.g., database)
 - **Convertible Reserved Instance**:
+  - Convertible RIs can be exchanged for different Convertible RIs of equal or greater value
   - Can change the EC2 instance type
   - Up to 54% discount
 - **Scheduled Reserved Instances**:
@@ -300,6 +301,12 @@ A note on why you need `#!/bin/bash`:
 - Not good for mission critical jobs or databases
 - Great combinatin: reserved instances for baseline needs + On Demand & Spot instances to handle peak times
 
+**EC2 Dedicated Instances**
+
+- Instances running on hardware that is dedicated to you
+- May share hardware with other instances in same account
+- No control over instance placement (can move hardware after Stop / Start)
+
 **EC2 Dedicated Hosts**
 
 - Physical dedicated EC2 server for your use
@@ -308,12 +315,6 @@ A note on why you need `#!/bin/bash`:
 - Allocated to your account for a `3` year period reservation
 - More expensive
 - Useful for software that have complicated licensing model
-
-**EC2 Dedicated Instances**
-
-- Instances running on hardware that is dedicated to you
-- May share hardware with other instances in same account
-- No control over instance placement (can move hardware after Stop / Start)
 
 ![](https://s3.amazonaws.com/gutucristian.com/DedicatedInstanceVSDedicatedHost.png)
 
@@ -356,7 +357,7 @@ A note on why you need `#!/bin/bash`:
   - Faster boot time (no need for long EC2 User Data at boot time)
   - Machine comes configured with monitoring / enterprise software
   - Control of maintenance and updates of AMI over time
-  - **Note**: AMIs are build for a specific AWS region
+  - **Note: AMIs are built for a specific AWS region**
 
 **EC2 Instance Characteristics Overview**
 
@@ -418,7 +419,7 @@ A note on why you need `#!/bin/bash`:
 
 ## Load Balancing
 
-Load balancers are servers that forward internet traffic to multiple servers (EC2 Instances) downstream
+Load balancers are servers that forward traffic to multiple downstream servers. The idea is to spread the work.
 
 ![](https://s3.amazonaws.com/gutucristian.com/LoadBalancer.png)
 
@@ -515,12 +516,12 @@ ALB also supports SSL termination:
 
 ### Load Balancer Good to Know
 
-- Load Balancers can scale but no instantaneously -- contact AWS for a "warm-up"
+- Load Balancers can scale but not instantaneously -- contact AWS for a "warm-up"
 - Troubleshooting:
-  - `4xx` errors are client induced errors
-  - `5xx` errors are application induced errors
-  - Load Balancer Error `503` means that LB is at capacity or no registered targets
-  - If the LB can't connec to your application, check your security groups!
+  - A `4xx` error code indicates that the error was caused by the user (e.g., bad request)
+  - A `5xx` error tells the user that they did everything correctly and it's the **server** itself who caused the problem
+  - Load Balancer Error `503` means that **LB is at capacity or no registered targets**
+  - **If the LB can't connect to your application, check your security groups!**
 - Monitoring:
   - ELB access logs will log all access requests (so you can debug per request)
   - CloudWatch Metrics will give you aggregate statistics (e.g., connection counts)
