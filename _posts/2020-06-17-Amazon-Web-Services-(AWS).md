@@ -724,65 +724,96 @@ ALB also supports SSL termination:
 
 - An EBS volume is a **network** drive you can attach to your instance
   - It uses the network to communicate to the instance (which implies some latency)
-- EBS volumes persist independently from the running life of an EC2 instance. However, you can choose to automatically delete an EBS volume when the associated instance is terminated
-- It is locked to an Availability Zone (AZ)
+- EBS volumes persist independently from the running life of an EC2 instance
+- **You can choose "DELETE ON TERMINATION" option to automatically delete an EBS volume when the associated instance is terminated**
+- It is **locked to an Availability Zone (AZ)**
   - An EBS volume in `us-east-1a` cannot be attached to an instance in `us-east-1b`
   - To move a volume across AZs you first need to create a **snapshot** of it
-- Has provisioned capacity (size in GBs and IOPS - Input Output Per Second)
+- Has **provisioned capacity** (size in GBs and IOPS - Input Output Per Second)
   - You get billed for all the provisioned capacity
   - You can increase the capacity of the drive over time
 - Read [here](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-using-volumes.html) how to mount an Amazon EBS volume and make it available for use
-- Throughput vs IOPS: IOPS measures the number of read and write **operations** per second, while throughput measures the number of **bits** read or written per second
+- It is just of many storage options on AWS. Others include: Elastic File System (EFS), Simple Storage Service (S3), etc..
+- By default, an **EBS volume can only be attached to one instance**
+- There is a new **"Multi-Attach"** feature which **allows to attach an EBS volume to multiple instances**
+- An instance can have multiple EBS volumes attached to it
+
+### Performance
+
+AWS measures the volumes performance in two dimensions: 
+- Input Output per Second (**IOPS**): refers to the maximum number of input and output requests the volume can serve per second (see how unlike throughput this has nothing to do with the system block size)
+- **Throughput**: refers to the maximum amount of data (i.e., bits) can be read or written per second. So, IOPS and the system block size play an important role in calculating this
+
+Let's consider as the sample the `3000` IOPS and SQL database engine, the block size in terms of db engine is called the page size and for SQL Server it's equal to `8 KB`. If you wish to calculate the actual throughput, if the IOPS defined, you will end up with the formula below:
+
+`throughput = [IOPS] * [block size] = 3000 * 8 = 24 000 KB/s = 24 MB/s`
 
 ![](https://s3.amazonaws.com/gutucristian.com/ElasticBlockStorage.png)
+
+References:
+  - https://stackoverflow.com/questions/15759571/iops-versus-throughput#:~:text=IOPS%20measures%20the%20number%20of,read%20or%20written%20per%20second.&text=If%20you%20have%20small%20files,experience%20a%20lower%20actual%20performance
+  - https://ahmedahamid.com/which-is-better/
 
 ## EBS Volume Types
 
 - EBS volumes come in `4` types:
-  - `gp2` (SSD): general purpose SSD volume that balances price and performance for a wide variety of workloads
-  - `io1` (SSD): highest performance SSD volume for mission critical low latency or high throughput workloads
-  - `st1` (HDD): low cost HDD volume designed for frequently accessed, throughput intensive workloads
-  - `sc1` (HDD): lowest cost HDD volume designed for less frequently accessed workloads
+  - `gp2`/`gp3` (SSD): general purpose SSD volume that **balances price and performance** for a wide variety of workloads
+  - `io1`/`io2` (SSD): **highest performance** SSD volume for **mission critical low latency or high throughput workloads**
+  - `st1`(HDD): **low cost** HDD volume designed for **frequently accessed, throughput intensive workloads**
+  - `sc1` (HDD): **lowest cost** HDD volume designed for **less frequently accessed workloads**
 - EBS volumes are characterized by: size, throughput, IOPS
 - **Only `gp2` and `io1` can be used as boot volumes**
 
-### EBS `gp2` (SSD) Volume Type
+**SSD-backed volumes** are optimized for IOPS, which are best for workloads involving frequent read/write operations
+
+**HDD-backed volumes** are optimized for throughput (measured in MiB/s) for large streaming workloads. **CANNOT INCLUDE BOOT VOLUMES**
+
+### EBS General Purpose SSD Volume Type (`gp3` and `gp2`)
 
 - General purpose SSD volume that balances price and performance for a wide variety of workloads
-- Recommended for most workloads
-- Virtual Desktops
-- Low-latency interactive apps
-- Development and test environments
-- Small GP2 volumes can burst IOPS to `3000`
-- Size range: `1` GiB - `16` GiB
-- Max IOPS is `16000`
-- `3` IOPS per GB -- which means that at `5334` GB we are at max IOPS
-- Throughput not applicable
+- Recommended for most workloads (e.g., virtual desktops, low-latency interactive apps, development and test environments)
+- **Volume size ranges from `1` GiB to `16` TiB**
+- `gp3` (newer):
+  - Baseline of `3000` IOPS and throughput of `125` MiB/s
+  - Can increase IOPS to `16000` and throughput up to `1000` MiB/s
+  - **Can scale IOPS (input/output operations per second) and throughput independently (i.e., without needing to provision additional block storage capacity)**
+- `gp2`:
+  - Small `gp2` volumes can burst IOPS to `3000`
+  - You don't have direct control on the IOPS and throughput, they are linked and depend on the volume size
+  - To get higher performance you have to use a bigger volume size. Max IOPS is `16000` 
+  - `3` IOPS per GB -- which means that at `5334` GB we are at max IOPS
 
-### EBS `io1` (SSD) Volume Type
+**Remember:** for `gp2` volume types you don't have direct control on the IOPS and throughput, they are linked and depend on the volume size. `gp3` removed this limitation and you can increase the IOPS and/or throughput independently up to `16,000` IOPS and `1,000` MiB/s respectively.
+
+### EBS Provisioned IOPS (PIOPS) SSD Volume Types (`io1` and `io2`)
 
 - Highest performance SSD volume for mission critical low latency or high throughput workloads
-- Critical business applications that require sustained IOPS performance or more than `16000` IOPS per volume (gp2 limit)
-- Large database workloads (e.g., MongoDB, Cassandra, PostgreSQL, etc..)
-- Size range: `4` GiB - `16` TiB
-- IOPS is provisioned: MIN `100` - MAX `32000` or `64000` if on Nitro instance
-- The maximum ratio of provisioned IOPS to requested volume size (in GiB) is 50:1
-- Throughput not applicable
+- For critical business applications that need more than `16000` IOPS
+- Great for **database workloads** (e.g., MongoDB, Cassandra, PostgreSQL, etc..)
+- `io1`/`io2`:  
+  - Size range: `4` GiB - `16` TiB  
+  - PIOPS: MIN `100` - MAX `32000` or `64000` if on Nitro instance
+  - Can increase PIOPS independently from storage size
+- `io2` Block Express:
+  - Size range: `4` GiB - `64` TiB
+  - Sub-millisecond latency
+  - Max PIOPS: `256000` with an IOPS:GiB ration of `1000` to `1`
+- **Supports EBS Multi Attach option**
 
 ### EBS `st1` (HDD) Volume Type
 
-- Low cost HDD volume designed for frequently accessed, throughput intensive workloads
+- Low cost HDD volume designed **for frequently accessed, throughput intensive workloads**
 - Streaming workloads requiring consistent, fast throughput at low price
 - Big data, data warehouses, log processing
 - Apache Kafka
-- Cannot be a boot volume
+- **Cannot be a boot volume**
 - Size range: `500` GiB - `16` TiB
 - Max IOPS is `500`
 - Baseline `40` MB/s per TiB throughput until a max of `500` MiB/s  -- can burst
 
 ### EBS `sc1` (HDD) Volume Type
 
-- Lowest cost HDD volume designed for less frequently accessed workloads
+- Lowest cost HDD volume designed **for less frequently accessed data**
 - Throughput oriented storage for large volumes of data that is infrequently accessed
 - Scenarios where the lowest storage cost is important
 - Cannot be a boot volume
@@ -792,7 +823,7 @@ ALB also supports SSL termination:
 
 ## EBS vs Instance Store
 
-- Some instances do not come with Root EBS volumes, instead they come with "**Instance Store**" (i.e., ephemeral storage)
+- Some instances do not come with Root EBS volumes, instead they come with "**Instance Store**" (i.e., ephemeral storage (short lived) because it goes away after instance is stopped or terminated)
 - **Instance store is physically attached** to the machine whereas **EBS is a network device**
 - Instance Store pros:
   - Better IO performance (very high IOPS -- since it is physically attached to the instance)
@@ -802,6 +833,12 @@ ALB also supports SSL termination:
   - **If instance is stopped or terminated the instance store is lost**
   - You cannot resize the instance store
   - Performing backups is left to the user
+
+## EBS Multi-Attach
+
+- Option to attach the same EBS to multiple EC2 instances in the **same AZ**
+- Each instance would get full read and write permission to the volume
+- **Only works with `io1` and `io2` family EBS volume types**
 
 ## Elastic File System (EFS)
 
