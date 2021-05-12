@@ -816,7 +816,7 @@ References:
 - Lowest cost HDD volume designed **for less frequently accessed data**
 - Throughput oriented storage for large volumes of data that is infrequently accessed
 - Scenarios where the lowest storage cost is important
-- Cannot be a boot volume
+- **Cannot be a boot volume**
 - Size range: `500` GiB - `16` TiB
 - Max IOPS is `250`
 - Baseline `12` MB/s per TiB throughput until a max of `250` MiB/s  -- can burst
@@ -843,12 +843,12 @@ References:
 ## Elastic File System (EFS)
 
 - Managed network file system (NFS) that can be mounted on many EC2 instances at once
-- EFS works with EC2 instances in multi-AZ (which means its expensive)
-- Highly available, pay per use (which is different than EBS where you pay for amount of storage you reserve)
-- Uses NFSv4.1 protocol
+- Unlike EBS volumes, **EFS volumes can be mounted to EC2 instances across AZs** (which means its expensive)
+- Highly available, **pay per use** (which is different than EBS where you pay for amount of storage you reserve)
+- Uses **NFSv4.1 protocol**
 - Uses security group to control access to EFS
 - **Compatible with Linux based AMIs (not Windows)**
-- Can leverage encryption at rest using KMS
+- **Can leverage encryption at rest using KMS**
 - POSIX file system that has standard file API
 - File system scales automatically, pay per use, so no capacity planning
 - EFS scale:
@@ -858,22 +858,24 @@ References:
 
 ![](https://s3.amazonaws.com/gutucristian.com/ElasticFileSystem.png)
 
+### EFS Performance Modes (set at EFS creation time):
 
-### EFS Performance modes (set at EFS creation time):
+**General Purpose** (default): low latency. In General Purpose performance mode, read and write operations consume a different number of file operations. Read data or metadata consumes one file operation. Write data or update metadata consumes five file operations. A file system can support up to `35000` file operations per second (use cases: web server, CMS)
 
-- General purpose (default): low latency. In General Purpose performance mode, read and write operations consume a different number of file operations. Read data or metadata consumes one file operation. Write data or update metadata consumes five file operations. A file system can support up to 35,000 file operations per second (use cases: web server, CMS)
-- Max I/O: higher latency. Max I/O performance mode doesn't have a file system operations limit. Use the Max I/O performance mode if you have a very high requirement of file system operations per second
-- Note: General Purpose performance mode has the lower latency of the two performance modes and is suitable if your workload is sensitive to latency. Max I/O performance mode offers a higher number of file system operations per second but has a slightly higher latency per each file system operation
+**Max I/O**: higher latency. Max I/O performance mode doesn't have a file system operations limit. Use the Max I/O performance mode if you have a very high requirement of file system operations per second.
 
-### EFS Throughput modes (set at EFS creation time):
+**Note:** General Purpose performance mode has the lower latency of the two performance modes and is suitable if your workload is sensitive to latency. Max I/O performance mode offers a higher number of file system operations per second but has a slightly higher latency per each file system operation
 
-- Bursting: throughput scales with file system size
-- Provisioned: throughput fixed at specified amount (range: `1` - `1024` MiB/s)
+### EFS Throughput Modes (set at EFS creation time):
+
+**Bursting**: throughput scales with file system size. Depending on the size of your data you get a certain number of burst credits, which allow you to get higher throughput for a limited time. For example, a 1-TiB file system runs continuously at a throughput of 50 MiB/second and is allowed to burst to 100 MiB/s for 12 hours each day.
+
+**Provisioned**: throughput fixed at specified amount (range: `1` - `1024` MiB/s)
 
 ### EFS Storage Tiers (file lifecycle management feature -- move file if unused for `N` days):
   
 - Standard storage tier: for frequently accessed
-- Infrequent Access storage tier (EFS IA): after not used for `N` days file is moved to infrequent storage class, this results is a lower price, but cost to retrive is higher
+- Infrequent Access storage tier (**EFS IA**): after not used for `N` days file is moved to infrequent storage class, this results is a lower price, but cost to retrive is higher
   
 ## EBS vs EFS
 
@@ -883,15 +885,17 @@ References:
 
 ### EBS
 
-- Can be attached to only one instance at a time
+- Can be attached to only one instance at a time (unless "Multi-Attach" feature is enabled)
 - Are locked at the Availability Zone (AZ) level (e.g., `us-east-1a`)
-- `gp2` volume type: I/O increases if the disk size increases
-- `io1`: can increase I/O independently
+- `gp2` (SSD backed): I/O increases if the disk size increases, `3` IOPS per GB -- which means that at `5334` GB we are at max IOPS, baseline of `3000` IOPS and throughput of `125` MiB/s
+- `gp3` (SSD backed): can scale IOPS (input/output operations per second) and throughput independently
+- `io1`/`io2` (SSD backed): provisioned IOPS, can increase I/O independently, for critical business applications that need more than `16000` IOPS, can be used as EC2 root volume
 - To migrate an EBS volume across AZs:
   - Take a snapshot
   - Restore the snapshot to another AZ
   - EBS backups use I/O and you shouldn't run them while your application is handling a lot of traffic since you will be affecting performance (since IOPS is limited)
-- **Root** EBS volumes of instances get terminated by default if the EC2 instance get terminated but you can disable that
+- **Only EBS or instance storage can be used as a root volume**
+- If we have EBS as **root** volume for EC2 instance, then (by default) the volume will get terminated if the EC2 instance is terminated. HOWEVER, this behaviour can be disabled
 
 ![](https://s3.amazonaws.com/gutucristian.com/EBSSnapshot.png)
 
