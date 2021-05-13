@@ -1669,7 +1669,7 @@ For this some AWS CLI command have the `--dry-run` option to simulate API calls.
 ## AWS EC2 Instance Metadata
 
 - AWS EC2 Instances Metadata allows EC2 instances to learn about themselves **without using an IAM Role for that purpose**
-- The URL is http://169.254.169.254/latest/metadata
+- The URL is `http://169.254.169.254/latest/metadata`
 - This IP is an internal IP to AWS (it will not work from your computer) it will only work from the EC2 instance (Note: you cannot retrieve the AIM Policy from the instance metadata URL)
 - Metadata = info about the EC2 instance
 - Userdata = launch script of the EC2 instance
@@ -1728,15 +1728,15 @@ That has a new access key and id a session token (which we will need to use in a
 
 **When using an SDK** (e.g., the Java SDK) it will look for credentials in this order:
 
-1. **Environment variables:** `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_SESSION_TOKEN`
-2. **Java system properties:** `aws.accessKeyId` and `aws.secretKey`
+1. **Java system properties:** `aws.accessKeyId` and `aws.secretKey`
+2. **Environment variables:** `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_SESSION_TOKEN`
 3. **The default credential profiles file:** `~/.aws/credentials`
 4. **Amazon ECS container credentials** for ECS containers
 5. **Instance profile credentials** for EC2 instances
 
 ## AWS Credentials Scenario
 
-Assume we have a scenario where an application deployed to an EC2 instance has Access Key and Id credentials from an IAM user set in the environment variables which are being used to make API calls to S3. Furthermore, assume that the IAM user has `S3FullAccess` permissions.
+Assume we have a scenario where an application deployed to an EC2 instance has Access Key and ID credentials from an IAM user set in the environment variables which are being used to make API calls to S3. Furthermore, assume that the IAM user has `S3FullAccess` permissions.
 
 As a developer, you realize this is against best practices and decide to:
 
@@ -1749,7 +1749,7 @@ However, you notice that despite this the EC2 instance **still** has access to a
 
 **Answer:** the credentials chain is still giving priority to the environment variables. So, to get the behaviour we desire, we would have to delete the environment variables from the EC2 instance and, after that, step `5` in the chain will become most relevant and credentials will be retrieved from the **instance profile**.
 
-Read [here](The difference between an AWS role and an instance profile) on more about AWS Role vs instance profile.
+Read [here](https://medium.com/devops-dudes/the-difference-between-an-aws-role-and-an-instance-profile-ae81abd700d#:~:text=Roles%20are%20designed%20to%20be,instance%20profile%20represents%20EC2%20instances.) on more about AWS Role vs instance profile.
 
 ## AWS Credentials Best Practices
 
@@ -1830,7 +1830,7 @@ Query String Option (e.g., S3 pre-signed URLs)
   - Allow an ever changing list of users to download files by generating URLs dynamically
   - Allow a user to upload a file to a precise location temporarily (e.g., a profile picture)
 
-## S3 Storage Classes
+ ## S3 Storage Classes
  
  - Standard -- General Purpose
  - Standard-Infrequent Access (IA)
@@ -1853,7 +1853,7 @@ Query String Option (e.g., S3 pre-signed URLs)
 - Can sustain `2` concurrent facility failures
 - Use cases: data store for disaster recovery, backups, etc..
 
-### One Zone-Infrequent Access
+ ### One Zone-Infrequent Access
  
  - Same as IA tier but data is stored in a **single AZ** -- so decreased availability (will be lost if AZ is destroyed)
  - Cost is 20% lower than IA tier
@@ -1974,13 +1974,22 @@ Use S3 **Byte-Range Fetches** to parallelize `GET`s by requesting specific range
 
 ## S3 Object Lock & Glacier Vault Lock
 
-- **S3 Object Lock**
-  - Adopt a WORM (Write Once Read Many) model
-  - Block an object version for a specified amount of time
-- **Glacier Vault Lock**
-  - Adopt a WORM (Write Once Read Many) model
-  - Lock the policy for future edits (can no longer be changed)
-  - Helpful for compliance and data retention
+### S3 Object Lock
+
+- Adopt a WORM (Write Once Read Many) model
+- Prevent an object version deletion for a **SPECIFIED AMOUNT OF TIME**
+- **Object retention:**
+  - **Retention period:** specifies a fixed period
+  - **Legal holds:** no expiry date
+- **Modes:**
+  - **Governance mode:** users can't overwrite or delete an object version or alter its lock settings unless they have **special permissions**
+  - **Complicance mode:** a protected object version can't be overwritten or deleted by any user including the root user. When an object is locked in compliance mode, its retention mode can't be changed and its retention period cannot be shortened
+
+### Glacier Vault Lock
+
+- Adopt a WORM (Write Once Read Many) model
+- Once the policy is locked the **S3 object(s) and policy cannot be altered or deleted**
+- Helpful for compliance and data retention
 
 # AWS CloudFront
 
@@ -2031,14 +2040,14 @@ Use S3 **Byte-Range Fetches** to parallelize `GET`s by requesting specific range
 
 ## CloudFront Caching
 
-- Cache cann be based on:
+- Cache can be based on:
   - Headers
   - Session Cookies
   - Query String Parameters
 - The cache lives at each CloudFront **Edge Location**
 - Our goal is to maximize the amount of cache hits and minimize requests to origin
 - We can control the cache TTL (`0` seconds to `1` year) -- which can be set by the origin using `Cache-Control` header, `Expires` header...
-- We can also invalidate part of the cache using the `CreateInvalidation` API
+- **We can also invalidate part of the cache using the `CreateInvalidation` API**
 
 ![](https://s3.amazonaws.com/gutucristian.com/CloudFrontCaching.png)
 
@@ -2059,7 +2068,7 @@ Use S3 **Byte-Range Fetches** to parallelize `GET`s by requesting specific range
 
 ## CloudFront Signed URL / Signed Cookie
 
-- Say you want to distribute paid shared content to premium users over the world
+- Say you want to distribute paid shared content to premium users around the world
 - We can use CloudFront Signed URL / Cookie and need to attach a policy that defines:
   - URL expiration
   - Allowed IP ranges to access the data from
@@ -2077,7 +2086,57 @@ At a high level, use S3 Pre-Signed URL if you want to distribute file securely t
 
 ![](https://s3.amazonaws.com/gutucristian.com/CloudFrontSignedURLvsS3PreSignedURL.png)
 
-# CloudFront
+## CloudFront Signer URL Process
+
+There are two types of signers.
+
+First: a **trusted key group** (recommended):
+  - This approach leverages APIs to create and rotate keys (and IAM for API security)
+  - You generate your own **public and private keys**
+  - **Private key** is used by your applications (e.g., EC2) to **sign the URLs**
+  - **Public key** is used by CloudFront to **verify the URLs**
+
+2. AWS account that contains a CloudFront Key Pair. **For this you need to manage the keys using the root account and the AWS console!** This approach is **NOT RECOMMENDED** since using root account is bad practice
+
+## CloudFront Advanced Concepts
+
+### Pricing
+
+There are CloudFront Edge locations all around the world. The cost of outbound data per edge location varies (e.g., North America is cheaper but India is more expensive). Also if you transfer more data, then the price goes down.
+
+### Price Classes
+
+You can reduce the number of edge locations used for **cost reduction**.
+
+Three price classes:
+
+1. Price Class **All**: all regions -- best performance (more expensive)
+2. Price Class **200**: most regions, but excludes the most expensive regions
+3. Price Class **100**: only includes the least expensive regions
+  
+### Multiple Origins
+
+Use to route traffic to different origins / resources based on the content type or path pattern.
+
+For example, if we get a request with `/api/*` path we can route to ALB origin, if we get with `/images/*` we can route to S3 origin and so on.
+
+### Origin Groups (for high availability)
+
+- To provide high availability and failover
+- Allows us to define one primary and one secondary origin for CloudFront
+- If the primary fails, requests are routed to the secondary
+
+### Field Level Encryption (for added security)
+
+- Scope: protect user sensitive data
+- Adds an additional layer of security along with in-flight encryption via HTTPS
+- Encryption of the field(s) happens at the edge
+- Uses asymmetric encryption (i.e., public key is used to encrypt and private is for decrypt)
+- How it works:
+  - Specify the set of fields that you want to be encrypted in `POST` request (**THE MAX NUMBER OF FIELDS IS 10**)
+  - Specify the public key to encrypt them
+
+# Elastic Container Service (ECS)
 
 ## Docker
 
