@@ -1853,7 +1853,7 @@ Query String Option (e.g., S3 pre-signed URLs)
 - Can sustain `2` concurrent facility failures
 - Use cases: data store for disaster recovery, backups, etc..
 
- ### One Zone-Infrequent Access
+### One Zone-Infrequent Access
  
  - Same as IA tier but data is stored in a **single AZ** -- so decreased availability (will be lost if AZ is destroyed)
  - Cost is 20% lower than IA tier
