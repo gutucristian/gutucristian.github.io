@@ -1830,7 +1830,7 @@ Query String Option (e.g., S3 pre-signed URLs)
   - Allow an ever changing list of users to download files by generating URLs dynamically
   - Allow a user to upload a file to a precise location temporarily (e.g., a profile picture)
 
- ## S3 Storage Classes
+## S3 Storage Classes
  
  - Standard -- General Purpose
  - Standard-Infrequent Access (IA)
