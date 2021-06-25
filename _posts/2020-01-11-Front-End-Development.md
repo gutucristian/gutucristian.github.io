@@ -289,3 +289,9 @@ In **requests**, (such as `POST` or `PUT`), the client tells the server what typ
 ## UTF-8 vs Unicode
 
 https://stackoverflow.com/questions/643694/what-is-the-difference-between-utf-8-and-unicode
+
+# CORS
+
+https://security.stackexchange.com/questions/170389/http-access-control-cors-purpose
+
+https://stackoverflow.com/questions/29167428/same-origin-policy-and-cors-whats-the-point
