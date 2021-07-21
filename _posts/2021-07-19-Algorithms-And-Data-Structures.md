@@ -10,9 +10,9 @@ There are two key attributes that a problem must have in order for dynamic progr
 1. **Optimal substructure**
 2. **Overlapping sub-problems**
 
-**Optimal substructure** means that the solution to an *optimization problem* can be obtained optimally by breaking it into sub-problems and then recursively finding the optimal solutions to those sub-problems. Such optimal substructures are usually described by means of **recursion**.
+**Optimal substructure** means that the solution to an *optimization problem* can be obtained optimally by breaking it into sub-problems and then recursively finding the optimal solutions to those sub-problems
 
-**Overlapping sub-problems** means that the recursive algorithm solving the problem should solve the same sub-problems over and over, rather than generating new sub-problems.
+**Overlapping sub-problems** means that the recursive algorithm solving the problem should solve the same sub-problems over and over, rather than generating new sub-problems
 
 Many dynamic programming problems can be solved using the following sequence:
 
@@ -24,4 +24,5 @@ Many dynamic programming problems can be solved using the following sequence:
 
 **Step 1:** figure out a recursive relation to 
 
-https://leetcode.com/problems/house-robber/discuss/156523/From-good-to-great.-How-to-approach-most-of-DP-problems.
+References:
+- https://leetcode.com/problems/house-robber/discuss/156523/From-good-to-great.-How-to-approach-most-of-DP-problems.
