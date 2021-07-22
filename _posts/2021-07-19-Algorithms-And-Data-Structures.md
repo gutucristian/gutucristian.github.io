@@ -22,6 +22,10 @@ Many dynamic programming problems can be solved using the following sequence:
 4. Iterative + memo (bottom-up)
 5. Iterative + `N` variables (bottom-up)
 
+Key words that indicate a dynamic programming problem:
+- How many ways
+- Least amount of ways (i.e., optimization)
+
 **Step 1:** figure out a recursive relation
 
 References:
