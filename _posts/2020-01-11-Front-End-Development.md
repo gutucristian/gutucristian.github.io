@@ -191,7 +191,7 @@ Character encoding detection, charset detection, or code page detection is the p
 
 This algorithm usually involves statistical analysis of byte patterns, like frequency distribution of trigraphs of various languages encoded in each code page that will be detected; such statistical analysis can also be used to perform language detection. This process is not foolproof because it depends on statistical data.
 
-Source: https://en.wikipedia.org/wiki/Charset_detection#:~:text=Character%20encoding%20detection%2C%20charset%20detection,of%20bytes%20that%20represent%20text.&text=However%2C%20badly%20written%20charset%20detection,8%20is%20some%20other%20encoding.
+Source: https://en.wikipedia.org/wiki/Charset_detection
 
 ## How does the browser know which decoding standard to use?
 
