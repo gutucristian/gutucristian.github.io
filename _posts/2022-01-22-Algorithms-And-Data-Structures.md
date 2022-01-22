@@ -1,10 +1,10 @@
 A collection of notes covering information on core Computer Science algorithms and data structures as well as relevant practice problems highlighting these topics.
 
-## Graphs
+## Graphs 
 
 The two main graph representations we use when talking about graph problems are the **adjacency list** and **adjancency matrix** approaches.
 
-### Adjacency List
+### Adjacency List 😎
 
 - An adjacency list is a list of lists
 - Each list corresponds to a node `u` (i.e., vertex) on the graph and contains all the edges `(u, v)` that originate from the node `u`
@@ -16,6 +16,16 @@ Operations:
 - Add a node
 - Remove a node
 - Get the neighbours of a node
+
+Pros:
+- East to get a node's neighbours
+- Harder to tell if a particular node is a neighbour of another node -- to find out you would have to do a linear scan through all the nodes neighbours
+- Easy to add and remove a node
+
+### Adjacency Matrix 🧐
+
+Pros:
+- Easy to determine if a node has a particular neighbour
 
 References:
 - https://courses.csail.mit.edu/6.006/spring11/exams/notes2-2.pdf
