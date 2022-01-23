@@ -8,9 +8,22 @@ The two main graph representations we use when talking about graph problems are 
 
 - An adjacency list is a list of lists
 - Each list corresponds to a node `u` (i.e., vertex) on the graph and contains all the edges `(u, v)` that originate from the node `u`
-- Thus, an adjacency list takes up `O(V + E)` space
+- Thus, an adjacency list takes up `O(V + E)` space (`V` for number of nodes and `E` for number of edges)
 - In Python, we can represent an adjacency list as a dictionary. The dictionary’s **keys will be the nodes**, and their **values will be the edges for each node**
 - With the help of an adjacency list, we can find all the neighbours for a particular node in constant time (the quick lookup is due to the hashing mechanism of dictionaries)
+
+```
+# This is an adjacency list
+graph = {
+  'A': ['B', 'C'],
+  'B': ['D', 'E'],
+  'C': ['F', 'G'],
+  'D': [],
+  'E': [],
+  'F': [],
+  'G': []
+}
+```
 
 Operations:
 - Add a node
@@ -18,7 +31,7 @@ Operations:
 - Get the neighbours of a node
 
 Pros:
-- East to get a node's neighbours
+- Easy to get a node's neighbours (just access the 
 - Harder to tell if a particular node is a neighbour of another node -- to find out you would have to do a linear scan through all the nodes neighbours
 - Easy to add and remove a node
 
