@@ -12,7 +12,7 @@ The two main graph representations we use when talking about graph problems are 
 - In Python, we can represent an adjacency list as a dictionary. The dictionary’s **keys will be the nodes**, and their **values will be the edges for each node**
 - With the help of an adjacency list, we can find all the neighbours for a particular node in constant time (the quick lookup is due to the hashing mechanism of dictionaries)
 
-```
+```code
 # This is an adjacency list
 graph = {
   'A': ['B', 'C'],
@@ -25,10 +25,15 @@ graph = {
 }
 ```
 
-Operations:
-- Add a node
-- Remove a node
-- Get the neighbours of a node
+#### Operations
+
+Adding a node:
+
+Deleting a node:
+
+Getting a node's neighbours:
+
+#### Adding 
 
 Pros:
 - Easy to get a node's neighbours (just access the 
