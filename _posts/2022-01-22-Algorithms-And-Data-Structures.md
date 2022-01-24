@@ -73,9 +73,11 @@ References:
 ## Binary Search Trees (BST)
 
 There are three ways of traversing a binary search tree:
-1. In-order
-2. Pre-order
-3. Post-order
+1. In-order (visit left sub-tree, current node, right sub-tree)
+2. Pre-order (visit current node, left sub-tree, right sub-tree)
+3. Post-order (visit left sub-tree, right sub-tree, current node)
+
+In-order, pre-order, and post-order are all variations of the **Depth First Search (DFS)** graph traversal strategy.
 
 **In-order traversal** is useful because it returns the BST in **ascending** order.
 
