@@ -72,16 +72,23 @@ References:
 
 ## Binary Search Trees (BST)
 
-There are three ways of traversing a binary search tree:
+There are four main ways of traversing a binary search trees:
 1. In-order (visit left sub-tree, current node, right sub-tree)
 2. Pre-order (visit current node, left sub-tree, right sub-tree)
 3. Post-order (visit left sub-tree, right sub-tree, current node)
+4. Level-order traversal (visit all nodes in current level before visiting next level)
 
 In-order, pre-order, and post-order are all variations of the **Depth First Search (DFS)** graph traversal strategy.
 
-**In-order traversal** is useful because it returns the BST in **ascending** order.
+Level-order traversal leverages the **Breadth First Search (BFS)** graph traversal strategy.  
 
-**Pre-order traversal** in useful because it returns a list representation of the BST (i.e., it can be used to **copy a tree**). It can also be used to make a prefix expression (Polish notation) from expression trees (by traversing the expression tree in a pre-order fashion). You can also preorder traversal to print out hierarchical format of the tree in a linear format. For example:
+### In-order traversal
+
+Useful because it returns the BST in **ascending** order
+
+### Pre-order traversal
+
+Useful because it returns a list representation of the BST (i.e., it can be used to **copy a tree**). It can also be used to make a prefix expression (Polish notation) from expression trees (by traversing the expression tree in a pre-order fashion). You can also preorder traversal to print out hierarchical format of the tree in a linear format. For example:
 
 ```code
 - ROOT
@@ -94,7 +101,13 @@ In-order, pre-order, and post-order are all variations of the **Depth First Sear
              - G
 ```
 
-**Post-order traversal** can be used to delete a tree or generate a postfix expression of the tree.
+### Post-order traversal
+
+Can be used to delete a tree or generate a postfix expression of the tree.
+
+### Level-order traversal
+
+Used to visit all nodes in a current level before visting any nodes in the level below (i.e., level order traversal).
 
 References:
 - https://towardsdatascience.com/4-types-of-tree-traversal-algorithms-d56328450846
