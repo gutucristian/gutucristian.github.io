@@ -37,3 +37,19 @@ for a specific application, such as airlines reservations.
 
 Finally, to complete our initial definitions, we will call the database and DBMS software
 together a **database system**. 
+
+### 1.2 | Example
+
+Consider an example, a university database to maintain information concerning:
+- students
+- courses
+- sections
+- grades
+- course prerequisites
+
+The database is organized as five files, each of which stores data records of the same type.
+
+First we need to **define** the database. For this, we must specify the structure of the records of each file by specifying the different types of **data elements** to be stored for each record as well as their **data types** (e.g., string, integer, decimal, etc..). 
+
+To **construct** the university database we store data to represent each student, course, section, grade report, and prerequisite in the appropriate file. Notice that records in the various files may be related. For example the record for student Smith in the STUDENT file is related to records in the GRADE_REPORT file that specify Smith's grades in two sections. Most databases include records that have many *relationships* between them.
+
