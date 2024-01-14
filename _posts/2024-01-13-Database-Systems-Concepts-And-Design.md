@@ -6,7 +6,7 @@ This study guide is a collection of my notes for the class CS 6400 (Database Sys
 
 The word *database* is so commonly used that we must first begin by defining what a database is.
 
-In the simplest, most general terms, a **database** is a collection of data. By **data*, we mean known facts that can be recorded and have implicit meaning. 
+In the simplest, most general terms, a **database** is a collection of data. By **data**, we mean known facts that can be recorded and have implicit meaning. 
 
 For example, people's names, telephone numbers, addresses, etc..
 
