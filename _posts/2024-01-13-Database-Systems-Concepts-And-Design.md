@@ -21,3 +21,19 @@ In other words, a database has some **source** from which data is derived, some 
 A database may be generated and maintained manually or it may be computerized. A computerized database may be created and maintained either by a group of application programs written specifically for that task or by a database management system.
 
 A **database management system (DBMS)** is a computerized system than enables users to create and maintain a database. The DBMS is a *general-purpose software system* that facilitates the processes of *defining, constructing, manipulating,* and *sharing* databases among users and applications. 
+
+- **Defining** a database involves specifying the **data types, structures, and constraints** of the data to be stored in the database. The database definition is itself stored by the DBMS in the form of a database "catalog" or "dictionary"; it is callied **metadata**
+- **Constructing** the database is the **process of storing the data** on some storage medium that is controlled by the DBMS
+- **Manipulating** a database includes querying the database, updating the database to reflect changes in the miniworld, and generating reports from the data
+- **Sharing** a database means allowing multiple users and programs to access the database concurrently
+
+An **application** accesses the database by sending queries to the DBMS. A **query** causes some data to be retrieved; a **transaction** may cause some data to be read and some data to be written to the database.
+
+Other important functions provided by the DBMS include protecting the database and maintaining it over time. **Protection** includes *system protection* against hardware or software malfunctions (crashes) or *security protections* against unauthorized access.
+
+It is not absolutely necessary to use general-purpose DBMS software to implement
+a computerized database. It is possible to write a customized set of programs to create and maintain the database, in effect creating a special-purpose DBMS software
+for a specific application, such as airlines reservations.
+
+Finally, to complete our initial definitions, we will call the database and DBMS software
+together a **database system**. 
