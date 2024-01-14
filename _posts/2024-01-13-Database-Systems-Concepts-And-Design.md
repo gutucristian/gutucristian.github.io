@@ -20,3 +20,4 @@ In other words, a database has some **source** from which data is derived, some 
 
 A database may be generated and maintained manually or it may be computerized. A computerized database may be created and maintained either by a group of application programs written specifically for that task or by a database management system.
 
+A **database management system (DBMS)** is a computerized system than enables users to create and maintain a database. The DBMS is a *general-purpose software system* that facilitates the processes of *defining, constructing, manipulating,* and *sharing* databases among users and applications. 
