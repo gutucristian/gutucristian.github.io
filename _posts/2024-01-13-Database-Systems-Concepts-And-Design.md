@@ -55,3 +55,16 @@ To **construct** the university database we store data to represent each student
 
 Database *manipulation* involves querying and updating.
 
+The design of a new application for an existing database or design of a
+brand new database starts off with a phase called **requirements specification and
+analysis**. 
+
+These requirements are documented in detail and transformed into a
+**conceptual design** that can be represented and manipulated using some computerized tools so that it can be easily maintained, modified, and transformed into a
+database implementation (Entity-Relationship model). 
+
+The design is then translated to a **logical design** that can be expressed in a data model implemented in a commercial DBMS.
+
+The final stage is **physical design**, during which further specifications are provided for
+storing and accessing the database. The database design is implemented, populated
+with actual data, and continuously maintained to reflect the state of the miniworld.
