@@ -65,6 +65,28 @@ database implementation (Entity-Relationship model).
 
 The design is then translated to a **logical design** that can be expressed in a data model implemented in a commercial DBMS.
 
-The final stage is **physical design**, during which further specifications are provided for
-storing and accessing the database. The database design is implemented, populated
-with actual data, and continuously maintained to reflect the state of the miniworld.
+The final stage is **physical design**, during which further specifications are provided for storing and accessing the database. The database design is implemented, populated with actual data, and continuously maintained to reflect the state of the miniworld.
+
+### 1.3 | Characteristics of the Database Approach
+
+A number of characteristics separate the database approach from the much older approach of writing custom programs to access data stored in files.
+
+In traditional **file processing** each user defines and implements the files needed for a specific software application as part of programming the application. For example, one user, the grade reporting office, may keep files on students and their grades. Custom features like printing a student's transcript and to enter new grades are implemented as part of that application. A second user, the accounting office, may keep track of student's fees and their payments. Although both users are interested in data about students, each maintains their own separate files -- because each requires some data not available from the other user's files. This workflow results in **redundancy** and **wasted storage space** on top of making it **more complicated to maintain common data**.
+
+In the database approach, the source of data is in a **single source of truth**. In other words, a single repository maintains our data. This data is defined once and can be accessed by various users repeatedly through queries, transactions, and programs.
+
+The main characteristics of the database approach vs the file-processing approach are the following:
+- Self-describing nature of a database system
+- Isolation between programs and data, and data abstraction
+- Support of multiple views of the data
+- Sharing of data and multi-user transaction processing
+
+### 1.3.1 | Self-Describing Nature of a Database System
+
+A fundamental characteristic of the database approach is that **the database system not only contains the database itself but also a complete description of the database structure and constraints** (structure of each file, type and format of each data item, etc). This description is stored in the **DBMS catalog** and is called the **meta-data** -- which (again) is describing the structure of the primary database.
+
+It is important to note that some newer types of database systems, known as NOSQL systems, do not require meta-data. Rather the data is stored as **self-describing data** that includes the data item names and data values together in one structure (e.g., JSON). 
+
+The catalog is used by the DBMS software and by users who need info on the database structure. 
+
+In traditional file processing, data definition is part of the program itself. Therefore programs are tightly coupled with that definition. This is not the case with using a database which provides an abstraction over reading the actual data and we simply interact with the database. It handles all the details of how to read the data based on its structure and format using the description it has stored in the data catalog.
