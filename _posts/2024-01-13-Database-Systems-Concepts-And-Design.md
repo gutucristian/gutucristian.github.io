@@ -90,3 +90,23 @@ It is important to note that some newer types of database systems, known as NOSQ
 The catalog is used by the DBMS software and by users who need info on the database structure. 
 
 In traditional file processing, data definition is part of the program itself. Therefore programs are tightly coupled with that definition. This is not the case with using a database which provides an abstraction over reading the actual data and we simply interact with the database. It handles all the details of how to read the data based on its structure and format using the description it has stored in the data catalog.
+
+--------------------------------------------------------------
+
+## Lecture Notes
+
+External schema -> refers to use of data
+- External schema here basically refers to database "view". It is derived from the "conceptual schema" in the sense that we use information like the underlying table name and column names to define the view definition (i.e., the query to create the view)
+- Note a view is not an actual table, it is created in memory at run time 
+
+Conceptual schema -> refers to meaning of data
+- Describes **structural** aspects of reality. For example, the table name, column names
+
+Internal schema -> refers to storage of data
+- Describes how the info in the conceptual schema is **physically** stored to provide the best performance (e.g., defining an index, or multiple, using a datastructure like a B+ tree which allows logarithmic time access to data which helps run queries faster)
+
+These three schema levels in the ANSI-SPARC architecture allows for two types of independence
+
+1. Physical data independence: a measure of how much the internal schema can change without affecting the application programs. Basically, we can add more indexes, insert/remove rows and still our application is completely decoupled and does not care or need to know about the internal logic and rules of how this data is read off the disk -- this is also known as separation of concerns. There is a similar concept in object oriented programming called encapsulation. As long as the method signatures remain the same, the implementation can change and the consumers will not be affected.
+
+2. Logical data independence: a measure of how much you can change the conceptual schema without changing the application that run on top of the external schema. It is more difficult to provide logical data independence than logical data independence because the external schema is directly linked to the definition of the conceptual schema. If we change the underlying table definition the view (which uses that) is also affected and needs to be changed
