@@ -95,12 +95,12 @@ In traditional file processing, data definition is part of the program itself. T
 
 ## Lecture Notes
 
-External schema -> refers to use of data
-- External schema here basically refers to database "view". It is derived from the "conceptual schema" in the sense that we use information like the underlying table name and column names to define the view definition (i.e., the query to create the view)
-- Note a view is not an actual table, it is created in memory at run time 
-
 Conceptual schema -> refers to meaning of data
 - Describes **structural** aspects of reality. For example, the table name, column names
+
+External schema -> refers to use of data
+- External schema here basically refers to a database "view". It is derived from the "conceptual schema" in the sense that we use information like the underlying table name and column names to define the view definition (i.e., the query to create the view)
+- Note a view is not an actual table, it is created in memory at run time 
 
 Internal schema -> refers to storage of data
 - Describes how the info in the conceptual schema is **physically** stored to provide the best performance (e.g., defining an index, or multiple, using a datastructure like a B+ tree which allows logarithmic time access to data which helps run queries faster)
@@ -110,3 +110,19 @@ These three schema levels in the ANSI-SPARC architecture allows for two types of
 1. Physical data independence: a measure of how much the internal schema can change without affecting the application programs. Basically, we can add more indexes, insert/remove rows and still our application is completely decoupled and does not care or need to know about the internal logic and rules of how this data is read off the disk -- this is also known as separation of concerns. There is a similar concept in object oriented programming called encapsulation. As long as the method signatures remain the same, the implementation can change and the consumers will not be affected.
 
 2. Logical data independence: a measure of how much you can change the conceptual schema without changing the application that run on top of the external schema. It is more difficult to provide logical data independence than logical data independence because the external schema is directly linked to the definition of the conceptual schema. If we change the underlying table definition the view (which uses that) is also affected and needs to be changed
+
+### Entity Relationship Model (ER) and Extended Entity Relationship Model (EER)
+
+#### Constraints
+
+Keys
+
+Primary keys:
+- An attribute that uniquely identifies a row in a table
+- No other entry in the database can have the same value for this attribute
+- Primary keys CANNOT be NULL
+- When an attribute that is a primary key in one table is used in another table, the following must be obeyed: the list of all the attributes used in the other table must be a **subset** of the values of the primary key attribute in the main table
+
+Entity integrity
+
+Referential integrity
