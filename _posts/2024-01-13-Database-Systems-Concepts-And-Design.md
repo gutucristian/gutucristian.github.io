@@ -113,6 +113,90 @@ These three schema levels in the ANSI-SPARC architecture allows for two types of
 
 ### Entity Relationship Model (ER) and Extended Entity Relationship Model (EER)
 
+#### Entity Types
+
+- Represented as a box in an ER diagram
+- An entity is a thing that we are representing in our miniworld
+- Entity type names must be unique
+
+#### Single Valued Properties
+
+Properties of an entity are represented by an ellipsis and are connected to their respective entity via a line.
+
+As the name implies, a single valued property is a property than can only take a single value.
+
+Property values can be lexical (string), visible (picture), audible (song), etc..
+
+They are things that name other things
+
+#### Identifying properties
+
+Represented on the ER diagram as a property type but its name is underlined via a solid line.
+
+The implication of a property type being an "identifying property" is that for a value `v` only one entity can have this value for this property.
+
+Therefere this makes our entity uniquely referenceable
+
+#### Composite Properties
+
+A property that is composed of multiple other properties. For example a property name can be composed of two other properties: first name and last name
+
+Composite properties are represented as ellipses connected by a line to the main property
+
+#### Multivalued Properties
+
+Represented by a double ellipsis. A multivalued property has multiple values as its value.
+
+For example a multivalue property "interests" could take the values of "math, chess, and reading".
+
+#### 1-1 Relationship Type
+
+A one-to-one relationship is a relationship where a record in one table is associated with exactly one record in another table.
+
+Denoted as 1:1
+
+A relationship is represented as a diamond with the relationship name inside.
+
+An example relationship of this type is `Male <--- marriage ---> Female` where `marriage` is the relationship. 
+
+What this says is that a Male entity can be married to exactly one Female entity and a Female is married to exactly one Male. 
+
+A one to one relationship type is a partial function. It is a function because every record in one table is related to at most one record in the other table. It is partial because some entities may not necesarily have a relationship between them. 
+
+Note: the names of multiple relationship types between the same two entity types must be unique
+
+#### 1-many Relationship Type
+
+A ONE-TO-MANY RELATIONSHIP is where a record in one entity (table) can be referenced by multiple records in another entity (table).
+
+Denoted as 1:N
+
+For example, a relationship between Employer and RegularUser. A single employer can be referenced by many users. And a regular user is only going to reference one employer.
+
+This is still a partial function going from regular user to employer because each user is going to reference at most one employer. It is not a function from employer to user because a single employer can map to many users. It is partial because it is not neccesary for all users to have an employer
+
+#### Mandatory 1-many relationship types
+
+Represented by a bold or double line connecting the entity with a mandatory relationship to the relationship "diamond" figure. In our previous example with Employer and Regular User, if we set the relationshop "employs" to have a mandatory relaionship with user then every user in our entity list MUST have a reference to an Employer. And because of this, it would be a total function going from RegularUser to Employer
+
+#### N-M Relationship Type (N:M)
+
+By definition, a many-to-many relationship is where more than one record in a table is related to more than one record in another table.
+
+It is rare to see relationships combining more than three entities.
+
+Unfortunately, it is not always possible to split an N-ary relationship into a conjunction of multiple binary relationships.
+
+#### Identifying relationships / weak entity types
+
+A weak entity type is an entity that cannot exist without another entity present. 
+
+A wek entity is represented by a double rectangle. 
+
+An identifying relationship is a relationship that connects a weak entity type to another entity. This type of relationship is represented by a double diamond.
+
+For example, consider an entity type StatusUpdate which has a property DateAndTime. This entity cannot exist without being related to a RegularUser because many StatusUpdates can have the same DateAndTime, so we need RegularUser to tie a StatusUpdate to a regular user which has a primary key of Email to help us uniquely identify a RegularUser. Thus, <Email, DateAndTime> uniquely identifies a StatusUpdate and DateAndTime is a partial identifier.
+
 #### Constraints
 
 Keys
