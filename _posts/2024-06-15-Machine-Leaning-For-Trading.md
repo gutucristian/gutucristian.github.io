@@ -8,7 +8,13 @@ Financial time series data is one of the most important types of data in finance
 
 Statistical analysis methods are often based on **changes over time** and **not the absolute values themselves**.
 
-There are multiple options to calculate the changes in a time series over time, including absolute differences, percentage changes, and logarithmic (log) returns.
+There are multiple options to calculate the changes in a time series over time, including:
+
+- absolute differences
+
+- percentage changes
+
+- logarithmic (log) returns
 
 From a statistics point of view, **absolute changes are not optimal** because they are dependent on the scale of the time series data itself. Percentage changes **normalize the change relative to the starting value**, allowing for meaningful comparisons regardless of the scale. Therefore, percentage changes are usually preferred.
 
@@ -24,5 +30,84 @@ This formula divides the absolute difference by the original value, transforming
 
 - This ensures that larger values don’t dominate comparisons just because of their size.
 
-
 As an alternative to percentage returns, log returns can be used. In some scenarios, they are easier to handle and therefore often preferred in a financial context.
+
+A log return (also called logarithmic return or continuously compounded return) measures the rate of return of an asset using natural logarithms.
+
+The formula for a log return is:
+
+`Log Return = ln(P_t / P_t-1)`
+
+Where:
+
+- `P_t` = Price of the asset at time `t`.
+
+- `P_t-1` = Price of the asset at the previous time period `(t-1)`.
+
+- `ln` = Natural logarithm (logarithm with base `e`).
+
+## Resampling
+
+Resampling is an important operation on financial time series data. Usually this takes the form of downsampling, meaning that, for example, a tick data series is resampled to one-minute intervals or a time series with daily observations is resampled to one with weekly or monthly observations.
+
+## Rolling Statistics
+
+Rolling statistics involve calculating metrics like mean, standard deviation, or minimum over a moving time window within a dataset. For example, a rolling mean with a window size of 10 calculates the average of the last 10 data points and updates as new data becomes available.
+
+Why Rolling Statistics Are Important in Finance
+
+1. Trend Analysis:
+
+- Rolling helps smooth out short-term fluctuations, helping identify underlying trends in stock prices or other financial metrics.
+
+2. Volatility Measurement:
+
+- Rolling standard deviation tracks changing volatility over time, aiding in risk assessment.
+
+3. Dynamic Insights:
+
+- They allow for time-varying analysis, reflecting how metrics evolve over a specific window rather than a fixed period.
+
+4. Strategy Development:
+
+- Used in trading strategies, such as comparing rolling short-term and long-term moving averages to generate buy/sell signals.
+
+## Technical Analysis Example
+
+Rolling statistics are a major tool in the so-called **technical analysis** of stocks.
+
+A decades-old trading strategy based on technical analysis is using two simple moving averages (SMAs). The idea is that the trader should go long on a stock (or financial instrument in general) when the shorter-term SMA is above the longer-term SMA and should go short when the opposite holds true. 
+
+Here's why this makes sense:
+
+**Short-term SMA** reflects more recent price changes, making it **sensitive to the latest market movements**.
+
+**Long-term SMA** smooths out fluctuations over a longer period, reflecting the **broader trend**.
+
+When the short-term SMA crosses above the long-term SMA:
+
+- It suggests that recent prices are rising faster than the long-term trend, signaling potential upward momentum (a bullish signal to “go long”).
+
+When the short-term SMA crosses below the long-term SMA:
+
+- It suggests that recent prices are falling compared to the long-term trend, signaling downward momentum (a bearish signal to “go short”).
+
+**Example of the Strategy in Action**
+
+- Short-term SMA: 10-day moving average.
+
+- Long-term SMA: 50-day moving average.
+
+- Buy Signal: The 10-day SMA crosses above the 50-day SMA.
+
+- Sell Signal: The 10-day SMA crosses below the 50-day SMA.
+
+This provides clear, rules-based guidance for entering and exiting trades.
+
+**Limitations**
+
+- **Lagging Indicator:** SMAs react after price movements, potentially causing delayed entry or exit signals.
+
+- **False Signals:** During choppy or sideways markets, frequent crossovers can lead to false signals.
+
+- **Doesn’t Predict Direction:** The strategy identifies trends but doesn’t guarantee their continuation.
