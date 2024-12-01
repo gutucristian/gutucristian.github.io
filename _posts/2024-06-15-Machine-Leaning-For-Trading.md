@@ -111,3 +111,24 @@ This provides clear, rules-based guidance for entering and exiting trades.
 - **False Signals:** During choppy or sideways markets, frequent crossovers can lead to false signals.
 
 - **Doesn’t Predict Direction:** The strategy identifies trends but doesn’t guarantee their continuation.
+
+# Machine Learning (ML)
+
+The three major areas within Machine Learning are:
+1. Supervised learning
+2. Unsupervised learning
+3. Reinforcement learning
+
+## Supervised Learning
+
+**What it is:** a ML technique where the algorithm is trained on a labeled dataset, meaning each input has a corresponding correct output. 
+
+**The goal:** learn a relationship between inputs and outputs to make predictions on new, unseen data.
+
+**Example:** 
+
+- Predicting house prices (input: size, location; output: price).
+
+- Classifying emails as “spam” or “not spam.”
+
+**Common algorithms:** Linear Regression, Decision Trees, Neural Networks.
