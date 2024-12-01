@@ -177,6 +177,7 @@ Think of AI as the goal (to replicate human intelligence) and ML as one of the t
 
 |Type|Input|Output|Example|
 |----|-----|------|-------|
+
 |Supervised Learning|Labeled data|Predictions (future outputs)|Spam email detection|
 |Unsupervised Learning|Unlabeled data|Clusters or patterns|Grouping customers|
 |Reinforcement Learning|Feedback from environment|Sequence of actions to maximize reward|Training a robot to play chess|
