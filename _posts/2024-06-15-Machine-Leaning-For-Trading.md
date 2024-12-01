@@ -119,6 +119,10 @@ The three major areas within Machine Learning are:
 2. Unsupervised learning
 3. Reinforcement learning
 
+A popular definition of Machine Learning (re-worded from Tom Mitchell):
+
+A computer program is said to learn from experience `E` with respect to some class of tasks `T` if its performance as measured by `P` (at tasks `T`) improves with additional experience `E`.
+
 ## Artificial Intelligence (AI) vs Machine Learning (ML)
 
 Think of AI as the goal (to replicate human intelligence) and ML as one of the tools to achieve that goal. Not all AI systems use ML, but most modern AI advancements heavily rely on ML.
