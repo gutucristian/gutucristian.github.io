@@ -132,3 +132,47 @@ The three major areas within Machine Learning are:
 - Classifying emails as “spam” or “not spam.”
 
 **Common algorithms:** Linear Regression, Decision Trees, Neural Networks.
+
+## Unsupervised Learning
+
+**What it is:** a ML technique where the algorithm is given data without labeled outputs. It identifies patterns or groups in the data.
+
+**Goal:** Explore the data to find hidden structures or clusters.
+
+**Example:**
+
+- Customer segmentation (grouping customers with similar behaviors).
+
+- Identifying patterns in large datasets (like market trends).
+
+**Common algorithms:** K-Means Clustering, Principal Component Analysis (PCA), DBSCAN.
+
+## Reinforcement Learning
+
+**What it is:** a ML technique where an _agent_ learns to make decisions by interacting with an environment, receiving rewards for good actions and penalties for bad ones.
+
+**Goal:** maximize cumulative rewards over time.
+
+**Example:**
+
+- Teaching a robot to walk or play a game like chess or Go.
+
+- Optimizing ad placements in marketing.
+
+**Key concepts:**
+
+- Agent: The learner.
+
+- Environment: Where the agent operates.
+
+- Reward: Feedback for actions.
+
+**Common algorithms:** Q-Learning, Deep Q-Networks (DQN).
+
+### Summary Table
+
+|Type|Input|Output|Example|
+|----|-----|------|-------|
+|Supervised Learning|Labeled data|Predictions (future outputs)|Spam email detection|
+|Unsupervised Learning|Unlabeled data|Clusters or patterns|Grouping customers|
+|Reinforcement Learning|Feedback from environment|Sequence of actions to maximize reward|Training a robot to play chess|
