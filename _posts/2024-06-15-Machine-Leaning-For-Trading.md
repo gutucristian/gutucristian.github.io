@@ -112,12 +112,16 @@ This provides clear, rules-based guidance for entering and exiting trades.
 
 - **Doesn’t Predict Direction:** The strategy identifies trends but doesn’t guarantee their continuation.
 
-# Machine Learning (ML)
+# Machine Learning
 
 The three major areas within Machine Learning are:
 1. Supervised learning
 2. Unsupervised learning
 3. Reinforcement learning
+
+## Artificial Intelligence (AI) vs Machine Learning (ML)
+
+Think of AI as the goal (to replicate human intelligence) and ML as one of the tools to achieve that goal. Not all AI systems use ML, but most modern AI advancements heavily rely on ML.
 
 ## Supervised Learning
 
