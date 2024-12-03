@@ -57,17 +57,11 @@ Rolling statistics involve calculating metrics like mean, standard deviation, or
 Why Rolling Statistics Are Important in Finance
 
 1. Trend Analysis:
-
-- Rolling helps smooth out short-term fluctuations, helping identify underlying trends in stock prices or other financial metrics.
-
+  - Rolling helps smooth out short-term fluctuations, helping identify underlying trends in stock prices or other financial metrics.
 2. Volatility Measurement:
-
-- Rolling standard deviation tracks changing volatility over time, aiding in risk assessment.
-
+  - Rolling standard deviation tracks changing volatility over time, aiding in risk assessment.
 3. Dynamic Insights:
-
-- They allow for time-varying analysis, reflecting how metrics evolve over a specific window rather than a fixed period.
-
+  - They allow for time-varying analysis, reflecting how metrics evolve over a specific window rather than a fixed period.
 4. Strategy Development:
 
 - Used in trading strategies, such as comparing rolling short-term and long-term moving averages to generate buy/sell signals.
