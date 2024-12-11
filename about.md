@@ -6,9 +6,9 @@ permalink: /about/
 
 ### Hello world! 
 
-My name is Cristian Gutu and I am a **Senior Software Engineer** @ **Prudential** on the Data Platform team.
+My name is Cristian Gutu and I am a **Senior Software Engineer** at **Prudential** on the Data Platform team.
 
-I help operate the critical infrastructure that powers near-realtime and batch data processing at Prudential. I've designed and built high-performance data pipelines running 1k+ task executions per day, moving terabytes of data, and handling ~2 million records each week.
+I help operate the critical infrastructure that powers near-realtime and batch data processing. I've designed and built high-performance data pipelines running 1k+ task executions per day, moving terabytes of data, and handling ~2 million records each week.
 
 ### Skills & Certifications
 
