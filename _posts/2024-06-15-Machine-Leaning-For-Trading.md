@@ -178,3 +178,30 @@ Think of AI as the goal (to replicate human intelligence) and ML as one of the t
 | Supervised Learning | Labeled data        | Predictions (future outputs)        | Spam email detection          |
 | Unsupervised Learning | Unlabeled data     | Clusters or patterns               | Grouping customers            |
 | Reinforcement Learning | Feedback from environment | Sequence of actions to maximize reward | Training a robot to play chess |
+
+## Statistics Concepts
+
+**Random Variables**
+
+A random variable is a way to map outcomes of random processes to numbers (quantifying outcomes).
+
+In literature, random variables tend to be denoted by capital letters.
+
+As an example, consider the random variable "X" which maps the random process of flipping a coin and each of the possible outcomes in that process to a numeric value.
+
+```
+X -> 1 if heads
+X -> 0 if tails
+```
+
+Note: in the mapping above we also could have mapped heads to `100` and tails to `103`, the numeric value in itself has no importance in this case.
+
+As another example, lets consider the random variable `Y` which is the sum of upward face after rolling `7` dice. 
+
+Why is this a useful thing to do?
+
+A simple reason, is that you can start to do more math on the outcomes and also start to use more mathematical notation on the outcomes. 
+
+Lets say you wanted to know the probability that the sum of upward face after rolling dice is less than or equal to `30`. Now with the random variable mapping we have defined, this can be easily expressed as: `P(Y <= 30)`
+
+Unlike a more traditional variable in math, a random variable can take on many many values with different probabilities. In this regard, it makes more sense to talk about the probability of a random variable equaling a value or the probability that it is less than or greater than some value.
